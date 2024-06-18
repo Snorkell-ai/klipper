@@ -31,6 +31,8 @@ args = parser.parse_args()
 
 
 def write_exception_vectors():
+    """    """
+
     print("Writing exception vectors")
     with open("/dev/mem", "w+b") as f:
         exc = mmap.mmap(f.fileno(),
@@ -44,6 +46,8 @@ def write_exception_vectors():
 
 
 def assert_deassert_reset(ass):
+    """    """
+
     with open("/dev/mem", "w+b") as f:
         r_cpucfg = mmap.mmap(f.fileno(),
                              length=R_CPU_CFG_SIZE,
@@ -60,6 +64,8 @@ def assert_deassert_reset(ass):
 
 
 def write_file(filename):
+    """    """
+
     with open(filename, "r+b") as fw:
         data = fw.read()
         if len(data) > FW_SIZE:
@@ -73,6 +79,8 @@ def write_file(filename):
 
 
 def clear_magic_word():
+    """    """
+
     with open("/dev/mem", "w+b") as f:
         sram_a2 = mmap.mmap(f.fileno(), length=FW_SIZE, offset=FW_BASE)
         sram_a2[0] = 0x0

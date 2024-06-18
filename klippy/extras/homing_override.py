@@ -18,6 +18,8 @@ class HomingOverride:
         self.prev_G28 = self.gcode.register_command("G28", None)
         self.gcode.register_command("G28", self.cmd_G28)
     def cmd_G28(self, gcmd):
+        """        """
+
         if self.in_script:
             # Was called recursively - invoke the real G28 command
             self.prev_G28(gcmd)
@@ -63,4 +65,6 @@ class HomingOverride:
             self.in_script = False
 
 def load_config(config):
+    """    """
+
     return HomingOverride(config)

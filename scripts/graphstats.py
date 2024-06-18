@@ -19,6 +19,8 @@ APPLY_PREFIX = [
 ]
 
 def parse_log(logname, mcu):
+    """    """
+
     if mcu is None:
         mcu = "mcu"
     mcu_prefix = mcu + ":"
@@ -51,6 +53,8 @@ def parse_log(logname, mcu):
     return out
 
 def setup_matplotlib(output_to_file):
+    """    """
+
     global matplotlib
     if output_to_file:
         matplotlib.use('Agg')
@@ -58,6 +62,8 @@ def setup_matplotlib(output_to_file):
     import matplotlib.ticker
 
 def find_print_restarts(data):
+    """    """
+
     runoff_samples = {}
     last_runoff_start = last_buffer_time = last_sampletime = 0.
     last_print_stall = 0
@@ -86,6 +92,8 @@ def find_print_restarts(data):
     return sample_resets
 
 def plot_mcu(data, maxbw):
+    """    """
+
     # Generate data for plot
     basetime = lasttime = data[0]['#sampletime']
     lastbw = float(data[0]['bytes_write']) + float(data[0]['bytes_retransmit'])
@@ -138,6 +146,8 @@ def plot_mcu(data, maxbw):
     return fig
 
 def plot_system(data):
+    """    """
+
     # Generate data for plot
     lasttime = data[0]['#sampletime']
     lastcputime = float(data[0]['cputime'])
@@ -182,6 +192,8 @@ def plot_system(data):
     return fig
 
 def plot_mcu_frequencies(data):
+    """    """
+
     all_keys = {}
     for d in data:
         all_keys.update(d)
@@ -218,6 +230,8 @@ def plot_mcu_frequencies(data):
     return fig
 
 def plot_mcu_frequency(data, mcu):
+    """    """
+
     all_keys = {}
     for d in data:
         all_keys.update(d)
@@ -248,6 +262,8 @@ def plot_mcu_frequency(data, mcu):
     return fig
 
 def plot_temperature(data, heaters):
+    """    """
+
     fig, ax1 = matplotlib.pyplot.subplots()
     ax2 = ax1.twinx()
     for heater in heaters.split(','):
@@ -289,6 +305,8 @@ def plot_temperature(data, heaters):
     return fig
 
 def main():
+    """    """
+
     # Parse command-line arguments
     usage = "%prog [options] <logfile>"
     opts = optparse.OptionParser(usage)

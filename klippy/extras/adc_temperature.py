@@ -25,13 +25,21 @@ class PrinterADCtoTemperature:
         query_adc = config.get_printer().load_object(config, 'query_adc')
         query_adc.register_adc(config.get_name(), self.mcu_adc)
     def setup_callback(self, temperature_callback):
+        """        """
+
         self.temperature_callback = temperature_callback
     def get_report_time_delta(self):
+        """        """
+
         return REPORT_TIME
     def adc_callback(self, read_time, read_value):
+        """        """
+
         temp = self.adc_convert.calc_temp(read_value)
         self.temperature_callback(read_time + SAMPLE_COUNT * SAMPLE_TIME, temp)
     def setup_minmax(self, min_temp, max_temp):
+        """        """
+
         adc_range = [self.adc_convert.calc_adc(t) for t in [min_temp, max_temp]]
         self.mcu_adc.setup_minmax(SAMPLE_TIME, SAMPLE_COUNT,
                                   minval=min(adc_range), maxval=max(adc_range),
@@ -68,10 +76,14 @@ class LinearInterpolate:
         self.keys.append(9999999999999.)
         self.slopes.append(self.slopes[-1])
     def interpolate(self, key):
+        """        """
+
         pos = bisect.bisect(self.keys, key)
         gain, offset = self.slopes[pos]
         return key * gain + offset
     def reverse_interpolate(self, value):
+        """        """
+
         values = [key * gain + offset for key, (gain, offset) in zip(
             self.keys, self.slopes)]
         if values[0] < values[-2]:
@@ -119,6 +131,8 @@ class CustomLinearVoltage:
             v = config.getfloat("voltage%d" % (i,))
             self.params.append((t, v))
     def create(self, config):
+        """        """
+
         lv = LinearVoltage(config, self.params)
         return PrinterADCtoTemperature(config, lv)
 
@@ -137,11 +151,15 @@ class LinearResistance:
             raise config.error("adc_temperature %s in heater %s" % (
                 str(e), config.get_name()))
     def calc_temp(self, adc):
+        """        """
+
         # Calculate temperature from adc
         adc = max(.00001, min(.99999, adc))
         r = self.pullup * adc / (1.0 - adc)
         return self.li.interpolate(r)
     def calc_adc(self, temp):
+        """        """
+
         # Calculate adc reading from a temperature
         r = self.li.reverse_interpolate(temp)
         return r / (self.pullup + r)
@@ -158,6 +176,8 @@ class CustomLinearResistance:
             r = config.getfloat("resistance%d" % (i,))
             self.samples.append((t, r))
     def create(self, config):
+        """        """
+
         lr = LinearResistance(config, self.samples)
         return PrinterADCtoTemperature(config, lr)
 
@@ -262,11 +282,15 @@ AD8497 = [
 ]
 
 def calc_pt100(base=100.):
+    """    """
+
     # Calc PT100/PT1000 resistances using Callendar-Van Dusen formula
     A, B = (3.9083e-3, -5.775e-7)
     return [(float(t), base * (1. + A*t + B*t*t)) for t in range(0, 500, 10)]
 
 def calc_ina826_pt100():
+    """    """
+
     # Standard circuit is 4400ohm pullup with 10x gain to 5V
     return [(t, 10. * 5. * r / (4400. + r)) for t, r in calc_pt100()]
 
@@ -281,6 +305,8 @@ DefaultResistanceSensors = [
 ]
 
 def load_config(config):
+    """    """
+
     # Register default sensors
     pheaters = config.get_printer().load_object(config, "heaters")
     for sensor_type, params in DefaultVoltageSensors:
@@ -294,6 +320,8 @@ def load_config(config):
         pheaters.add_sensor_factory(sensor_type, func)
 
 def load_config_prefix(config):
+    """    """
+
     if config.get("resistance1", None) is None:
         custom_sensor = CustomLinearVoltage(config)
     else:

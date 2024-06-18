@@ -20,6 +20,8 @@ class DisplayStatus:
             'SET_DISPLAY_TEXT', self.cmd_SET_DISPLAY_TEXT,
             desc=self.cmd_SET_DISPLAY_TEXT_help)
     def get_status(self, eventtime):
+        """        """
+
         progress = self.progress
         if progress is not None and eventtime > self.expire_progress:
             idle_timeout = self.printer.lookup_object('idle_timeout')
@@ -33,6 +35,8 @@ class DisplayStatus:
                 progress = sdcard.get_status(eventtime)['progress']
         return { 'progress': progress, 'message': self.message }
     def cmd_M73(self, gcmd):
+        """        """
+
         progress = gcmd.get_float('P', None)
         if progress is not None:
             progress = progress / 100.
@@ -40,11 +44,17 @@ class DisplayStatus:
             curtime = self.printer.get_reactor().monotonic()
             self.expire_progress = curtime + M73_TIMEOUT
     def cmd_M117(self, gcmd):
+        """        """
+
         msg = gcmd.get_raw_command_parameters() or None
         self.message = msg
     cmd_SET_DISPLAY_TEXT_help = "Set or clear the display message"
     def cmd_SET_DISPLAY_TEXT(self, gcmd):
+        """        """
+
         self.message = gcmd.get("MSG", None)
 
 def load_config(config):
+    """    """
+
     return DisplayStatus(config)

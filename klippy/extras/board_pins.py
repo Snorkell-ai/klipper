@@ -21,7 +21,11 @@ class PrinterBoardAliases:
                         pin_resolver.alias_pin(name, value)
 
 def load_config(config):
+    """    """
+
     return PrinterBoardAliases(config)
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterBoardAliases(config)

@@ -36,6 +36,8 @@ class ExcludeObject:
             desc=self.cmd_EXCLUDE_OBJECT_DEFINE_help)
 
     def _register_transform(self):
+        """        """
+
         if self.next_transform is None:
             tuning_tower = self.printer.lookup_object('tuning_tower')
             if tuning_tower.is_active():
@@ -57,9 +59,13 @@ class ExcludeObject:
             self.last_position_excluded[:] = self.last_position
 
     def _handle_connect(self):
+        """        """
+
         self.toolhead = self.printer.lookup_object('toolhead')
 
     def _unregister_transform(self):
+        """        """
+
         if self.next_transform:
             tuning_tower = self.printer.lookup_object('tuning_tower')
             if tuning_tower.is_active():
@@ -73,16 +79,22 @@ class ExcludeObject:
             self.gcode_move.reset_last_position()
 
     def _reset_state(self):
+        """        """
+
         self.objects = []
         self.excluded_objects = []
         self.current_object = None
         self.in_excluded_region = False
 
     def _reset_file(self):
+        """        """
+
         self._reset_state()
         self._unregister_transform()
 
     def _get_extrusion_offsets(self):
+        """        """
+
         offset = self.extrusion_offsets.get(
             self.toolhead.get_extruder().get_name())
         if offset is None:
@@ -92,6 +104,8 @@ class ExcludeObject:
         return offset
 
     def get_position(self):
+        """        """
+
         offset = self._get_extrusion_offsets()
         pos = self.next_transform.get_position()
         for i in range(4):
@@ -99,6 +113,8 @@ class ExcludeObject:
         return list(self.last_position)
 
     def _normal_move(self, newpos, speed):
+        """        """
+
         offset = self._get_extrusion_offsets()
 
         if self.initial_extrusion_moves > 0 and \
@@ -142,6 +158,8 @@ class ExcludeObject:
         self.next_transform.move(tx_pos, speed)
 
     def _ignore_move(self, newpos, speed):
+        """        """
+
         offset = self._get_extrusion_offsets()
         for i in range(3):
             offset[i] = newpos[i] - self.last_position_extruded[i]
@@ -151,10 +169,14 @@ class ExcludeObject:
         self.max_position_excluded = max(self.max_position_excluded, newpos[3])
 
     def _move_into_excluded_region(self, newpos, speed):
+        """        """
+
         self.in_excluded_region = True
         self._ignore_move(newpos, speed)
 
     def _move_from_excluded_region(self, newpos, speed):
+        """        """
+
         self.in_excluded_region = False
 
         # This adjustment value is used to compensate for any retraction
@@ -165,11 +187,15 @@ class ExcludeObject:
         self._normal_move(newpos, speed)
 
     def _test_in_excluded_region(self):
+        """        """
+
         # Inside cancelled object
         return self.current_object in self.excluded_objects \
             and self.initial_extrusion_moves == 0
 
     def get_status(self, eventtime=None):
+        """        """
+
         status = {
             "objects": self.objects,
             "excluded_objects": self.excluded_objects,
@@ -178,6 +204,8 @@ class ExcludeObject:
         return status
 
     def move(self, newpos, speed):
+        """        """
+
         move_in_excluded_region = self._test_in_excluded_region()
         self.last_speed = speed
 
@@ -195,6 +223,8 @@ class ExcludeObject:
     cmd_EXCLUDE_OBJECT_START_help = "Marks the beginning the current object" \
                                     " as labeled"
     def cmd_EXCLUDE_OBJECT_START(self, gcmd):
+        """        """
+
         name = gcmd.get('NAME').upper()
         if not any(obj["name"] == name for obj in self.objects):
             self._add_object_definition({"name": name})
@@ -203,6 +233,8 @@ class ExcludeObject:
 
     cmd_EXCLUDE_OBJECT_END_help = "Marks the end the current object"
     def cmd_EXCLUDE_OBJECT_END(self, gcmd):
+        """        """
+
         if self.current_object == None and self.next_transform:
             gcmd.respond_info("EXCLUDE_OBJECT_END called, but no object is"
                               " currently active")
@@ -217,6 +249,8 @@ class ExcludeObject:
 
     cmd_EXCLUDE_OBJECT_help = "Cancel moves inside a specified objects"
     def cmd_EXCLUDE_OBJECT(self, gcmd):
+        """        """
+
         reset = gcmd.get('RESET', None)
         current = gcmd.get('CURRENT', None)
         name = gcmd.get('NAME', '').upper()
@@ -244,6 +278,8 @@ class ExcludeObject:
 
     cmd_EXCLUDE_OBJECT_DEFINE_help = "Provides a summary of an object"
     def cmd_EXCLUDE_OBJECT_DEFINE(self, gcmd):
+        """        """
+
         reset = gcmd.get('RESET', None)
         name = gcmd.get('NAME', '').upper()
 
@@ -271,16 +307,22 @@ class ExcludeObject:
             self._list_objects(gcmd)
 
     def _add_object_definition(self, definition):
+        """        """
+
         self.objects = sorted(self.objects + [definition],
                               key=lambda o: o["name"])
 
     def _exclude_object(self, name):
+        """        """
+
         self._register_transform()
         self.gcode.respond_info('Excluding object {}'.format(name.upper()))
         if name not in self.excluded_objects:
             self.excluded_objects = sorted(self.excluded_objects + [name])
 
     def _unexclude_object(self, name):
+        """        """
+
         self.gcode.respond_info('Unexcluding object {}'.format(name.upper()))
         if name in self.excluded_objects:
             excluded_objects = list(self.excluded_objects)
@@ -288,6 +330,8 @@ class ExcludeObject:
             self.excluded_objects = sorted(excluded_objects)
 
     def _list_objects(self, gcmd):
+        """        """
+
         if gcmd.get('JSON', None) is not None:
             object_list = json.dumps(self.objects)
         else:
@@ -295,8 +339,12 @@ class ExcludeObject:
         gcmd.respond_info('Known objects: {}'.format(object_list))
 
     def _list_excluded_objects(self, gcmd):
+        """        """
+
         object_list = " ".join(self.excluded_objects)
         gcmd.respond_info('Excluded objects: {}'.format(object_list))
 
 def load_config(config):
+    """    """
+
     return ExcludeObject(config)

@@ -135,16 +135,22 @@ class TMC2660CurrentHelper:
                                                 self._handle_ready)
 
     def _calc_current_bits(self, current, vsense):
+        """        """
+
         vref = 0.165 if vsense else 0.310
         sr = self.sense_resistor
         cs = int(32. * sr * current * math.sqrt(2.) / vref + .5) - 1
         return max(0, min(31, cs))
 
     def _calc_current_from_bits(self, cs, vsense):
+        """        """
+
         vref = 0.165 if vsense else 0.310
         return (cs + 1) * vref / (32. * self.sense_resistor * math.sqrt(2.))
 
     def _calc_current(self, run_current):
+        """        """
+
         vsense = True
         irun = self._calc_current_bits(run_current, True)
         if irun == 31:
@@ -158,16 +164,22 @@ class TMC2660CurrentHelper:
         return vsense, irun
 
     def _handle_printing(self, print_time):
+        """        """
+
         print_time -= 0.100 # Schedule slightly before deadline
         self.printer.get_reactor().register_callback(
             (lambda ev: self._update_current(self.current, print_time)))
 
     def _handle_ready(self, print_time):
+        """        """
+
         current = self.current * float(self.idle_current_percentage) / 100.
         self.printer.get_reactor().register_callback(
             (lambda ev: self._update_current(current, print_time)))
 
     def _update_current(self, current, print_time):
+        """        """
+
         vsense, cs = self._calc_current(current)
         val = self.fields.set_field("cs", cs)
         self.mcu_tmc.set_register("SGCSCONF", val, print_time)
@@ -177,9 +189,13 @@ class TMC2660CurrentHelper:
             self.mcu_tmc.set_register("DRVCONF", val, print_time)
 
     def get_current(self):
+        """        """
+
         return self.current, None, None, MAX_CURRENT
 
     def set_current(self, run_current, hold_current, print_time):
+        """        """
+
         self.current = run_current
         self._update_current(run_current, print_time)
 
@@ -197,8 +213,12 @@ class MCU_TMC2660_SPI:
         self.name_to_reg = name_to_reg
         self.fields = fields
     def get_fields(self):
+        """        """
+
         return self.fields
     def get_register(self, reg_name):
+        """        """
+
         new_rdsel = ReadRegisters.index(reg_name)
         reg = self.name_to_reg["DRVCONF"]
         if self.printer.get_start_args().get('debugoutput') is not None:
@@ -214,6 +234,8 @@ class MCU_TMC2660_SPI:
         pr = bytearray(params['response'])
         return (pr[0] << 16) | (pr[1] << 8) | pr[2]
     def set_register(self, reg_name, val, print_time=None):
+        """        """
+
         minclock = 0
         if print_time is not None:
             minclock = self.spi.get_mcu().print_time_to_clock(print_time)
@@ -273,4 +295,6 @@ class TMC2660:
         set_config_field(config, "ts2g", 3)
 
 def load_config_prefix(config):
+    """    """
+
     return TMC2660(config)

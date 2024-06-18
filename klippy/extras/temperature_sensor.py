@@ -23,15 +23,23 @@ class PrinterSensorGeneric:
         self.measured_min = 99999999.
         self.measured_max = 0.
     def temperature_callback(self, read_time, temp):
+        """        """
+
         self.last_temp = temp
         if temp:
             self.measured_min = min(self.measured_min, temp)
             self.measured_max = max(self.measured_max, temp)
     def get_temp(self, eventtime):
+        """        """
+
         return self.last_temp, 0.
     def stats(self, eventtime):
+        """        """
+
         return False, '%s: temp=%.1f' % (self.name, self.last_temp)
     def get_status(self, eventtime):
+        """        """
+
         return {
             'temperature': round(self.last_temp, 2),
             'measured_min_temp': round(self.measured_min, 2),
@@ -39,4 +47,6 @@ class PrinterSensorGeneric:
         }
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterSensorGeneric(config)

@@ -37,6 +37,8 @@ class PrinterSensorCombined:
                                             self._handle_ready)
 
     def _handle_connect(self):
+        """        """
+
         for sensor_name in self.sensor_names:
             sensor = self.printer.lookup_object(sensor_name)
             # check if sensor has get_status function and
@@ -51,21 +53,31 @@ class PrinterSensorCombined:
                         % (sensor_name,))
 
     def _handle_ready(self):
+        """        """
+
         # Start temperature update timer
         self.reactor.update_timer(self.temperature_update_timer,
                                   self.reactor.NOW)
 
     def setup_minmax(self, min_temp, max_temp):
+        """        """
+
         self.min_temp = min_temp
         self.max_temp = max_temp
 
     def setup_callback(self, temperature_callback):
+        """        """
+
         self.temperature_callback = temperature_callback
 
     def get_report_time_delta(self):
+        """        """
+
         return REPORT_TIME
 
     def update_temp(self, eventtime):
+        """        """
+
         values = []
         for sensor in self.sensors:
             sensor_status = sensor.get_status(eventtime)
@@ -84,13 +96,19 @@ class PrinterSensorCombined:
             self.last_temp = temp
 
     def get_temp(self, eventtime):
+        """        """
+
         return self.last_temp, 0.
 
     def get_status(self, eventtime):
+        """        """
+
         return {'temperature': round(self.last_temp, 2),
                 }
 
     def _temperature_update_event(self, eventtime):
+        """        """
+
         # update sensor value
         self.update_temp(eventtime)
 
@@ -118,11 +136,15 @@ class PrinterSensorCombined:
 
 
 def mean(values):
+    """    """
+
     if not values:
         return
     return sum(values) / len(values)
 
 
 def load_config(config):
+    """    """
+
     pheaters = config.get_printer().load_object(config, "heaters")
     pheaters.add_sensor_factory("temperature_combined", PrinterSensorCombined)

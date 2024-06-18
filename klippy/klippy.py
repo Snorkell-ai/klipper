@@ -64,10 +64,16 @@ class Printer:
         for m in [gcode, webhooks]:
             m.add_early_printer_objects(self)
     def get_start_args(self):
+        """        """
+
         return self.start_args
     def get_reactor(self):
+        """        """
+
         return self.reactor
     def get_state_message(self):
+        """        """
+
         if self.state_message == message_ready:
             category = "ready"
         elif self.state_message == message_startup:
@@ -78,25 +84,35 @@ class Printer:
             category = "error"
         return self.state_message, category
     def is_shutdown(self):
+        """        """
+
         return self.in_shutdown_state
     def _set_state(self, msg):
+        """        """
+
         if self.state_message in (message_ready, message_startup):
             self.state_message = msg
         if (msg != message_ready
             and self.start_args.get('debuginput') is not None):
             self.request_exit('error_exit')
     def add_object(self, name, obj):
+        """        """
+
         if name in self.objects:
             raise self.config_error(
                 "Printer object '%s' already created" % (name,))
         self.objects[name] = obj
     def lookup_object(self, name, default=configfile.sentinel):
+        """        """
+
         if name in self.objects:
             return self.objects[name]
         if default is configfile.sentinel:
             raise self.config_error("Unknown config object '%s'" % (name,))
         return default
     def lookup_objects(self, module=None):
+        """        """
+
         if module is None:
             return list(self.objects.items())
         prefix = module + ' '
@@ -106,6 +122,8 @@ class Printer:
             return [(module, self.objects[module])] + objs
         return objs
     def load_object(self, config, section, default=configfile.sentinel):
+        """        """
+
         if section in self.objects:
             return self.objects[section]
         module_parts = section.split()
@@ -130,6 +148,8 @@ class Printer:
         self.objects[section] = init_func(config.getsection(section))
         return self.objects[section]
     def _read_config(self):
+        """        """
+
         self.objects['configfile'] = pconfig = configfile.PrinterConfig(self)
         config = pconfig.read_main_config()
         if self.bglogger is not None:
@@ -144,6 +164,8 @@ class Printer:
         # Validate that there are no undefined parameters in the config file
         pconfig.check_unused_options(config)
     def _build_protocol_error_message(self, e):
+        """        """
+
         host_version = self.start_args['software_version']
         msg_update = []
         msg_updated = []
@@ -171,6 +193,8 @@ class Printer:
         msg += [message_protocol_error2, str(e)]
         return "\n".join(msg)
     def _connect(self, eventtime):
+        """        """
+
         try:
             self._read_config()
             self.send_event("klippy:mcu_identify")
@@ -208,6 +232,8 @@ class Printer:
             self.invoke_shutdown("Internal error during ready callback: %s"
                                  % (str(e),))
     def run(self):
+        """        """
+
         systime = time.time()
         monotime = self.reactor.monotonic()
         logging.info("Start printer at %s (%.1f %.1f)",
@@ -237,11 +263,15 @@ class Printer:
             logging.exception("Unhandled exception during post run")
         return run_result
     def set_rollover_info(self, name, info, log=True):
+        """        """
+
         if log:
             logging.info(info)
         if self.bglogger is not None:
             self.bglogger.set_rollover_info(name, info)
     def invoke_shutdown(self, msg):
+        """        """
+
         if self.in_shutdown_state:
             return
         logging.error("Transition to shutdown state: %s", msg)
@@ -255,13 +285,21 @@ class Printer:
         logging.info("Reactor garbage collection: %s",
                      self.reactor.get_gc_stats())
     def invoke_async_shutdown(self, msg):
+        """        """
+
         self.reactor.register_async_callback(
             (lambda e: self.invoke_shutdown(msg)))
     def register_event_handler(self, event, callback):
+        """        """
+
         self.event_handlers.setdefault(event, []).append(callback)
     def send_event(self, event, *params):
+        """        """
+
         return [cb(*params) for cb in self.event_handlers.get(event, [])]
     def request_exit(self, result):
+        """        """
+
         if self.run_result is None:
             self.run_result = result
         self.reactor.end()
@@ -272,6 +310,8 @@ class Printer:
 ######################################################################
 
 def import_test():
+    """    """
+
     # Import all optional modules (used as a build test)
     dname = os.path.dirname(__file__)
     for mname in ['extras', 'kinematics']:
@@ -287,6 +327,8 @@ def import_test():
     sys.exit(0)
 
 def arg_dictionary(option, opt_str, value, parser):
+    """    """
+
     key, fname = "dictionary", value
     if '=' in value:
         mcu_name, fname = value.split('=', 1)
@@ -296,6 +338,8 @@ def arg_dictionary(option, opt_str, value, parser):
     parser.values.dictionary[key] = fname
 
 def main():
+    """    """
+
     usage = "%prog [options] <config file>"
     opts = optparse.OptionParser(usage)
     opts.add_option("-i", "--debuginput", dest="debuginput",

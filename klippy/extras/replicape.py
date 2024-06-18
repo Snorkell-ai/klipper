@@ -34,16 +34,24 @@ class pca9685_pwm:
         self._pwm_max = 0.
         self._set_cmd = None
     def get_mcu(self):
+        """        """
+
         return self._mcu
     def setup_max_duration(self, max_duration):
+        """        """
+
         self._max_duration = max_duration
     def setup_cycle_time(self, cycle_time, hardware_pwm=False):
+        """        """
+
         if hardware_pwm:
             raise pins.error("pca9685 does not support hardware_pwm parameter")
         if cycle_time != self._cycle_time:
             logging.info("Ignoring pca9685 cycle time of %.6f (using %.6f)",
                          cycle_time, self._cycle_time)
     def setup_start_value(self, start_value, shutdown_value):
+        """        """
+
         if self._invert:
             start_value = 1. - start_value
             shutdown_value = 1. - shutdown_value
@@ -53,6 +61,8 @@ class pca9685_pwm:
             self._channel, self._start_value, self._shutdown_value)
         self._is_enable = not not self._start_value
     def _build_config(self):
+        """        """
+
         self._pwm_max = self._mcu.get_constant_float("PCA9685_MAX")
         cycle_ticks = self._mcu.seconds_to_clock(self._cycle_time)
         self._mcu.request_move_queue_slot()
@@ -68,6 +78,8 @@ class pca9685_pwm:
         self._set_cmd = self._mcu.lookup_command(
             "queue_pca9685_out oid=%c clock=%u value=%hu", cq=cmd_queue)
     def set_pwm(self, print_time, value):
+        """        """
+
         clock = self._mcu.print_time_to_clock(print_time)
         if self._invert:
             value = 1. - value
@@ -82,6 +94,8 @@ class pca9685_pwm:
                            minclock=self._last_clock, reqclock=clock)
         self._last_clock = clock
     def set_digital(self, print_time, value):
+        """        """
+
         if value:
             self.set_pwm(print_time, 1.)
         else:
@@ -97,10 +111,16 @@ class ReplicapeDACEnable:
         self.value = replicape.stepper_dacs[channel]
         self.pwm = pca9685_pwm(replicape, channel, pin_type, pin_params)
     def get_mcu(self):
+        """        """
+
         return self.mcu
     def setup_max_duration(self, max_duration):
+        """        """
+
         self.pwm.setup_max_duration(max_duration)
     def set_digital(self, print_time, value):
+        """        """
+
         if value:
             self.pwm.set_pwm(print_time, self.value)
         else:
@@ -145,6 +165,8 @@ class servo_pwm:
         pin_resolver.reserve_pin(resv1, config_name)
         pin_resolver.reserve_pin(resv2, config_name)
     def setup_cycle_time(self, cycle_time, hardware_pwm=False):
+        """        """
+
         self.mcu_pwm.setup_cycle_time(cycle_time, True)
 
 ReplicapeStepConfig = {
@@ -219,12 +241,16 @@ class Replicape:
         self.sr_spi.setup_shutdown_msg(self.sr_disabled)
         self.sr_spi.spi_send(self.sr_disabled)
     def note_pwm_start_value(self, channel, start_value, shutdown_value):
+        """        """
+
         self.mcu_pwm_start_value |= not not start_value
         self.mcu_pwm_shutdown_value |= not not shutdown_value
         self.mcu_pwm_enable.setup_start_value(
             self.mcu_pwm_start_value, self.mcu_pwm_shutdown_value)
         self.enabled_channels[channel] = not not start_value
     def note_pwm_enable(self, print_time, channel, is_enable):
+        """        """
+
         self.enabled_channels[channel] = is_enable
         # Check if need to set the pca9685 enable pin
         pe_time = max(print_time, self.last_pwm_enable_time + PIN_MIN_TIME)
@@ -249,6 +275,8 @@ class Replicape:
         clock = self.host_mcu.print_time_to_clock(print_time)
         self.sr_spi.spi_send(sr, minclock=clock, reqclock=clock)
     def setup_pin(self, pin_type, pin_params):
+        """        """
+
         pin = pin_params['pin']
         if pin in self.pins:
             pclass, channel = self.pins[pin]
@@ -263,4 +291,6 @@ class Replicape:
         raise pins.error("Unknown replicape pin %s" % (pin,))
 
 def load_config(config):
+    """    """
+
     return Replicape(config)

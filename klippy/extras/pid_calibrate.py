@@ -14,6 +14,8 @@ class PIDCalibrate:
                                desc=self.cmd_PID_CALIBRATE_help)
     cmd_PID_CALIBRATE_help = "Run PID calibration test"
     def cmd_PID_CALIBRATE(self, gcmd):
+        """        """
+
         heater_name = gcmd.get('HEATER')
         target = gcmd.get_float('TARGET')
         write_file = gcmd.get_int('WRITE_FILE', 0)
@@ -69,12 +71,16 @@ class ControlAutoTune:
         self.temp_samples = []
     # Heater control
     def set_pwm(self, read_time, value):
+        """        """
+
         if value != self.last_pwm:
             self.pwm_samples.append(
                 (read_time + self.heater.get_pwm_delay(), value))
             self.last_pwm = value
         self.heater.set_pwm(read_time, value)
     def temperature_update(self, read_time, temp, target_temp):
+        """        """
+
         self.temp_samples.append((read_time, temp))
         # Check if the temperature has crossed the target and
         # enable/disable the heater if so.
@@ -98,11 +104,15 @@ class ControlAutoTune:
                 self.peak = temp
                 self.peak_time = read_time
     def check_busy(self, eventtime, smoothed_temp, target_temp):
+        """        """
+
         if self.heating or len(self.peaks) < 12:
             return True
         return False
     # Analysis
     def check_peaks(self):
+        """        """
+
         self.peaks.append((self.peak, self.peak_time))
         if self.heating:
             self.peak = 9999999.
@@ -112,6 +122,8 @@ class ControlAutoTune:
             return
         self.calc_pid(len(self.peaks)-1)
     def calc_pid(self, pos):
+        """        """
+
         temp_diff = self.peaks[pos][0] - self.peaks[pos-1][0]
         time_diff = self.peaks[pos][1] - self.peaks[pos-2][1]
         # Use Astrom-Hagglund method to estimate Ku and Tu
@@ -128,12 +140,16 @@ class ControlAutoTune:
                      temp_diff, self.heater_max_power, Ku, Tu, Kp, Ki, Kd)
         return Kp, Ki, Kd
     def calc_final_pid(self):
+        """        """
+
         cycle_times = [(self.peaks[pos][1] - self.peaks[pos-2][1], pos)
                        for pos in range(4, len(self.peaks))]
         midpoint_pos = sorted(cycle_times)[len(cycle_times)//2][1]
         return self.calc_pid(midpoint_pos)
     # Offline analysis helper
     def write_file(self, filename):
+        """        """
+
         pwm = ["pwm: %.3f %.3f" % (time, value)
                for time, value in self.pwm_samples]
         out = ["%.3f %.3f" % (time, temp) for time, temp in self.temp_samples]
@@ -142,4 +158,6 @@ class ControlAutoTune:
         f.close()
 
 def load_config(config):
+    """    """
+
     return PIDCalibrate(config)

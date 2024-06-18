@@ -31,6 +31,8 @@ class DS18B20:
         self._mcu.register_config_callback(self._build_config)
 
     def _build_config(self):
+        """        """
+
         sid = "".join(["%02x" % (x,) for x in self.sensor_id])
         self._mcu.add_config_cmd(
             "config_ds18b20 oid=%d serial=%s max_error_count=%d"
@@ -44,6 +46,8 @@ class DS18B20:
                 self.min_temp * 1000, self.max_temp * 1000), is_init=True)
 
     def _handle_ds18b20_response(self, params):
+        """        """
+
         temp = params['value'] / 1000.0
 
         if params["fault"]:
@@ -57,24 +61,36 @@ class DS18B20:
         self._callback(last_read_time, temp)
 
     def setup_minmax(self, min_temp, max_temp):
+        """        """
+
         self.min_temp = min_temp
         self.max_temp = max_temp
 
     def fault(self, msg):
+        """        """
+
         self.printer.invoke_async_shutdown(msg)
 
     def get_report_time_delta(self):
+        """        """
+
         return self.report_time
 
     def setup_callback(self, cb):
+        """        """
+
         self._callback = cb
 
     def get_status(self, eventtime):
+        """        """
+
         return {
             'temperature': round(self.temp, 2),
         }
 
 def load_config(config):
+    """    """
+
     # Register sensor
     pheaters = config.get_printer().load_object(config, "heaters")
     pheaters.add_sensor_factory("DS18B20", DS18B20)

@@ -30,14 +30,20 @@ import mcu
 ###########################################################
 
 def output_line(msg):
+    """    """
+
     sys.stdout.write("%s\n" % (msg,))
     sys.stdout.flush()
 
 def output(msg):
+    """    """
+
     sys.stdout.write("%s" % (msg,))
     sys.stdout.flush()
 
 def calc_crc7(data, with_padding=True):
+    """    """
+
     # G(x) = x^7 + x^3 + 1
     # Shift left as we are only calculating a 7 bit CRC
     poly = 0b10001001 << 1
@@ -53,6 +59,8 @@ def calc_crc7(data, with_padding=True):
     return crc | 1
 
 def calc_crc16(data):
+    """    """
+
     poly = 0b10001000000100001
     crc = 0
     for b in data:
@@ -65,6 +73,8 @@ def calc_crc16(data):
 # /dev/serial/by-path/
 # Borrowed from  klipper/scripts/flash_usb.py
 def translate_serial_to_tty(device):
+    """    """
+
     ttyname = os.path.realpath(device)
     if os.path.exists('/dev/serial/by-path/'):
         for fname in os.listdir('/dev/serial/by-path/'):
@@ -74,6 +84,8 @@ def translate_serial_to_tty(device):
     return ttyname, ttyname
 
 def check_need_convert(board_name, config):
+    """    """
+
     if board_name.lower().startswith('mks-robin-e3'):
         # we need to convert this file
         robin_util = os.path.join(
@@ -148,9 +160,13 @@ class SPIDirect:
             ser, SPI_XFER_CMD, SPI_XFER_RESPONSE, self.oid)
 
     def spi_send(self, data):
+        """        """
+
         self._spi_send_cmd.send([self.oid, data])
 
     def spi_transfer(self, data):
+        """        """
+
         return self._spi_transfer_cmd.send([self.oid, data])
 
 class SDIODirect:
@@ -170,21 +186,33 @@ class SDIODirect:
         self._sdio_set_speed = mcu.CommandWrapper(ser, SDIO_SET_SPEED)
 
     def sdio_send_cmd(self, cmd, argument, wait):
+        """        """
+
         return self._sdio_send_cmd.send([self.oid, cmd, argument, wait])
 
     def sdio_read_data(self, cmd, argument):
+        """        """
+
         return self._sdio_read_data.send([self.oid, cmd, argument])
 
     def sdio_write_data(self, cmd, argument):
+        """        """
+
         return self._sdio_write_data.send([self.oid, cmd, argument])
 
     def sdio_read_data_buffer(self, offset, length=32):
+        """        """
+
         return self._sdio_read_data_buffer.send([self.oid, offset, length])
 
     def sdio_write_data_buffer(self, offset, data):
+        """        """
+
         return self._sdio_write_data_buffer.send([self.oid, offset, data])
 
     def sdio_set_speed(self, speed):
+        """        """
+
         return self._sdio_set_speed.send([self.oid, speed])
 
 
@@ -217,6 +245,8 @@ class FatFS:
         self._register_callbacks()
 
     def _register_callbacks(self):
+        """        """
+
         status_cb = self.ffi_main.callback(
             "uint8_t(void)", self._fatfs_cb_status)
         init_cb = self.ffi_main.callback(
@@ -238,13 +268,19 @@ class FatFS:
             status_cb, init_cb, read_cb, write_cb, ioctl_cb, ftime_cb)
 
     def clear_callbacks(self):
+        """        """
+
         self.ffi_lib.fatfs_clear_callbacks()
         self.ffi_callbacks = []
 
     def _fatfs_cb_status(self):
+        """        """
+
         return self.disk_status
 
     def _fatfs_cb_initialize(self):
+        """        """
+
         try:
             self.sdcard.init_sd()
         except Exception:
@@ -257,6 +293,8 @@ class FatFS:
         return self.disk_status
 
     def _fatfs_cb_disk_read(self, readbuf, sector, count):
+        """        """
+
         start = 0
         end = SECTOR_SIZE
         for sec in range(sector, sector + count, 1):
@@ -280,6 +318,8 @@ class FatFS:
         return 0
 
     def _fatfs_cb_disk_write(self, writebuf, sector, count):
+        """        """
+
         start = 0
         end = SECTOR_SIZE
         for sec in range(sector, sector + count, 1):
@@ -299,6 +339,8 @@ class FatFS:
         return 0
 
     def _fatfs_cb_disk_ioctl(self, cmd, buff):
+        """        """
+
         # The Current FatFS configuration does not require
         # this module to take any actions for incoming IOCTL
         # commands.
@@ -310,6 +352,8 @@ class FatFS:
         return 0
 
     def _fatfs_cb_get_fattime(self):
+        """        """
+
         tobj = time.localtime()
         year = tobj[0] - 1980
         sec = min(tobj[5], 59) // 2
@@ -317,6 +361,8 @@ class FatFS:
             | (tobj[3] << 11) | (tobj[4] << 5) | sec
 
     def mount(self, print_func=logging.info):
+        """        """
+
         ret = self.ffi_lib.fatfs_mount()
         if ret == 0:
             self.sdcard.print_card_info(print_func)
@@ -328,16 +374,22 @@ class FatFS:
                           % (FRESULT[ret]))
 
     def unmount(self):
+        """        """
+
         self.ffi_lib.fatfs_unmount()
         self.sdcard.deinit()
         self.disk_status = STA_NO_INIT | STA_NO_DISK
 
     def open_file(self, sd_path, mode="r"):
+        """        """
+
         sdf = SDCardFile(self.ffi_main, self.ffi_lib, sd_path, mode)
         sdf.open()
         return sdf
 
     def remove_item(self, sd_path):
+        """        """
+
         # Can be path to directory or file
         ret = self.ffi_lib.fatfs_remove(sd_path.encode())
         if ret != 0:
@@ -346,6 +398,8 @@ class FatFS:
                           % (sd_path, FRESULT[ret]))
 
     def get_file_info(self, sd_file_path):
+        """        """
+
         finfo = self.ffi_main.new("struct ff_file_info *")
         ret = self.ffi_lib.fatfs_get_fstats(finfo, sd_file_path.encode())
         if ret != 0:
@@ -356,6 +410,8 @@ class FatFS:
         return self._parse_ff_info(finfo)
 
     def list_sd_directory(self, sd_dir_path):
+        """        """
+
         flist = self.ffi_main.new("struct ff_file_info[128]")
         ret = self.ffi_lib.fatfs_list_dir(flist, 128, sd_dir_path.encode())
         if ret != 0:
@@ -371,6 +427,8 @@ class FatFS:
         return convlist
 
     def _parse_ff_info(self, finfo):
+        """        """
+
         fdate = finfo.modified_date
         ftime = finfo.modified_time
         dstr = "%d-%d-%d %d:%d:%d" % (
@@ -387,6 +445,8 @@ class FatFS:
         }
 
     def get_disk_info(self):
+        """        """
+
         disk_info = self.ffi_main.new("struct ff_disk_info *")
         ret = self.ffi_lib.fatfs_get_disk_info(disk_info)
         if ret != 0:
@@ -419,6 +479,8 @@ class SDCardFile:
         self.eof = False
 
     def open(self):
+        """        """
+
         if self.fhdl is not None:
             # already open
             return
@@ -430,6 +492,8 @@ class SDCardFile:
                           % (self.path))
 
     def read(self, length=None):
+        """        """
+
         if self.fhdl is None:
             raise OSError("flash_sdcard: File '%s' not open" % (self.path))
         if self.eof:
@@ -454,6 +518,8 @@ class SDCardFile:
         return ret_buf
 
     def write(self, buf):
+        """        """
+
         if self.fhdl is None:
             raise OSError("flash_sdcard: File '%s' not open" % (self.path))
         if not buf:
@@ -466,6 +532,8 @@ class SDCardFile:
         return bytes_written
 
     def close(self):
+        """        """
+
         if self.fhdl is not None:
             ret = self.ffi_lib.fatfs_close(self.fhdl)
             self.fhdl = None
@@ -475,10 +543,14 @@ class SDCardFile:
                              % (self.path, FRESULT[ret]))
 
     def __enter__(self):
+        """        """
+
         self.open()
         return self
 
     def __exit__(self, exc_type=None, exc_val=None, exc_tb=None):
+        """        """
+
         self.close()
 
 
@@ -515,6 +587,8 @@ class SDCardSPI:
         self.card_info = collections.OrderedDict()
 
     def init_sd(self):
+        """        """
+
         with self.mutex:
             if self.initialized:
                 return
@@ -594,6 +668,8 @@ class SDCardSPI:
             self._process_csd_reg()
 
     def deinit(self):
+        """        """
+
         with self.mutex:
             if self.initialized:
                 # Reset the SD Card
@@ -612,6 +688,8 @@ class SDCardSPI:
             self.card_info.clear()
 
     def _check_command(self, expected, cmd, args, is_app_cmd=False, tries=15):
+        """        """
+
         func = self._send_app_cmd_with_response if is_app_cmd else \
             self._send_command_with_response
         while True:
@@ -627,6 +705,8 @@ class SDCardSPI:
             self.reactor.pause(rt + .1)
 
     def _send_command(self, cmd, args):
+        """        """
+
         command = SD_COMMANDS[cmd] | 0x40
         request = [command]
         if isinstance(args, int):
@@ -641,6 +721,8 @@ class SDCardSPI:
         self.spi.spi_send(request)
 
     def _send_command_with_response(self, cmd, args, get_rt=False):
+        """        """
+
         self._send_command(cmd, args)
         params = self.spi.spi_transfer([0xFF]*8)
         if get_rt:
@@ -649,12 +731,16 @@ class SDCardSPI:
             return bytearray(params['response'])
 
     def _send_app_cmd_with_response(self, cmd, args, get_rt=False):
+        """        """
+
         # CMD55 tells the SD Card that the next command is an
         # Application Specific Command.
         self._send_command_with_response('APP_CMD', 0)
         return self._send_command_with_response(cmd, args, get_rt)
 
     def _find_sd_token(self, token, tries=10):
+        """        """
+
         while tries:
             params = self.spi.spi_transfer([0xFF])
             resp = bytearray(params['response'])
@@ -664,6 +750,8 @@ class SDCardSPI:
         return False
 
     def _find_sd_response(self, tries=10):
+        """        """
+
         while tries:
             params = self.spi.spi_transfer([0xFF])
             resp = bytearray(params['response'])
@@ -673,6 +761,8 @@ class SDCardSPI:
         return 0xFF
 
     def _process_cid_reg(self):
+        """        """
+
         self._send_command('SEND_CID', 0)
         reg = self._do_block_read(size=16)
         if reg is None:
@@ -695,6 +785,8 @@ class SDCardSPI:
         self.card_info.update(cid)
 
     def _process_csd_reg(self):
+        """        """
+
         self._send_command('SEND_CSD', 0)
         reg = self._do_block_read(size=16)
         if reg is None:
@@ -726,6 +818,8 @@ class SDCardSPI:
         self.total_sectors = max_capacity // SECTOR_SIZE
 
     def print_card_info(self, print_func=logging.info):
+        """        """
+
         print_func("\nSD Card Information:")
         print_func("Version: %.1f" % (self.sd_version))
         print_func("SDHC/SDXC: %s" % (self.high_capacity))
@@ -735,6 +829,8 @@ class SDCardSPI:
             print_func("%s: %s" % (name, val))
 
     def read_sector(self, sector):
+        """        """
+
         buf = None
         err_msg = "flash_sdcard: read error, sector %d" % (sector,)
         with self.mutex:
@@ -753,6 +849,8 @@ class SDCardSPI:
             return buf
 
     def _do_block_read(self, size=SECTOR_SIZE):
+        """        """
+
         valid_response = True
         sd_resp = self._find_sd_response()
         if sd_resp != 0:
@@ -794,6 +892,8 @@ class SDCardSPI:
         return buf
 
     def write_sector(self, sector, data):
+        """        """
+
         with self.mutex:
             if not 0 <= sector < self.total_sectors:
                 raise OSError(
@@ -859,7 +959,11 @@ class SDCardSDIO:
         self.card_info = collections.OrderedDict()
 
     def init_sd(self):
+        """        """
+
         def check_for_ocr_errors(reg):
+            """            """
+
             # returns False if an error flag is set
             return ((reg[0]&0xFD) | (reg[1]&0xFF) |
                     (reg[2]&0xE0) | (reg[3]&0x08)) == 0
@@ -948,6 +1052,8 @@ class SDCardSDIO:
 
 
     def deinit(self):
+        """        """
+
         with self.mutex:
             if self.initialized:
                 # Reset the SD Card
@@ -964,6 +1070,8 @@ class SDCardSDIO:
 
     def _check_command(self, check_func, cmd, args, is_app_cmd=False, tries=15,
         ignoreCRC=False):
+        """        """
+
         func = self._send_app_cmd_with_response if is_app_cmd else \
             self._send_command_with_response
         while True:
@@ -978,6 +1086,8 @@ class SDCardSDIO:
             self.reactor.pause(rt + .1)
 
     def _send_command(self, cmd, args, wait=0):
+        """        """
+
         cmd_code = SD_COMMANDS[cmd]
         argument = 0
         if isinstance(args, int) or isinstance(args, long):
@@ -999,6 +1109,8 @@ class SDCardSDIO:
 
     def _send_command_with_response(self, cmd, args, check_error=True,
         ignoreCRC=False, get_rt=False):
+        """        """
+
         # Wait for a short response
         params = self._send_command(cmd, args, wait=1)
         response = params['response']
@@ -1013,6 +1125,8 @@ class SDCardSDIO:
 
     def _send_app_cmd_with_response(self, cmd, args,
         ignoreCRC=False, get_rt=False):
+        """        """
+
         # CMD55 tells the SD Card that the next command is an
         # Application Specific Command.
         self._send_command_with_response('APP_CMD', self.rca << 16)
@@ -1020,6 +1134,8 @@ class SDCardSDIO:
             cmd, args, ignoreCRC=ignoreCRC, get_rt=get_rt)
 
     def _process_cid_reg(self):
+        """        """
+
         params = self._send_command('ALL_SEND_CID', 0, wait=2)
         reg = bytearray(params['response'])
         if reg is None:
@@ -1043,6 +1159,8 @@ class SDCardSDIO:
         self.card_info.update(cid)
 
     def _process_csd_reg(self):
+        """        """
+
         params = self._send_command('SEND_CSD', self.rca << 16, wait=2)
         reg = bytearray(params['response'])
         if reg is None:
@@ -1074,6 +1192,8 @@ class SDCardSDIO:
         self.total_sectors = max_capacity // SECTOR_SIZE
 
     def print_card_info(self, print_func=logging.info):
+        """        """
+
         print_func("\nSD Card Information:")
         print_func("Version: %.1f" % (self.sd_version))
         print_func("SDHC/SDXC: %s" % (self.high_capacity))
@@ -1083,6 +1203,8 @@ class SDCardSDIO:
             print_func("%s: %s" % (name, val))
 
     def read_sector(self, sector):
+        """        """
+
         buf = None
         err_msg = "flash_sdcard: read error, sector %d" % (sector,)
         with self.mutex:
@@ -1121,6 +1243,8 @@ class SDCardSDIO:
             return buf
 
     def write_sector(self, sector, data):
+        """        """
+
         with self.mutex:
             if not 0 <= sector < self.total_sectors:
                 raise OSError(
@@ -1185,6 +1309,8 @@ class MCUConnection:
         self.proto_error = None
 
     def connect(self):
+        """        """
+
         output("Connecting to MCU..")
         self.connect_completion = self.reactor.completion()
         self.connected = False
@@ -1213,6 +1339,8 @@ class MCUConnection:
         self.proto_error = msgparser.error
 
     def _do_serial_connect(self, eventtime):
+        """        """
+
         endtime = eventtime + 60.
         while True:
             try:
@@ -1231,6 +1359,8 @@ class MCUConnection:
         self.connect_completion.complete(True)
 
     def reset(self):
+        """        """
+
         output("Attempting MCU Reset...")
         if self.fatfs is not None:
             self.fatfs.unmount()
@@ -1242,12 +1372,16 @@ class MCUConnection:
         output_line("Done")
 
     def disconnect(self):
+        """        """
+
         if not self.connected:
             return
         self._serial.disconnect()
         self.connected = False
 
     def get_mcu_config(self):
+        """        """
+
         # Iterate through backwards compatible response strings
         for response in GET_CFG_RESPONSES:
             try:
@@ -1262,6 +1396,8 @@ class MCUConnection:
         return get_cfg_cmd.send()
 
     def check_need_restart(self):
+        """        """
+
         output("Checking Current MCU Configuration...")
         params = self.get_mcu_config()
         output_line("Done")
@@ -1272,6 +1408,8 @@ class MCUConnection:
         return False
 
     def _configure_mcu_spibus(self, printfunc=logging.info):
+        """        """
+
         # TODO: add commands for buttons?  Or perhaps an endstop?  We
         # just need to be able to query the status of the detect pin
         cs_pin = self.board_config['cs_pin'].upper()
@@ -1328,6 +1466,8 @@ class MCUConnection:
                 "Failed to Initialize SD Card. Is it inserted?")
 
     def _configure_mcu_sdiobus(self, printfunc=logging.info):
+        """        """
+
         bus = self.board_config['sdio_bus']
         bus_enums = self.enumerations.get(
             'sdio_bus', self.enumerations.get('bus'))
@@ -1355,6 +1495,8 @@ class MCUConnection:
                 "Failed to Initialize SD Card. Is it inserted?")
 
     def configure_mcu(self, printfunc=logging.info):
+        """        """
+
         if 'spi_bus' in self.board_config:
             self._configure_mcu_spibus(printfunc=printfunc)
         elif 'sdio_bus' in self.board_config:
@@ -1363,6 +1505,8 @@ class MCUConnection:
             raise SPIFlashError("Unknown bus defined in board_defs.py.")
 
     def sdcard_upload(self):
+        """        """
+
         output("Uploading Klipper Firmware to SD Card...")
         input_sha = hashlib.sha1()
         sd_sha = hashlib.sha1()
@@ -1406,6 +1550,8 @@ class MCUConnection:
         return sd_chksm
 
     def verify_flash(self, req_chksm, old_dictionary, req_dictionary):
+        """        """
+
         if bool(self.board_config.get('skip_verify', False)):
             output_line(SDIO_WARNING)
             return
@@ -1495,6 +1641,8 @@ class SPIFlash:
                                     % (args['klipper_dict_path'],))
 
     def _wait_for_reconnect(self):
+        """        """
+
         output("Waiting for device to reconnect...")
         time.sleep(1.)
         if os.path.exists(self.device_path):
@@ -1514,6 +1662,8 @@ class SPIFlash:
         output_line("Done")
 
     def run_reset_upload(self, eventtime):
+        """        """
+
         # Reset MCU to default state if necessary
         self.mcu_conn.connect()
         if self.mcu_conn.check_need_restart():
@@ -1524,6 +1674,8 @@ class SPIFlash:
             self.run_sdcard_upload(eventtime)
 
     def run_reset_verify(self, eventtime):
+        """        """
+
         # Reset MCU to default state if necessary
         self.mcu_conn.connect()
         if self.mcu_conn.check_need_restart():
@@ -1534,6 +1686,8 @@ class SPIFlash:
             self.run_verify(eventtime)
 
     def run_sdcard_upload(self, eventtime):
+        """        """
+
         # Reconnect and upload
         if not self.mcu_conn.connected:
             self.mcu_conn.connect()
@@ -1551,6 +1705,8 @@ class SPIFlash:
         self.task_complete = True
 
     def run_verify(self, eventtime):
+        """        """
+
         # Reconnect and verify
         if not self.mcu_conn.connected:
             self.mcu_conn.connect()
@@ -1561,6 +1717,8 @@ class SPIFlash:
         self.task_complete = True
 
     def run_reactor_task(self, run_cb):
+        """        """
+
         self.task_complete = False
         k_reactor = reactor.Reactor()
         self.mcu_conn = MCUConnection(k_reactor, self.device_path,
@@ -1580,6 +1738,8 @@ class SPIFlash:
             self.mcu_conn = k_reactor = None
 
     def run(self):
+        """        """
+
         if not bool(self.board_config.get('verify_only', False)):
             self.run_reactor_task(self.run_reset_upload)
             self._wait_for_reconnect()
@@ -1594,6 +1754,8 @@ class SPIFlash:
                 self.run_reactor_task(self.run_verify)
 
 def main():
+    """    """
+
     parser = argparse.ArgumentParser(
         description="SD Card Firmware Upload Utility")
     parser.add_argument(

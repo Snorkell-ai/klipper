@@ -220,10 +220,14 @@ class TMC2208:
         # TPOWERDOWN
         set_config_field(config, "tpowerdown", 20)
     def read_translate(self, reg_name, val):
+        """        """
+
         if reg_name == "IOIN":
             drv_type = self.fields.get_field("sel_a", val)
             reg_name = "IOIN@TMC220x" if drv_type else "IOIN@TMC222x"
         return reg_name, val
 
 def load_config_prefix(config):
+    """    """
+
     return TMC2208(config)

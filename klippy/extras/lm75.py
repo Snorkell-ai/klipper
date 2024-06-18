@@ -38,25 +38,37 @@ class LM75:
                                             self.handle_connect)
 
     def handle_connect(self):
+        """        """
+
         self._init_lm75()
         self.reactor.update_timer(self.sample_timer, self.reactor.NOW)
 
     def setup_minmax(self, min_temp, max_temp):
+        """        """
+
         self.min_temp = min_temp
         self.max_temp = max_temp
 
     def setup_callback(self, cb):
+        """        """
+
         self._callback = cb
 
     def get_report_time_delta(self):
+        """        """
+
         return self.report_time
 
     def degrees_from_sample(self, x):
+        """        """
+
         # The temp sample is encoded in the top 9 bits of a 16-bit
         # value. Resolution is 0.5 degrees C.
         return x[0] + (x[1] >> 7) * 0.5
 
     def _init_lm75(self):
+        """        """
+
         # Check and report the chip ID but ignore errors since many
         # chips don't have it
         try:
@@ -66,6 +78,8 @@ class LM75:
             pass
 
     def _sample_lm75(self, eventtime):
+        """        """
+
         try:
             sample = self.read_register('TEMP', 2)
             self.temp = self.degrees_from_sample(sample)
@@ -84,12 +98,16 @@ class LM75:
         return measured_time + self.report_time
 
     def read_register(self, reg_name, read_len):
+        """        """
+
         # read a single register
         regs = [LM75_REGS[reg_name]]
         params = self.i2c.i2c_read(regs, read_len)
         return bytearray(params['response'])
 
     def write_register(self, reg_name, data):
+        """        """
+
         if type(data) is not list:
             data = [data]
         reg = LM75_REGS[reg_name]
@@ -97,12 +115,16 @@ class LM75:
         self.i2c.i2c_write(data)
 
     def get_status(self, eventtime):
+        """        """
+
         return {
             'temperature': round(self.temp, 2),
         }
 
 
 def load_config(config):
+    """    """
+
     # Register sensor
     pheaters = config.get_printer().load_object(config, "heaters")
     pheaters.add_sensor_factory("LM75", LM75)

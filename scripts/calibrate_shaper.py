@@ -16,6 +16,8 @@ shaper_calibrate = importlib.import_module('.shaper_calibrate', 'extras')
 MAX_TITLE_LENGTH=65
 
 def parse_log(logname):
+    """    """
+
     with open(logname) as f:
         for header in f:
             if not header.startswith('#'):
@@ -43,6 +45,8 @@ def parse_log(logname):
 def calibrate_shaper(datas, csv_output, *, shapers, damping_ratio, scv,
                      shaper_freqs, max_smoothing, test_damping_ratios,
                      max_freq):
+    """    """
+
     helper = shaper_calibrate.ShaperCalibrate(printer=None)
     if isinstance(datas[0], shaper_calibrate.CalibrationData):
         calibration_data = datas[0]
@@ -77,6 +81,8 @@ def calibrate_shaper(datas, csv_output, *, shapers, damping_ratio, scv,
 
 def plot_freq_response(lognames, calibration_data, shapers,
                        selected_shaper, max_freq):
+    """    """
+
     freqs = calibration_data.freq_bins
     psd = calibration_data.psd_sum[freqs <= max_freq]
     px = calibration_data.psd_x[freqs <= max_freq]
@@ -135,6 +141,8 @@ def plot_freq_response(lognames, calibration_data, shapers,
 ######################################################################
 
 def setup_matplotlib(output_to_file):
+    """    """
+
     global matplotlib
     if output_to_file:
         matplotlib.rcParams.update({'figure.autolayout': True})
@@ -143,6 +151,8 @@ def setup_matplotlib(output_to_file):
     import matplotlib.ticker
 
 def main():
+    """    """
+
     # Parse command-line arguments
     usage = "%prog [options] <logs>"
     opts = optparse.OptionParser(usage)

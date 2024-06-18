@@ -20,6 +20,8 @@ class MCU_counter:
         self._mcu.register_config_callback(self.build_config)
 
     def build_config(self):
+        """        """
+
         self._mcu.add_config_cmd("config_counter oid=%d pin=%s pull_up=%d"
             % (self._oid, self._pin, self._pullup))
         clock = self._mcu.get_query_slot(self._oid)
@@ -33,9 +35,13 @@ class MCU_counter:
 
     # Callback is called periodically every sample_time
     def setup_callback(self, cb):
+        """        """
+
         self._callback = cb
 
     def _handle_counter_state(self, params):
+        """        """
+
         next_clock = self._mcu.clock32_to_clock64(params['next_clock'])
         time = self._mcu.clock_to_print_time(next_clock - self._poll_ticks)
 
@@ -60,6 +66,8 @@ class FrequencyCounter:
         self._counter.setup_callback(self._counter_callback)
 
     def _counter_callback(self, time, count, count_time):
+        """        """
+
         if self._last_time is None:  # First sample
             self._last_time = time
         else:
@@ -76,4 +84,6 @@ class FrequencyCounter:
         self._last_count = count
 
     def get_frequency(self):
+        """        """
+
         return self._freq

@@ -57,20 +57,30 @@ class SHT3X:
         self.printer.register_event_handler("klippy:connect",
                                             self.handle_connect)
     def handle_connect(self):
+        """        """
+
         self._init_sht3x()
         self.reactor.update_timer(self.sample_timer, self.reactor.NOW)
 
     def setup_minmax(self, min_temp, max_temp):
+        """        """
+
         self.min_temp = min_temp
         self.max_temp = max_temp
 
     def setup_callback(self, cb):
+        """        """
+
         self._callback = cb
 
     def get_report_time_delta(self):
+        """        """
+
         return self.report_time
 
     def _init_sht3x(self):
+        """        """
+
         # Device Soft Reset
         self.i2c.i2c_write(SHT3X_CMD['OTHER']['SOFTRESET'])
 
@@ -87,6 +97,8 @@ class SHT3X:
             logging.warning("sht3x: Reading status - checksum error!")
 
     def _sample_sht3x(self, eventtime):
+        """        """
+
         try:
             # Read Temeprature
             params = self.i2c.i2c_write(
@@ -133,6 +145,8 @@ class SHT3X:
         return measured_time + self.report_time
 
     def _split_bytes(self, data):
+        """        """
+
         bytes = []
         for i in range((data.bit_length() + 7) // 8):
             bytes.append((data >> i*8) & 0xFF)
@@ -140,6 +154,8 @@ class SHT3X:
         return bytes
 
     def _crc8(self, data):
+        """        """
+
         #crc8 polynomial for 16bit value, CRC8 -> x^8 + x^5 + x^4 + 1
         SHT3X_CRC8_POLYNOMINAL= 0x31
         crc = 0xFF
@@ -154,12 +170,16 @@ class SHT3X:
         return crc & 0xFF
 
     def get_status(self, eventtime):
+        """        """
+
         return {
             'temperature': round(self.temp, 2),
             'humidity': round(self.humidity, 1),
         }
 
 def load_config(config):
+    """    """
+
     # Register sensor
     pheater = config.get_printer().lookup_object("heaters")
     pheater.add_sensor_factory("SHT3X", SHT3X)

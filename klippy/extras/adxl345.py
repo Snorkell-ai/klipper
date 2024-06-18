@@ -40,11 +40,15 @@ class AccelQueryHelper:
         self.msgs = []
         self.samples = []
     def finish_measurements(self):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         self.request_end_time = toolhead.get_last_move_time()
         toolhead.wait_moves()
         self.is_finished = True
     def handle_batch(self, msg):
+        """        """
+
         if self.is_finished:
             return False
         if len(self.msgs) >= 10000:
@@ -53,6 +57,8 @@ class AccelQueryHelper:
         self.msgs.append(msg)
         return True
     def has_valid_samples(self):
+        """        """
+
         for msg in self.msgs:
             data = msg['data']
             first_sample_time = data[0][0]
@@ -70,6 +76,8 @@ class AccelQueryHelper:
             return True
         return False
     def get_samples(self):
+        """        """
+
         if not self.msgs:
             return self.samples
         total = sum([len(m['data']) for m in self.msgs])
@@ -86,7 +94,11 @@ class AccelQueryHelper:
         del samples[count:]
         return self.samples
     def write_to_file(self, filename):
+        """        """
+
         def write_impl():
+            """            """
+
             try:
                 # Try to re-nice writing process
                 os.nice(20)
@@ -117,6 +129,8 @@ class AccelCommandHelper:
             if self.name == "adxl345" or not config.has_section("adxl345"):
                 self.register_commands(None)
     def register_commands(self, name):
+        """        """
+
         # Register commands
         gcode = self.printer.lookup_object('gcode')
         gcode.register_mux_command("ACCELEROMETER_MEASURE", "CHIP", name,
@@ -133,6 +147,8 @@ class AccelCommandHelper:
                                    desc=self.cmd_ACCELEROMETER_DEBUG_WRITE_help)
     cmd_ACCELEROMETER_MEASURE_help = "Start/stop accelerometer"
     def cmd_ACCELEROMETER_MEASURE(self, gcmd):
+        """        """
+
         if self.bg_client is None:
             # Start measurements
             self.bg_client = self.chip.start_internal_client()
@@ -155,6 +171,8 @@ class AccelCommandHelper:
                           % (filename,))
     cmd_ACCELEROMETER_QUERY_help = "Query accelerometer for the current values"
     def cmd_ACCELEROMETER_QUERY(self, gcmd):
+        """        """
+
         aclient = self.chip.start_internal_client()
         self.printer.lookup_object('toolhead').dwell(1.)
         aclient.finish_measurements()
@@ -166,17 +184,23 @@ class AccelCommandHelper:
                           % (accel_x, accel_y, accel_z))
     cmd_ACCELEROMETER_DEBUG_READ_help = "Query register (for debugging)"
     def cmd_ACCELEROMETER_DEBUG_READ(self, gcmd):
+        """        """
+
         reg = gcmd.get("REG", minval=0, maxval=126, parser=lambda x: int(x, 0))
         val = self.chip.read_reg(reg)
         gcmd.respond_info("Accelerometer REG[0x%x] = 0x%x" % (reg, val))
     cmd_ACCELEROMETER_DEBUG_WRITE_help = "Set register (for debugging)"
     def cmd_ACCELEROMETER_DEBUG_WRITE(self, gcmd):
+        """        """
+
         reg = gcmd.get("REG", minval=0, maxval=126, parser=lambda x: int(x, 0))
         val = gcmd.get("VAL", minval=0, maxval=255, parser=lambda x: int(x, 0))
         self.chip.set_reg(reg, val)
 
 # Helper to read the axes_map parameter from the config
 def read_axes_map(config, scale_x, scale_y, scale_z):
+    """    """
+
     am = {'x': (0, scale_x), 'y': (1, scale_y), 'z': (2, scale_z),
           '-x': (0, -scale_x), '-y': (1, -scale_y), '-z': (2, -scale_z)}
     axes_map = config.getlist('axes_map', ('x','y','z'), count=3)
@@ -218,16 +242,22 @@ class ADXL345:
         self.batch_bulk.add_mux_endpoint("adxl345/dump_adxl345", "sensor",
                                          self.name, {'header': hdr})
     def _build_config(self):
+        """        """
+
         cmdqueue = self.spi.get_command_queue()
         self.query_adxl345_cmd = self.mcu.lookup_command(
             "query_adxl345 oid=%c rest_ticks=%u", cq=cmdqueue)
         self.ffreader.setup_query_command("query_adxl345_status oid=%c",
                                           oid=self.oid, cq=cmdqueue)
     def read_reg(self, reg):
+        """        """
+
         params = self.spi.spi_transfer([reg | REG_MOD_READ, 0x00])
         response = bytearray(params['response'])
         return response[1]
     def set_reg(self, reg, val, minclock=0):
+        """        """
+
         self.spi.spi_send([reg, val & 0xFF], minclock=minclock)
         stored_val = self.read_reg(reg)
         if stored_val != val:
@@ -237,11 +267,15 @@ class ADXL345:
                     "(e.g. faulty wiring) or a faulty adxl345 chip." % (
                         reg, val, stored_val))
     def start_internal_client(self):
+        """        """
+
         aqh = AccelQueryHelper(self.printer)
         self.batch_bulk.add_client(aqh.handle_batch)
         return aqh
     # Measurement decoding
     def _convert_samples(self, samples):
+        """        """
+
         (x_pos, x_scale), (y_pos, y_scale), (z_pos, z_scale) = self.axes_map
         count = 0
         for ptime, xlow, ylow, zlow, xzhigh, yzhigh in samples:
@@ -261,6 +295,8 @@ class ADXL345:
         del samples[count:]
     # Start, stop, and process message batches
     def _start_measurements(self):
+        """        """
+
         # In case of miswiring, testing ADXL345 device ID prevents treating
         # noise or wrong signal as a correctly initialized device
         dev_id = self.read_reg(REG_DEVID)
@@ -285,12 +321,16 @@ class ADXL345:
         self.ffreader.note_start()
         self.last_error_count = 0
     def _finish_measurements(self):
+        """        """
+
         # Halt bulk reading
         self.set_reg(REG_POWER_CTL, 0x00)
         self.query_adxl345_cmd.send_wait_ack([self.oid, 0])
         self.ffreader.note_end()
         logging.info("ADXL345 finished '%s' measurements", self.name)
     def _process_batch(self, eventtime):
+        """        """
+
         samples = self.ffreader.pull_samples()
         self._convert_samples(samples)
         if not samples:
@@ -299,7 +339,11 @@ class ADXL345:
                 'overflows': self.ffreader.get_last_overflows()}
 
 def load_config(config):
+    """    """
+
     return ADXL345(config)
 
 def load_config_prefix(config):
+    """    """
+
     return ADXL345(config)

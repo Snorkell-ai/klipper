@@ -25,6 +25,8 @@ class SafeZHoming:
                                +" be used simultaneously")
 
     def cmd_G28(self, gcmd):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
 
         # Perform Z Hop if necessary
@@ -88,4 +90,6 @@ class SafeZHoming:
                 toolhead.manual_move(prevpos[:2], self.speed)
 
 def load_config(config):
+    """    """
+
     return SafeZHoming(config)

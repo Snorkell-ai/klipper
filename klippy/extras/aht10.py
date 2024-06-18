@@ -40,20 +40,30 @@ class AHT10:
         self.init_sent = False
 
     def handle_connect(self):
+        """        """
+
         self._init_aht10()
         self.reactor.update_timer(self.sample_timer, self.reactor.NOW)
 
     def setup_minmax(self, min_temp, max_temp):
+        """        """
+
         self.min_temp = min_temp
         self.max_temp = max_temp
 
     def setup_callback(self, cb):
+        """        """
+
         self._callback = cb
 
     def get_report_time_delta(self):
+        """        """
+
         return self.report_time
 
     def _make_measurement(self):
+        """        """
+
         if not self.init_sent:
             return False
 
@@ -115,6 +125,8 @@ class AHT10:
         return True
 
     def _reset_device(self):
+        """        """
+
         if not self.init_sent:
             return
 
@@ -124,6 +136,8 @@ class AHT10:
         self.reactor.pause(self.reactor.monotonic() + .10)
 
     def _init_aht10(self):
+        """        """
+
         # Init device
         self.i2c.i2c_write(AHT10_COMMANDS['INIT'])
         # Wait 100ms after init
@@ -135,6 +149,8 @@ class AHT10:
                          "%.3f, humidity: %.3f"%(self.temp, self.humidity))
 
     def _sample_aht10(self, eventtime):
+        """        """
+
         if not self._make_measurement():
             self.temp = self.humidity = .0
             return self.reactor.NEVER
@@ -150,6 +166,8 @@ class AHT10:
         return measured_time + self.report_time
 
     def get_status(self, eventtime):
+        """        """
+
         return {
             'temperature': round(self.temp, 2),
             'humidity': self.humidity,
@@ -157,6 +175,8 @@ class AHT10:
 
 
 def load_config(config):
+    """    """
+
     # Register sensor
     pheater = config.get_printer().lookup_object("heaters")
     pheater.add_sensor_factory("AHT10", AHT10)

@@ -18,17 +18,25 @@ class TestAxis:
             s = math.sqrt(sum([d*d for d in vib_dir]))
             self._vib_dir = [d / s for d in vib_dir]
     def matches(self, chip_axis):
+        """        """
+
         if self._vib_dir[0] and 'x' in chip_axis:
             return True
         if self._vib_dir[1] and 'y' in chip_axis:
             return True
         return False
     def get_name(self):
+        """        """
+
         return self._name
     def get_point(self, l):
+        """        """
+
         return (self._vib_dir[0] * l, self._vib_dir[1] * l)
 
 def _parse_axis(gcmd, raw_axis):
+    """    """
+
     if raw_axis is None:
         return None
     raw_axis = raw_axis.lower()
@@ -60,14 +68,20 @@ class VibrationPulseTest:
         self.probe_points = config.getlists('probe_points', seps=(',', '\n'),
                                             parser=float, count=3)
     def get_start_test_points(self):
+        """        """
+
         return self.probe_points
     def prepare_test(self, gcmd):
+        """        """
+
         self.freq_start = gcmd.get_float("FREQ_START", self.min_freq, minval=1.)
         self.freq_end = gcmd.get_float("FREQ_END", self.max_freq,
                                        minval=self.freq_start, maxval=300.)
         self.hz_per_sec = gcmd.get_float("HZ_PER_SEC", self.hz_per_sec,
                                          above=0., maxval=2.)
     def run_test(self, axis, gcmd):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         X, Y, Z, E = toolhead.get_position()
         sign = 1.
@@ -115,6 +129,8 @@ class VibrationPulseTest:
             input_shaper.enable_shaping()
             gcmd.respond_info("Re-enabled [input_shaper]")
     def get_max_freq(self):
+        """        """
+
         return self.freq_end
 
 class ResonanceTester:
@@ -145,12 +161,16 @@ class ResonanceTester:
         self.printer.register_event_handler("klippy:connect", self.connect)
 
     def connect(self):
+        """        """
+
         self.accel_chips = [
                 (chip_axis, self.printer.lookup_object(chip_name))
                 for chip_axis, chip_name in self.accel_chip_names]
 
     def _run_test(self, gcmd, axes, helper, raw_name_suffix=None,
                   accel_chips=None, test_point=None):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         calibration_data = {axis: None for axis in axes}
 
@@ -210,6 +230,8 @@ class ResonanceTester:
                         calibration_data[axis].add_data(new_data)
         return calibration_data
     def _parse_chips(self, accel_chips):
+        """        """
+
         parsed_chips = []
         for chip_name in accel_chips.split(','):
             if "adxl345" in chip_name:
@@ -220,9 +242,13 @@ class ResonanceTester:
             parsed_chips.append(chip)
         return parsed_chips
     def _get_max_calibration_freq(self):
+        """        """
+
         return 1.5 * self.test.get_max_freq()
     cmd_TEST_RESONANCES_help = ("Runs the resonance test for a specifed axis")
     def cmd_TEST_RESONANCES(self, gcmd):
+        """        """
+
         # Parse parameters
         axis = _parse_axis(gcmd, gcmd.get("AXIS").lower())
         chips_str = gcmd.get("CHIPS", None)
@@ -273,6 +299,8 @@ class ResonanceTester:
     cmd_SHAPER_CALIBRATE_help = (
         "Simular to TEST_RESONANCES but suggest input shaper config")
     def cmd_SHAPER_CALIBRATE(self, gcmd):
+        """        """
+
         # Parse parameters
         axis = gcmd.get("AXIS", None)
         if not axis:
@@ -334,6 +362,8 @@ class ResonanceTester:
     cmd_MEASURE_AXES_NOISE_help = (
         "Measures noise of all enabled accelerometer chips")
     def cmd_MEASURE_AXES_NOISE(self, gcmd):
+        """        """
+
         meas_time = gcmd.get_float("MEAS_TIME", 2.)
         raw_values = [(chip_axis, chip.start_internal_client())
                       for chip_axis, chip in self.accel_chips]
@@ -355,10 +385,14 @@ class ResonanceTester:
                                   chip_axis, vx, vy, vz))
 
     def is_valid_name_suffix(self, name_suffix):
+        """        """
+
         return name_suffix.replace('-', '').replace('_', '').isalnum()
 
     def get_filename(self, base, name_suffix, axis=None,
                      point=None, chip_name=None):
+        """        """
+
         name = base
         if axis:
             name += '_' + axis.get_name()
@@ -372,10 +406,14 @@ class ResonanceTester:
     def save_calibration_data(self, base_name, name_suffix, shaper_calibrate,
                               axis, calibration_data,
                               all_shapers=None, point=None, max_freq=None):
+        """        """
+
         output = self.get_filename(base_name, name_suffix, axis, point)
         shaper_calibrate.save_calibration_data(output, calibration_data,
                                                all_shapers, max_freq)
         return output
 
 def load_config(config):
+    """    """
+
     return ResonanceTester(config)

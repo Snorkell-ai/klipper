@@ -8,12 +8,16 @@ import os, sys, logging
 import msgproto
 
 def read_dictionary(filename):
+    """    """
+
     dfile = open(filename, 'rb')
     dictionary = dfile.read()
     dfile.close()
     return dictionary
 
 def main():
+    """    """
+
     dict_filename, data_filename = sys.argv[1:]
 
     dictionary = read_dictionary(dict_filename)

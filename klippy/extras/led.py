@@ -28,8 +28,12 @@ class LEDHelper:
         gcode.register_mux_command("SET_LED", "LED", name, self.cmd_SET_LED,
                                    desc=self.cmd_SET_LED_help)
     def get_led_count(self):
+        """        """
+
         return self.led_count
     def set_color(self, index, color):
+        """        """
+
         if index is None:
             new_led_state = [color] * self.led_count
             if self.led_state == new_led_state:
@@ -42,6 +46,8 @@ class LEDHelper:
         self.led_state = new_led_state
         self.need_transmit = True
     def check_transmit(self, print_time):
+        """        """
+
         if not self.need_transmit:
             return
         self.need_transmit = False
@@ -51,6 +57,8 @@ class LEDHelper:
             logging.exception("led update transmit error")
     cmd_SET_LED_help = "Set the color of an LED"
     def cmd_SET_LED(self, gcmd):
+        """        """
+
         # Parse parameters
         red = gcmd.get_float('RED', 0., minval=0., maxval=1.)
         green = gcmd.get_float('GREEN', 0., minval=0., maxval=1.)
@@ -62,6 +70,8 @@ class LEDHelper:
         color = (red, green, blue, white)
         # Update and transmit data
         def lookahead_bgfunc(print_time):
+            """            """
+
             self.set_color(index, color)
             if transmit:
                 self.check_transmit(print_time)
@@ -73,6 +83,8 @@ class LEDHelper:
             #Send update now (so as not to wake toolhead and reset idle_timeout)
             lookahead_bgfunc(None)
     def get_status(self, eventtime=None):
+        """        """
+
         return {'color_data': self.led_state}
 
 # Main LED tracking code
@@ -92,16 +104,22 @@ class PrinterLED:
         gcode.register_command("SET_LED_TEMPLATE", self.cmd_SET_LED_TEMPLATE,
                                desc=self.cmd_SET_LED_TEMPLATE_help)
     def setup_helper(self, config, update_func, led_count=1):
+        """        """
+
         led_helper = LEDHelper(config, update_func, led_count)
         name = config.get_name().split()[-1]
         self.led_helpers[name] = led_helper
         return led_helper
     def _activate_timer(self):
+        """        """
+
         if self.render_timer is not None or not self.active_templates:
             return
         reactor = self.printer.get_reactor()
         self.render_timer = reactor.register_timer(self._render, reactor.NOW)
     def _activate_template(self, led_helper, index, template, lparams):
+        """        """
+
         key = (led_helper, index)
         if template is not None:
             uid = (template,) + tuple(sorted(lparams.items()))
@@ -110,6 +128,8 @@ class PrinterLED:
         if key in self.active_templates:
             del self.active_templates[key]
     def _render(self, eventtime):
+        """        """
+
         if not self.active_templates:
             # Nothing to do - unregister timer
             reactor = self.printer.get_reactor()
@@ -119,6 +139,8 @@ class PrinterLED:
         # Setup gcode_macro template context
         context = self.create_template_context(eventtime)
         def render(name, **kwargs):
+            """            """
+
             return self.templates[name].render(context, **kwargs)
         context['render'] = render
         # Render all templates
@@ -147,6 +169,8 @@ class PrinterLED:
         return eventtime + RENDER_TIME
     cmd_SET_LED_TEMPLATE_help = "Assign a display_template to an LED"
     def cmd_SET_LED_TEMPLATE(self, gcmd):
+        """        """
+
         led_name = gcmd.get("LED")
         led_helper = self.led_helpers.get(led_name)
         if led_helper is None:
@@ -211,6 +235,8 @@ class PrinterPWMLED:
         for idx, mcu_pin in self.pins:
             mcu_pin.setup_start_value(color[idx], 0.)
     def update_leds(self, led_state, print_time):
+        """        """
+
         if print_time is None:
             eventtime = self.printer.get_reactor().monotonic()
             mcu = self.pins[0][1].get_mcu()
@@ -223,10 +249,16 @@ class PrinterPWMLED:
                 self.last_print_time = print_time
         self.prev_color = color
     def get_status(self, eventtime=None):
+        """        """
+
         return self.led_helper.get_status(eventtime)
 
 def load_config(config):
+    """    """
+
     return PrinterLED(config)
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterPWMLED(config)

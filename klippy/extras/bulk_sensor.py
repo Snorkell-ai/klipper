@@ -38,6 +38,8 @@ class BatchBulkHelper:
         self.webhooks_start_resp = {}
     # Periodic batch processing
     def _start(self):
+        """        """
+
         if self.is_started:
             return
         self.is_started = True
@@ -53,6 +55,8 @@ class BatchBulkHelper:
         waketime = systime + self.batch_interval
         self.batch_timer = reactor.register_timer(self._proc_batch, waketime)
     def _stop(self):
+        """        """
+
         del self.client_cbs[:]
         self.printer.get_reactor().unregister_timer(self.batch_timer)
         self.batch_timer = None
@@ -68,6 +72,8 @@ class BatchBulkHelper:
             # New client started while in process of stopping
             self._start()
     def _proc_batch(self, eventtime):
+        """        """
+
         try:
             msg = self.batch_cb(eventtime)
         except self.printer.command_error as e:
@@ -87,14 +93,20 @@ class BatchBulkHelper:
         return eventtime + self.batch_interval
     # Client registration
     def add_client(self, client_cb):
+        """        """
+
         self.client_cbs.append(client_cb)
         self._start()
     # Webhooks registration
     def _add_api_client(self, web_request):
+        """        """
+
         whbatch = BatchWebhooksClient(web_request)
         self.add_client(whbatch.handle_batch)
         web_request.send(self.webhooks_start_resp)
     def add_mux_endpoint(self, path, key, value, webhooks_start_resp):
+        """        """
+
         self.webhooks_start_resp = webhooks_start_resp
         wh = self.printer.lookup_object('webhooks')
         wh.register_mux_endpoint(path, key, value, self._add_api_client)
@@ -105,6 +117,8 @@ class BatchWebhooksClient:
         self.cconn = web_request.get_client_connection()
         self.template = web_request.get_dict('response_template', {})
     def handle_batch(self, msg):
+        """        """
+
         if self.cconn.is_closed():
             return False
         tmp = dict(self.template)
@@ -121,14 +135,20 @@ class BulkDataQueue:
         # Register callback with mcu
         mcu.register_response(self._handle_data, msg_name, oid)
     def _handle_data(self, params):
+        """        """
+
         with self.lock:
             self.raw_samples.append(params)
     def pull_queue(self):
+        """        """
+
         with self.lock:
             raw_samples = self.raw_samples
             self.raw_samples = []
         return raw_samples
     def clear_queue(self):
+        """        """
+
         self.pull_queue()
 
 
@@ -160,11 +180,15 @@ class ClockSyncRegression:
         self.mcu_clock_avg = self.mcu_clock_variance = 0.
         self.chip_clock_avg = self.chip_clock_covariance = 0.
     def reset(self, mcu_clock, chip_clock):
+        """        """
+
         self.mcu_clock_avg = self.last_mcu_clock = mcu_clock
         self.chip_clock_avg = chip_clock
         self.mcu_clock_variance = self.chip_clock_covariance = 0.
         self.last_chip_clock = self.last_exp_mcu_clock = 0.
     def update(self, mcu_clock, chip_clock):
+        """        """
+
         # Update linear regression
         decay = self.decay
         diff_mcu_clock = mcu_clock - self.mcu_clock_avg
@@ -176,10 +200,14 @@ class ClockSyncRegression:
         self.chip_clock_covariance = (1. - decay) * (
             self.chip_clock_covariance + diff_mcu_clock*diff_chip_clock*decay)
     def set_last_chip_clock(self, chip_clock):
+        """        """
+
         base_mcu, base_chip, inv_cfreq = self.get_clock_translation()
         self.last_chip_clock = chip_clock
         self.last_exp_mcu_clock = base_mcu + (chip_clock-base_chip) * inv_cfreq
     def get_clock_translation(self):
+        """        """
+
         inv_chip_freq = self.mcu_clock_variance / self.chip_clock_covariance
         if not self.last_chip_clock:
             return self.mcu_clock_avg, self.chip_clock_avg, inv_chip_freq
@@ -192,6 +220,8 @@ class ClockSyncRegression:
         s_inv_chip_freq = mdiff / self.chip_clock_smooth
         return self.last_exp_mcu_clock, self.last_chip_clock, s_inv_chip_freq
     def get_time_translation(self):
+        """        """
+
         base_mcu, base_chip, inv_cfreq = self.get_clock_translation()
         clock_to_print_time = self.mcu.clock_to_print_time
         base_time = clock_to_print_time(base_mcu)
@@ -214,6 +244,8 @@ class FixedFreqReader:
         self.last_overflows = 0
         self.bulk_queue = self.oid = self.query_status_cmd = None
     def setup_query_command(self, msgformat, oid, cq):
+        """        """
+
         # Lookup sensor query command (that responds with sensor_bulk_status)
         self.oid = oid
         self.query_status_cmd = self.mcu.lookup_query_command(
@@ -223,10 +255,16 @@ class FixedFreqReader:
         # Read sensor_bulk_data messages and store in a queue
         self.bulk_queue = BulkDataQueue(self.mcu, oid=oid)
     def get_last_overflows(self):
+        """        """
+
         return self.last_overflows
     def _clear_duration_filter(self):
+        """        """
+
         self.max_query_duration = 1 << 31
     def note_start(self):
+        """        """
+
         self.last_sequence = 0
         self.last_overflows = 0
         # Clear local queue (clear any stale samples from previous session)
@@ -236,9 +274,13 @@ class FixedFreqReader:
         self._update_clock(is_reset=True)
         self._clear_duration_filter()
     def note_end(self):
+        """        """
+
         # Clear local queue (free no longer needed memory)
         self.bulk_queue.clear_queue()
     def _update_clock(self, is_reset=False):
+        """        """
+
         params = self.query_status_cmd.send([self.oid])
         mcu_clock = self.mcu.clock32_to_clock64(params['clock'])
         seq_diff = (params['next_sequence'] - self.last_sequence) & 0xffff
@@ -266,6 +308,8 @@ class FixedFreqReader:
             self.clock_sync.update(avg_mcu_clock, chip_clock)
     # Convert sensor_bulk_data responses into list of samples
     def pull_samples(self):
+        """        """
+
         # Query MCU for sample timing and update clock synchronization
         self._update_clock()
         # Pull sensor_bulk_data messages from local queue

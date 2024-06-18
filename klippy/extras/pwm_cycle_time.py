@@ -23,6 +23,8 @@ class MCU_pwm_cycle:
         self._last_clock = self._cycle_ticks = 0
         self._set_cmd = self._set_cycle_ticks = None
     def _build_config(self):
+        """        """
+
         cmd_queue = self._mcu.alloc_command_queue()
         curtime = self._mcu.get_printer().get_reactor().monotonic()
         printtime = self._mcu.estimated_print_time(curtime)
@@ -54,6 +56,8 @@ class MCU_pwm_cycle:
         self._set_cycle_ticks = self._mcu.lookup_command(
             "set_digital_out_pwm_cycle oid=%c cycle_ticks=%u", cq=cmd_queue)
     def set_pwm_cycle(self, print_time, value, cycle_time):
+        """        """
+
         clock = self._mcu.print_time_to_clock(print_time)
         minclock = self._last_clock
         # Send updated cycle_time if necessary
@@ -98,8 +102,12 @@ class PrinterOutputPWMCycle:
                                    self.cmd_SET_PIN,
                                    desc=self.cmd_SET_PIN_help)
     def get_status(self, eventtime):
+        """        """
+
         return {'value': self.last_value}
     def _set_pin(self, print_time, value, cycle_time):
+        """        """
+
         if value == self.last_value and cycle_time == self.last_cycle_time:
             return
         print_time = max(print_time, self.last_print_time + PIN_MIN_TIME)
@@ -109,6 +117,8 @@ class PrinterOutputPWMCycle:
         self.last_print_time = print_time
     cmd_SET_PIN_help = "Set the value of an output pin"
     def cmd_SET_PIN(self, gcmd):
+        """        """
+
         # Read requested value
         value = gcmd.get_float('VALUE', minval=0., maxval=self.scale)
         value /= self.scale
@@ -120,4 +130,6 @@ class PrinterOutputPWMCycle:
             lambda print_time: self._set_pin(print_time, value, cycle_time))
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterOutputPWMCycle(config)

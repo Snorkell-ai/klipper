@@ -15,6 +15,8 @@ class Thermistor:
         self.inline_resistor = inline_resistor
         self.c1 = self.c2 = self.c3 = 0.
     def setup_coefficients(self, t1, r1, t2, r2, t3, r3, name=""):
+        """        """
+
         # Calculate Steinhart-Hart coefficents from temp measurements.
         # Arrange samples as 3 linear equations and solve for c1, c2, and c3.
         inv_t1 = 1. / (t1 - KELVIN_TO_CELSIUS)
@@ -40,6 +42,8 @@ class Thermistor:
         self.c2 = (inv_t12 - self.c3 * ln3_r12) / ln_r12
         self.c1 = inv_t1 - self.c2 * ln_r1 - self.c3 * ln3_r1
     def setup_coefficients_beta(self, t1, r1, beta):
+        """        """
+
         # Calculate equivalent Steinhart-Hart coefficents from beta
         inv_t1 = 1. / (t1 - KELVIN_TO_CELSIUS)
         ln_r1 = math.log(r1)
@@ -47,6 +51,8 @@ class Thermistor:
         self.c2 = 1. / beta
         self.c1 = inv_t1 - self.c2 * ln_r1
     def calc_temp(self, adc):
+        """        """
+
         # Calculate temperature from adc
         adc = max(.00001, min(.99999, adc))
         r = self.pullup * adc / (1.0 - adc)
@@ -54,6 +60,8 @@ class Thermistor:
         inv_t = self.c1 + self.c2 * ln_r + self.c3 * ln_r**3
         return 1.0/inv_t + KELVIN_TO_CELSIUS
     def calc_adc(self, temp):
+        """        """
+
         # Calculate adc reading from a temperature
         if temp <= KELVIN_TO_CELSIUS:
             return 1.
@@ -70,6 +78,8 @@ class Thermistor:
 
 # Create an ADC converter with a thermistor
 def PrinterThermistor(config, params):
+    """    """
+
     pullup = config.getfloat('pullup_resistor', 4700., above=0.)
     inline_resistor = config.getfloat('inline_resistor', 0., minval=0.)
     thermistor = Thermistor(pullup, inline_resistor)
@@ -100,9 +110,13 @@ class CustomThermistor:
         self.params = {'t1': t1, 'r1': r1, 't2': t2, 'r2': r2,
                        't3': t3, 'r3': r3}
     def create(self, config):
+        """        """
+
         return PrinterThermistor(config, self.params)
 
 def load_config_prefix(config):
+    """    """
+
     thermistor = CustomThermistor(config)
     pheaters = config.get_printer().load_object(config, "heaters")
     pheaters.add_sensor_factory(thermistor.name, thermistor.create)

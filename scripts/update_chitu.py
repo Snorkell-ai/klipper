@@ -12,6 +12,8 @@ import sys
 import hashlib
 
 def calculate_crc(contents, seed):
+    """    """
+
     accumulating_xor_value = seed;
 
     for i in range(0, len(contents), 4):
@@ -20,6 +22,8 @@ def calculate_crc(contents, seed):
     return accumulating_xor_value
 
 def xor_block(r0, r1, block_number, block_size, file_key):
+    """    """
+
     # This is the loop counter
     loop_counter = 0x0
 
@@ -65,6 +69,8 @@ def xor_block(r0, r1, block_number, block_size, file_key):
 
 
 def encode_file(input, output_file, file_length):
+    """    """
+
     input_file = bytearray(input.read())
     block_size = 0x800
     key_length = 0x18
@@ -110,6 +116,8 @@ def encode_file(input, output_file, file_length):
     return
 
 def main():
+    """    """
+
     if len(sys.argv) != 3:
         print("Usage: update_chitu <input_file> <output_file>")
         exit(1)

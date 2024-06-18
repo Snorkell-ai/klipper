@@ -34,18 +34,26 @@ ACCEL = 3000.
 MAX_JERK = ACCEL * 0.6 * SPRING_FREQ
 
 def get_accel(start_v, end_v):
+    """    """
+
     return ACCEL
 
 def get_accel_jerk_limit(start_v, end_v):
+    """    """
+
     effective_accel = math.sqrt(MAX_JERK * abs(end_v - start_v) / 6.)
     return min(effective_accel, ACCEL)
 
 # Standard constant acceleration generator
 def get_acc_pos_ao2(rel_t, start_v, accel, move_t):
+    """    """
+
     return (start_v + 0.5 * accel * rel_t) * rel_t
 
 # Bezier curve "accel_order=4" generator
 def get_acc_pos_ao4(rel_t, start_v, accel, move_t):
+    """    """
+
     inv_accel_t = 1. / move_t
     accel_div_accel_t = accel * inv_accel_t
     accel_div_accel_t2 = accel_div_accel_t * inv_accel_t
@@ -57,6 +65,8 @@ def get_acc_pos_ao4(rel_t, start_v, accel, move_t):
 
 # Bezier curve "accel_order=6" generator
 def get_acc_pos_ao6(rel_t, start_v, accel, move_t):
+    """    """
+
     inv_accel_t = 1. / move_t
     accel_div_accel_t = accel * inv_accel_t
     accel_div_accel_t2 = accel_div_accel_t * inv_accel_t
@@ -75,6 +85,8 @@ get_acc = get_accel
 
 # Calculate positions based on 'Moves' list
 def gen_positions():
+    """    """
+
     out = []
     start_d = start_t = t = 0.
     for start_v, end_v, move_t in Moves:
@@ -96,6 +108,8 @@ def gen_positions():
 ######################################################################
 
 def estimate_spring(positions):
+    """    """
+
     ang_freq2 = (SPRING_FREQ * 2. * math.pi)**2
     damping_factor = 4. * math.pi * DAMPING_RATIO * SPRING_FREQ
     head_pos = head_v = 0.
@@ -116,13 +130,19 @@ def estimate_spring(positions):
 MARGIN_TIME = 0.050
 
 def time_to_index(t):
+    """    """
+
     return int(t * INV_SEG_TIME + .5)
 
 def indexes(positions):
+    """    """
+
     drop = time_to_index(MARGIN_TIME)
     return range(drop, len(positions)-drop)
 
 def trim_lists(*lists):
+    """    """
+
     keep = len(lists[0]) - time_to_index(2. * MARGIN_TIME)
     for l in lists:
         del l[keep:]
@@ -134,11 +154,15 @@ def trim_lists(*lists):
 
 # Generate estimated first order derivative
 def gen_deriv(data):
+    """    """
+
     return [0.] + [(data[i+1] - data[i]) * INV_SEG_TIME
                    for i in range(len(data)-1)]
 
 # Simple average between two points smooth_time away
 def calc_average(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .5)
     out = [0.] * len(positions)
     for i in indexes(positions):
@@ -147,6 +171,8 @@ def calc_average(positions, smooth_time):
 
 # Average (via integration) of smooth_time range
 def calc_smooth(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .5)
     weight = 1. / (2*offset - 1)
     out = [0.] * len(positions)
@@ -156,6 +182,8 @@ def calc_smooth(positions, smooth_time):
 
 # Time weighted average (via integration) of smooth_time range
 def calc_weighted(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .5)
     weight = 1. / offset**2
     out = [0.] * len(positions)
@@ -167,6 +195,8 @@ def calc_weighted(positions, smooth_time):
 
 # Weighted average (`h**2 - (t-T)**2`) of smooth_time range
 def calc_weighted2(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .5)
     weight = .75 / offset**3
     out = [0.] * len(positions)
@@ -178,6 +208,8 @@ def calc_weighted2(positions, smooth_time):
 
 # Weighted average (`(h**2 - (t-T)**2)**2`) of smooth_time range
 def calc_weighted4(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .5)
     weight = 15 / (16. * offset**5)
     out = [0.] * len(positions)
@@ -189,6 +221,8 @@ def calc_weighted4(positions, smooth_time):
 
 # Weighted average (`(h - abs(t-T))**2 * (2 * abs(t-T) + h)`) of range
 def calc_weighted3(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .5)
     weight = 1. / offset**4
     out = [0.] * len(positions)
@@ -205,6 +239,8 @@ def calc_weighted3(positions, smooth_time):
 ######################################################################
 
 def calc_spring_raw(positions):
+    """    """
+
     sa = (INV_SEG_TIME / (CONFIG_FREQ * 2. * math.pi))**2
     ra = 2. * CONFIG_DAMPING_RATIO * math.sqrt(sa)
     out = [0.] * len(positions)
@@ -215,6 +251,8 @@ def calc_spring_raw(positions):
     return out
 
 def calc_spring_double_weighted(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .25)
     sa = (INV_SEG_TIME / (offset * CONFIG_FREQ * 2. * math.pi))**2
     ra = 2. * CONFIG_DAMPING_RATIO * math.sqrt(sa)
@@ -231,6 +269,8 @@ def calc_spring_double_weighted(positions, smooth_time):
 ######################################################################
 
 def get_zv_shaper():
+    """    """
+
     df = math.sqrt(1. - CONFIG_DAMPING_RATIO**2)
     K = math.exp(-CONFIG_DAMPING_RATIO * math.pi / df)
     t_d = 1. / (CONFIG_FREQ * df)
@@ -239,6 +279,8 @@ def get_zv_shaper():
     return (A, T, "ZV")
 
 def get_zvd_shaper():
+    """    """
+
     df = math.sqrt(1. - CONFIG_DAMPING_RATIO**2)
     K = math.exp(-CONFIG_DAMPING_RATIO * math.pi / df)
     t_d = 1. / (CONFIG_FREQ * df)
@@ -247,6 +289,8 @@ def get_zvd_shaper():
     return (A, T, "ZVD")
 
 def get_mzv_shaper():
+    """    """
+
     df = math.sqrt(1. - CONFIG_DAMPING_RATIO**2)
     K = math.exp(-.75 * CONFIG_DAMPING_RATIO * math.pi / df)
     t_d = 1. / (CONFIG_FREQ * df)
@@ -260,6 +304,8 @@ def get_mzv_shaper():
     return (A, T, "MZV")
 
 def get_ei_shaper():
+    """    """
+
     v_tol = 0.05 # vibration tolerance
     df = math.sqrt(1. - CONFIG_DAMPING_RATIO**2)
     K = math.exp(-CONFIG_DAMPING_RATIO * math.pi / df)
@@ -274,6 +320,8 @@ def get_ei_shaper():
     return (A, T, "EI")
 
 def get_2hump_ei_shaper():
+    """    """
+
     v_tol = 0.05 # vibration tolerance
     df = math.sqrt(1. - CONFIG_DAMPING_RATIO**2)
     K = math.exp(-CONFIG_DAMPING_RATIO * math.pi / df)
@@ -291,6 +339,8 @@ def get_2hump_ei_shaper():
     return (A, T, "2-hump EI")
 
 def get_3hump_ei_shaper():
+    """    """
+
     v_tol = 0.05 # vibration tolerance
     df = math.sqrt(1. - CONFIG_DAMPING_RATIO**2)
     K = math.exp(-CONFIG_DAMPING_RATIO * math.pi / df)
@@ -309,6 +359,8 @@ def get_3hump_ei_shaper():
 
 
 def shift_pulses(shaper):
+    """    """
+
     A, T, name = shaper
     n = len(T)
     ts = (sum([A[i] * T[i] for i in range(n)])) / sum(A)
@@ -316,6 +368,8 @@ def shift_pulses(shaper):
         T[i] -= ts
 
 def calc_shaper(shaper, positions):
+    """    """
+
     shift_pulses(shaper)
     A = shaper[0]
     inv_D = 1. / sum(A)
@@ -330,6 +384,8 @@ def calc_shaper(shaper, positions):
 SMOOTH_TIME = (2./3.) / CONFIG_FREQ
 
 def gen_updated_position(positions):
+    """    """
+
     #return calc_weighted(positions, 0.040)
     #return calc_spring_double_weighted(positions, SMOOTH_TIME)
     #return calc_weighted4(calc_spring_raw(positions), SMOOTH_TIME)
@@ -341,6 +397,8 @@ def gen_updated_position(positions):
 ######################################################################
 
 def plot_motion():
+    """    """
+
     # Nominal motion
     positions = gen_positions()
     velocities = gen_deriv(positions)
@@ -396,6 +454,8 @@ def plot_motion():
     return fig
 
 def setup_matplotlib(output_to_file):
+    """    """
+
     global matplotlib
     if output_to_file:
         matplotlib.use('Agg')
@@ -403,6 +463,8 @@ def setup_matplotlib(output_to_file):
     import matplotlib.ticker
 
 def main():
+    """    """
+
     # Parse command-line arguments
     usage = "%prog [options]"
     opts = optparse.OptionParser(usage)

@@ -11,6 +11,8 @@ class error(Exception):
 
 # Attempt to enter bootloader via 1200 baud request
 def enter_bootloader(device):
+    """    """
+
     try:
         f = open(device, 'rb')
         fd = f.fileno()
@@ -26,6 +28,8 @@ def enter_bootloader(device):
 
 # Translate a serial device name to a stable serial name in /dev/serial/by-path/
 def translate_serial_to_tty(device):
+    """    """
+
     ttyname = os.path.realpath(device)
     if not os.path.exists('/dev/serial/by-path/'):
         raise error("Unable to find serial 'by-path' folder")
@@ -37,6 +41,8 @@ def translate_serial_to_tty(device):
 
 # Translate a serial device name to a usb path (suitable for dfu-util)
 def translate_serial_to_usb_path(device):
+    """    """
+
     realdev = os.path.realpath(device)
     fname = os.path.basename(realdev)
     try:
@@ -52,6 +58,8 @@ def translate_serial_to_usb_path(device):
 
 # Wait for a given path to appear
 def wait_path(path, alt_path=None):
+    """    """
+
     time.sleep(.100)
     start_alt_path = None
     end_time = time.time() + 4.0
@@ -76,6 +84,8 @@ def wait_path(path, alt_path=None):
 CANBOOT_ID ="1d50:6177"
 
 def detect_canboot(devpath):
+    """    """
+
     usbdir = os.path.dirname(devpath)
     try:
         with open(os.path.join(usbdir, "idVendor")) as f:
@@ -88,6 +98,8 @@ def detect_canboot(devpath):
     return usbid == CANBOOT_ID
 
 def call_flashcan(device, binfile):
+    """    """
+
     try:
         import serial
     except ModuleNotFoundError:
@@ -106,11 +118,15 @@ def call_flashcan(device, binfile):
         sys.exit(-1)
 
 def flash_canboot(options, binfile):
+    """    """
+
     ttyname, pathname = translate_serial_to_tty(options.device)
     call_flashcan(pathname, binfile)
 
 # Flash via a call to bossac
 def flash_bossac(device, binfile, extra_flags=[]):
+    """    """
+
     ttyname, pathname = translate_serial_to_tty(device)
     enter_bootloader(pathname)
     pathname = wait_path(pathname, ttyname)
@@ -132,6 +148,8 @@ def flash_bossac(device, binfile, extra_flags=[]):
 
 # Invoke the dfu-util program
 def call_dfuutil(flags, binfile, sudo):
+    """    """
+
     args = ["dfu-util"] + flags + ["-D", binfile]
     if sudo:
         args.insert(0, "sudo")
@@ -142,6 +160,8 @@ def call_dfuutil(flags, binfile, sudo):
 
 # Flash via a call to dfu-util
 def flash_dfuutil(device, binfile, extra_flags=[], sudo=True):
+    """    """
+
     hexfmt_r = re.compile(r"^[a-fA-F0-9]{4}:[a-fA-F0-9]{4}$")
     if hexfmt_r.match(device.strip()):
         call_dfuutil(["-d", ","+device.strip()] + extra_flags, binfile, sudo)
@@ -156,6 +176,8 @@ def flash_dfuutil(device, binfile, extra_flags=[], sudo=True):
         call_dfuutil(["-p", buspath] + extra_flags, binfile, sudo)
 
 def call_hidflash(binfile, sudo):
+    """    """
+
     args = ["lib/hidflash/hid-flash", binfile]
     if sudo:
         args.insert(0, "sudo")
@@ -166,6 +188,8 @@ def call_hidflash(binfile, sudo):
 
 # Flash via call to hid-flash
 def flash_hidflash(device, binfile, sudo=True):
+    """    """
+
     hexfmt_r = re.compile(r"^[a-fA-F0-9]{4}:[a-fA-F0-9]{4}$")
     if hexfmt_r.match(device.strip()):
         call_hidflash(binfile, sudo)
@@ -181,6 +205,8 @@ def flash_hidflash(device, binfile, sudo=True):
 
 # Call Klipper modified "picoboot"
 def call_picoboot(bus, addr, binfile, sudo):
+    """    """
+
     args = ["lib/rp2040_flash/rp2040_flash", binfile]
     if bus is not None:
         args.extend([bus, addr])
@@ -193,6 +219,8 @@ def call_picoboot(bus, addr, binfile, sudo):
 
 # Flash via Klipper modified "picoboot"
 def flash_picoboot(device, binfile, sudo):
+    """    """
+
     ttyname, serbypath = translate_serial_to_tty(device)
     buspath, devpath = translate_serial_to_usb_path(device)
     # We need one level up to get access to busnum/devnum files
@@ -214,6 +242,8 @@ def flash_picoboot(device, binfile, sudo):
 ######################################################################
 
 def flash_atsam3(options, binfile):
+    """    """
+
     try:
         flash_bossac(options.device, binfile, ["-e", "-b"])
     except error as e:
@@ -222,6 +252,8 @@ def flash_atsam3(options, binfile):
         sys.exit(-1)
 
 def flash_atsam4(options, binfile):
+    """    """
+
     try:
         flash_bossac(options.device, binfile, ["-e"])
     except error as e:
@@ -230,6 +262,8 @@ def flash_atsam4(options, binfile):
         sys.exit(-1)
 
 def flash_atsamd(options, binfile):
+    """    """
+
     extra_flags = ["--offset=0x%x" % (options.start,), "-b", "-R"]
     try:
         flash_bossac(options.device, binfile, extra_flags)
@@ -257,6 +291,8 @@ and then restart the Smoothieboard with that SD card.
 """
 
 def flash_lpc176x(options, binfile):
+    """    """
+
     try:
         flash_dfuutil(options.device, binfile, [], options.sudo)
     except error as e:
@@ -278,6 +314,8 @@ If attempting to flash via 3.3V serial, then use:
 """
 
 def flash_stm32f1(options, binfile):
+    """    """
+
     try:
         if options.start == 0x8000800:
             flash_hidflash(options.device, binfile, options.sudo)
@@ -304,6 +342,8 @@ If attempting to flash via 3.3V serial, then use:
 """
 
 def flash_stm32f4(options, binfile):
+    """    """
+
     start = "0x%x:leave" % (options.start,)
     try:
         if options.start == 0x8004000:
@@ -330,6 +370,8 @@ device as a usb drive, and copy klipper.uf2 to the device.
 """
 
 def flash_rp2040(options, binfile):
+    """    """
+
     try:
         if options.device.lower() == "2e8a:0003":
             call_picoboot(None, None, binfile, options.sudo)
@@ -356,6 +398,8 @@ MCUTYPES = {
 ######################################################################
 
 def main():
+    """    """
+
     usage = "%prog [options] -t <type> -d <device> <klipper.bin>"
     opts = optparse.OptionParser(usage)
     opts.add_option("-t", "--type", type="string", dest="mcutype",

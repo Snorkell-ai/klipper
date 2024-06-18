@@ -288,16 +288,22 @@ class TMC2240CurrentHelper:
         self.fields.set_field("ihold", ihold)
         self.fields.set_field("irun", irun)
     def _get_ifs_rms(self, current_range=None):
+        """        """
+
         if current_range is None:
             current_range = self.fields.get_field("current_range")
         KIFS = [11750., 24000., 36000., 36000.]
         return (KIFS[current_range] / self.Rref) / math.sqrt(2.)
     def _calc_current_range(self, current):
+        """        """
+
         for current_range in range(4):
             if current <= self._get_ifs_rms(current_range):
                 break
         return current_range
     def _calc_globalscaler(self, current):
+        """        """
+
         ifs_rms = self._get_ifs_rms()
         globalscaler = int(((current * 256.) / ifs_rms) + .5)
         globalscaler = max(32, globalscaler)
@@ -305,17 +311,23 @@ class TMC2240CurrentHelper:
             globalscaler = 0
         return globalscaler
     def _calc_current_bits(self, current, globalscaler):
+        """        """
+
         ifs_rms = self._get_ifs_rms()
         if not globalscaler:
             globalscaler = 256
         cs = int((current * 256. * 32.) / (globalscaler * ifs_rms) - 1. + .5)
         return max(0, min(31, cs))
     def _calc_current(self, run_current, hold_current):
+        """        """
+
         gscaler = self._calc_globalscaler(run_current)
         irun = self._calc_current_bits(run_current, gscaler)
         ihold = self._calc_current_bits(min(hold_current, run_current), gscaler)
         return gscaler, irun, ihold
     def _calc_current_from_field(self, field_name):
+        """        """
+
         ifs_rms = self._get_ifs_rms()
         globalscaler = self.fields.get_field("globalscaler")
         if not globalscaler:
@@ -323,11 +335,15 @@ class TMC2240CurrentHelper:
         bits = self.fields.get_field(field_name)
         return globalscaler * (bits + 1) * ifs_rms / (256. * 32.)
     def get_current(self):
+        """        """
+
         ifs_rms = self._get_ifs_rms()
         run_current = self._calc_current_from_field("irun")
         hold_current = self._calc_current_from_field("ihold")
         return (run_current, hold_current, self.req_hold_current, ifs_rms)
     def set_current(self, run_current, hold_current, print_time):
+        """        """
+
         self.req_hold_current = hold_current
         gscaler, irun, ihold = self._calc_current(run_current, hold_current)
         val = self.fields.set_field("globalscaler", gscaler)
@@ -410,4 +426,6 @@ class TMC2240:
         set_config_field(config, "sg4_angle_offset", 1)
 
 def load_config_prefix(config):
+    """    """
+
     return TMC2240(config)

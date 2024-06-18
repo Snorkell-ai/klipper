@@ -47,6 +47,8 @@ class ScrewsTiltAdjust:
                                      "of turns to level it."
 
     def cmd_SCREWS_TILT_CALCULATE(self, gcmd):
+        """        """
+
         self.max_diff = gcmd.get_float("MAX_DEVIATION", None)
         # Option to force all turns to be in the given direction (CW or CCW)
         direction = gcmd.get("DIRECTION", default=None)
@@ -60,11 +62,15 @@ class ScrewsTiltAdjust:
         self.probe_helper.start_probe(gcmd)
 
     def get_status(self, eventtime):
+        """        """
+
         return {'error': self.max_diff_error,
             'max_deviation': self.max_diff,
             'results': self.results}
 
     def probe_finalize(self, offsets, positions):
+        """        """
+
         self.results = {}
         self.max_diff_error = False
         # Factors used for CW-M3, CCW-M3, CW-M4, CCW-M4, CW-M5, CCW-M5, CW-M6
@@ -128,4 +134,6 @@ class ScrewsTiltAdjust:
                 "Adjust screws and restart print.".format(self.max_diff))
 
 def load_config(config):
+    """    """
+
     return ScrewsTiltAdjust(config)

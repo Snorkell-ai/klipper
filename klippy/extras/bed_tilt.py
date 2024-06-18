@@ -22,15 +22,23 @@ class BedTilt:
         gcode_move = self.printer.load_object(config, 'gcode_move')
         gcode_move.set_move_transform(self)
     def handle_connect(self):
+        """        """
+
         self.toolhead = self.printer.lookup_object('toolhead')
     def get_position(self):
+        """        """
+
         x, y, z, e = self.toolhead.get_position()
         return [x, y, z - x*self.x_adjust - y*self.y_adjust - self.z_adjust, e]
     def move(self, newpos, speed):
+        """        """
+
         x, y, z, e = newpos
         self.toolhead.move([x, y, z + x*self.x_adjust + y*self.y_adjust
                             + self.z_adjust, e], speed)
     def update_adjust(self, x_adjust, y_adjust, z_adjust):
+        """        """
+
         self.x_adjust = x_adjust
         self.y_adjust = y_adjust
         self.z_adjust = z_adjust
@@ -55,8 +63,12 @@ class BedTiltCalibrate:
             desc=self.cmd_BED_TILT_CALIBRATE_help)
     cmd_BED_TILT_CALIBRATE_help = "Bed tilt calibration script"
     def cmd_BED_TILT_CALIBRATE(self, gcmd):
+        """        """
+
         self.probe_helper.start_probe(gcmd)
     def probe_finalize(self, offsets, positions):
+        """        """
+
         # Setup for coordinate descent analysis
         z_offset = offsets[2]
         logging.info("Calculating bed_tilt with: %s", positions)
@@ -66,10 +78,14 @@ class BedTiltCalibrate:
         logging.info("Initial bed_tilt parameters: %s", params)
         # Perform coordinate descent
         def adjusted_height(pos, params):
+            """            """
+
             x, y, z = pos
             return (z - x*params['x_adjust'] - y*params['y_adjust']
                     - params['z_adjust'])
         def errorfunc(params):
+            """            """
+
             total_error = 0.
             for pos in positions:
                 total_error += adjusted_height(pos, params)**2
@@ -96,4 +112,6 @@ class BedTiltCalibrate:
             "config file and restart the printer." % (msg,))
 
 def load_config(config):
+    """    """
+
     return BedTilt(config)

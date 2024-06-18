@@ -13,6 +13,8 @@ import queuelogger
 
 # Helper code that implements coordinate descent
 def coordinate_descent(adj_params, params, error_func):
+    """    """
+
     # Define potential changes
     params = dict(params)
     dp = {param_name: 1. for param_name in adj_params}
@@ -50,8 +52,12 @@ def coordinate_descent(adj_params, params, error_func):
 # Helper to run the coordinate descent function in a background
 # process so that it does not block the main thread.
 def background_coordinate_descent(printer, adj_params, params, error_func):
+    """    """
+
     parent_conn, child_conn = multiprocessing.Pipe()
     def wrapper():
+        """        """
+
         queuelogger.clear_bg_logging()
         try:
             res = coordinate_descent(adj_params, params, error_func)
@@ -90,6 +96,8 @@ def background_coordinate_descent(printer, adj_params, params, error_func):
 # Trilateration finds the intersection of three spheres.  See the
 # wikipedia article for the details of the algorithm.
 def trilateration(sphere_coords, radius2):
+    """    """
+
     sphere_coord1, sphere_coord2, sphere_coord3 = sphere_coords
     s21 = matrix_sub(sphere_coord2, sphere_coord1)
     s31 = matrix_sub(sphere_coord3, sphere_coord1)
@@ -117,21 +125,33 @@ def trilateration(sphere_coords, radius2):
 ######################################################################
 
 def matrix_cross(m1, m2):
+    """    """
+
     return [m1[1] * m2[2] - m1[2] * m2[1],
             m1[2] * m2[0] - m1[0] * m2[2],
             m1[0] * m2[1] - m1[1] * m2[0]]
 
 def matrix_dot(m1, m2):
+    """    """
+
     return m1[0] * m2[0] + m1[1] * m2[1] + m1[2] * m2[2]
 
 def matrix_magsq(m1):
+    """    """
+
     return m1[0]**2 + m1[1]**2 + m1[2]**2
 
 def matrix_add(m1, m2):
+    """    """
+
     return [m1[0] + m2[0], m1[1] + m2[1], m1[2] + m2[2]]
 
 def matrix_sub(m1, m2):
+    """    """
+
     return [m1[0] - m2[0], m1[1] - m2[1], m1[2] - m2[2]]
 
 def matrix_mul(m1, s):
+    """    """
+
     return [m1[0]*s, m1[1]*s, m1[2]*s]
