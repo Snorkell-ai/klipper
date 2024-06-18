@@ -17,6 +17,8 @@ import util
 
 
 def main(argv):
+    """    """
+
     p = argparse.ArgumentParser()
     p.add_argument(
         'distroname',

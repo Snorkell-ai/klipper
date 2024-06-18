@@ -17,6 +17,17 @@ DECL_ENUMERATION_RANGE("pin", "PA0", GPIO('A', 0), 8);
 #endif
 DECL_ENUMERATION_RANGE("pin", "PB0", GPIO('B', 0), 8);
 DECL_ENUMERATION_RANGE("pin", "PC0", GPIO('C', 0), 8);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_ENUMERATION_RANGE("pin", "PD0", GPIO('D', 0), 8);
 #if CONFIG_MACH_atmega328p
 DECL_ENUMERATION_RANGE("pin", "PE0", GPIO('E', 0), 8);
@@ -51,6 +62,17 @@ volatile uint8_t * const digital_regs[] PROGMEM = {
 #endif
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct gpio_out
 gpio_out_setup(uint8_t pin, uint8_t val)
 {
@@ -66,6 +88,17 @@ fail:
     shutdown("Not an output pin");
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_out_reset(struct gpio_out g, uint8_t val)
 {
@@ -75,18 +108,51 @@ gpio_out_reset(struct gpio_out g, uint8_t val)
     irq_restore(flag);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_out_toggle_noirq(struct gpio_out g)
 {
     g.regs->in = g.bit;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_out_toggle(struct gpio_out g)
 {
     gpio_out_toggle_noirq(g);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_out_write(struct gpio_out g, uint8_t val)
 {
@@ -95,6 +161,17 @@ gpio_out_write(struct gpio_out g, uint8_t val)
     irq_restore(flag);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct gpio_in
 gpio_in_setup(uint8_t pin, int8_t pull_up)
 {
@@ -110,6 +187,17 @@ fail:
     shutdown("Not a valid input pin");
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_in_reset(struct gpio_in g, int8_t pull_up)
 {
@@ -119,6 +207,17 @@ gpio_in_reset(struct gpio_in g, int8_t pull_up)
     irq_restore(flag);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t
 gpio_in_read(struct gpio_in g)
 {

@@ -28,6 +28,8 @@ class ClockSync:
         self.prediction_variance = 0.
         self.last_prediction_time = 0.
     def connect(self, serial):
+        """        """
+
         self.serial = serial
         self.mcu_freq = serial.msgparser.get_constant_float('CLOCK_FREQ')
         # Load initial clock and frequency
@@ -48,6 +50,8 @@ class ClockSync:
         serial.register_response(self._handle_clock, 'clock')
         self.reactor.update_timer(self.get_clock_timer, self.reactor.NOW)
     def connect_file(self, serial, pace=False):
+        """        """
+
         self.serial = serial
         self.mcu_freq = serial.msgparser.get_constant_float('CLOCK_FREQ')
         self.clock_est = (0., 0., self.mcu_freq)
@@ -57,12 +61,16 @@ class ClockSync:
         serial.set_clock_est(freq, self.reactor.monotonic(), 0, 0)
     # MCU clock querying (_handle_clock is invoked from background thread)
     def _get_clock_event(self, eventtime):
+        """        """
+
         self.serial.raw_send(self.get_clock_cmd, 0, 0, self.cmd_queue)
         self.queries_pending += 1
         # Use an unusual time for the next event so clock messages
         # don't resonate with other periodic events.
         return eventtime + .9839
     def _handle_clock(self, params):
+        """        """
+
         self.queries_pending = 0
         # Extend clock to 64bit
         last_clock = self.last_clock
@@ -121,27 +129,43 @@ class ClockSync:
         #              sent_time, new_freq, clock - exp_clock, pred_stddev)
     # clock frequency conversions
     def print_time_to_clock(self, print_time):
+        """        """
+
         return int(print_time * self.mcu_freq)
     def clock_to_print_time(self, clock):
+        """        """
+
         return clock / self.mcu_freq
     # system time conversions
     def get_clock(self, eventtime):
+        """        """
+
         sample_time, clock, freq = self.clock_est
         return int(clock + (eventtime - sample_time) * freq)
     def estimate_clock_systime(self, reqclock):
+        """        """
+
         sample_time, clock, freq = self.clock_est
         return float(reqclock - clock)/freq + sample_time
     def estimated_print_time(self, eventtime):
+        """        """
+
         return self.clock_to_print_time(self.get_clock(eventtime))
     # misc commands
     def clock32_to_clock64(self, clock32):
+        """        """
+
         last_clock = self.last_clock
         clock_diff = (clock32 - last_clock) & 0xffffffff
         clock_diff -= (clock_diff & 0x80000000) << 1
         return last_clock + clock_diff
     def is_active(self):
+        """        """
+
         return self.queries_pending <= 4
     def dump_debug(self):
+        """        """
+
         sample_time, clock, freq = self.clock_est
         return ("clocksync state: mcu_freq=%d last_clock=%d"
                 " clock_est=(%.3f %d %.3f) min_half_rtt=%.6f min_rtt_time=%.3f"
@@ -153,9 +177,13 @@ class ClockSync:
                     self.clock_avg, self.clock_covariance,
                     self.prediction_variance))
     def stats(self, eventtime):
+        """        """
+
         sample_time, clock, freq = self.clock_est
         return "freq=%d" % (freq,)
     def calibrate_clock(self, print_time, eventtime):
+        """        """
+
         return (0., self.mcu_freq)
 
 # Clock syncing code for secondary MCUs (whose clocks are sync'ed to a
@@ -167,6 +195,8 @@ class SecondarySync(ClockSync):
         self.clock_adj = (0., 1.)
         self.last_sync_time = 0.
     def connect(self, serial):
+        """        """
+
         ClockSync.connect(self, serial)
         self.clock_adj = (0., self.mcu_freq)
         curtime = self.reactor.monotonic()
@@ -175,24 +205,36 @@ class SecondarySync(ClockSync):
         self.clock_adj = (main_print_time - local_print_time, self.mcu_freq)
         self.calibrate_clock(0., curtime)
     def connect_file(self, serial, pace=False):
+        """        """
+
         ClockSync.connect_file(self, serial, pace)
         self.clock_adj = (0., self.mcu_freq)
     # clock frequency conversions
     def print_time_to_clock(self, print_time):
+        """        """
+
         adjusted_offset, adjusted_freq = self.clock_adj
         return int((print_time - adjusted_offset) * adjusted_freq)
     def clock_to_print_time(self, clock):
+        """        """
+
         adjusted_offset, adjusted_freq = self.clock_adj
         return clock / adjusted_freq + adjusted_offset
     # misc commands
     def dump_debug(self):
+        """        """
+
         adjusted_offset, adjusted_freq = self.clock_adj
         return "%s clock_adj=(%.3f %.3f)" % (
             ClockSync.dump_debug(self), adjusted_offset, adjusted_freq)
     def stats(self, eventtime):
+        """        """
+
         adjusted_offset, adjusted_freq = self.clock_adj
         return "%s adj=%d" % (ClockSync.stats(self, eventtime), adjusted_freq)
     def calibrate_clock(self, print_time, eventtime):
+        """        """
+
         # Calculate: est_print_time = main_sync.estimatated_print_time()
         ser_time, ser_clock, ser_freq = self.main_sync.clock_est
         main_mcu_freq = self.main_sync.mcu_freq

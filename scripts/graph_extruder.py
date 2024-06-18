@@ -26,6 +26,8 @@ EXTRUDE_R = (.4 * .4 * .75) / (math.pi * (1.75 / 2.)**2)
 ACCEL = 3000. * EXTRUDE_R
 
 def gen_positions():
+    """    """
+
     out = []
     start_d = start_t = t = 0.
     for start_v, end_v, move_t in Moves:
@@ -55,13 +57,19 @@ def gen_positions():
 MARGIN_TIME = 0.050
 
 def time_to_index(t):
+    """    """
+
     return int(t * INV_SEG_TIME + .5)
 
 def indexes(positions):
+    """    """
+
     drop = time_to_index(MARGIN_TIME)
     return range(drop, len(positions)-drop)
 
 def trim_lists(*lists):
+    """    """
+
     keep = len(lists[0]) - time_to_index(2. * MARGIN_TIME)
     for l in lists:
         del l[keep:]
@@ -73,11 +81,15 @@ def trim_lists(*lists):
 
 # Generate estimated first order derivative
 def gen_deriv(data):
+    """    """
+
     return [0.] + [(data[i+1] - data[i]) * INV_SEG_TIME
                    for i in range(len(data)-1)]
 
 # Simple average between two points smooth_time away
 def calc_average(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .5)
     out = [0.] * len(positions)
     for i in indexes(positions):
@@ -86,6 +98,8 @@ def calc_average(positions, smooth_time):
 
 # Average (via integration) of smooth_time range
 def calc_smooth(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .5)
     weight = 1. / (2*offset - 1)
     out = [0.] * len(positions)
@@ -95,6 +109,8 @@ def calc_smooth(positions, smooth_time):
 
 # Time weighted average (via integration) of smooth_time range
 def calc_weighted(positions, smooth_time):
+    """    """
+
     offset = time_to_index(smooth_time * .5)
     weight = 1. / offset**2
     out = [0.] * len(positions)
@@ -114,6 +130,8 @@ PRESSURE_ADVANCE = .045
 
 # Calculate raw pressure advance positions
 def calc_pa_raw(positions):
+    """    """
+
     pa = PRESSURE_ADVANCE * INV_SEG_TIME
     out = [0.] * len(positions)
     for i in indexes(positions):
@@ -122,6 +140,8 @@ def calc_pa_raw(positions):
 
 # Pressure advance after smoothing
 def calc_pa(positions):
+    """    """
+
     return calc_weighted(calc_pa_raw(positions), SMOOTH_TIME)
 
 
@@ -130,6 +150,8 @@ def calc_pa(positions):
 ######################################################################
 
 def plot_motion():
+    """    """
+
     # Nominal motion
     positions = gen_positions()
     velocities = gen_deriv(positions)
@@ -161,6 +183,8 @@ def plot_motion():
     return fig
 
 def setup_matplotlib(output_to_file):
+    """    """
+
     global matplotlib
     if output_to_file:
         matplotlib.rcParams.update({'figure.autolayout': True})
@@ -169,6 +193,8 @@ def setup_matplotlib(output_to_file):
     import matplotlib.ticker
 
 def main():
+    """    """
+
     # Parse command-line arguments
     usage = "%prog [options]"
     opts = optparse.OptionParser(usage)

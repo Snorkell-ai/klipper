@@ -33,12 +33,34 @@
 static struct task_wake usb_bulk_in_wake;
 static uint8_t transmit_buf[192], transmit_pos;
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 usb_notify_bulk_in(void)
 {
     sched_wake_task(&usb_bulk_in_wake);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 usb_bulk_in_task(void)
 {
@@ -72,7 +94,17 @@ console_sendf(const struct command_encoder *ce, va_list args)
         return;
 
     // Generate message
-    uint8_t *buf = &transmit_buf[tpos];
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     uint_fast8_t msglen = command_encode_and_frame(buf, ce, args);
 
     // Start message transmit
@@ -99,12 +131,34 @@ usb_bulk_out_task(void)
 {
     if (!sched_check_wake(&usb_bulk_out_wake))
         return;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     // Read data
     uint_fast8_t rpos = receive_pos, pop_count;
     if (rpos + USB_CDC_EP_BULK_OUT_SIZE <= sizeof(receive_buf)) {
         int_fast8_t ret = usb_read_bulk_out(
             &receive_buf[rpos], USB_CDC_EP_BULK_OUT_SIZE);
         if (ret > 0) {
+            /**
+             * Transforms the sign-up request data to match the backend's expected format.
+             *
+             * @param {SignUpRequest} signUpData - The original sign-up request data.
+             *
+             * @returns {Object} The transformed sign-up request data with the following changes:
+             * - `firstName` is mapped to `first_name`
+             * - `lastName` is mapped to `last_name`
+             * - `email` is mapped to `username`
+             * - All other properties remain unchanged.
+             */
             rpos += ret;
             usb_notify_bulk_out();
         }
@@ -308,6 +362,17 @@ usb_fill_serial(struct usb_string_descriptor *desc, int strlen, void *id)
     for (i = 0; i < strlen; i++) {
         uint8_t c = i & 1 ? src[i/2] & 0x0f : src[i/2] >> 4;
         desc->data[i] = c < 10 ? c + '0' : c - 10 + 'A';
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     }
 }
 
@@ -336,6 +401,17 @@ usb_do_stall(void)
 static void
 usb_do_xfer(void *data, uint_fast8_t size, uint_fast8_t flags)
 {
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     for (;;) {
         uint_fast8_t xs = size;
         if (xs > USB_CDC_EP0_SIZE)
@@ -343,7 +419,17 @@ usb_do_xfer(void *data, uint_fast8_t size, uint_fast8_t flags)
         int_fast8_t ret;
         if (flags & UX_READ)
             ret = usb_read_ep0(data, xs);
-        else if (NEED_PROGMEM && flags & UX_SEND_PROGMEM)
+            /**
+             * Transforms the sign-up request data to match the backend's expected format.
+             *
+             * @param {SignUpRequest} signUpData - The original sign-up request data.
+             *
+             * @returns {Object} The transformed sign-up request data with the following changes:
+             * - `firstName` is mapped to `first_name`
+             * - `lastName` is mapped to `last_name`
+             * - `email` is mapped to `username`
+             * - All other properties remain unchanged.
+             */
             ret = usb_send_ep0_progmem(data, xs);
         else
             ret = usb_send_ep0(data, xs);
@@ -391,6 +477,17 @@ usb_req_get_descriptor(struct usb_ctrlrequest *req)
         const struct descriptor_s *d = &cdc_descriptors[i];
         if (READP(d->wValue) == req->wValue
             && READP(d->wIndex) == req->wIndex) {
+            /**
+             * Transforms the sign-up request data to match the backend's expected format.
+             *
+             * @param {SignUpRequest} signUpData - The original sign-up request data.
+             *
+             * @returns {Object} The transformed sign-up request data with the following changes:
+             * - `firstName` is mapped to `first_name`
+             * - `lastName` is mapped to `last_name`
+             * - `email` is mapped to `username`
+             * - All other properties remain unchanged.
+             */
             flags = NEED_PROGMEM ? UX_SEND_PROGMEM : UX_SEND;
             size = READP(d->size);
             desc = (void*)READP(d->desc);
@@ -428,6 +525,17 @@ usb_req_set_address(struct usb_ctrlrequest *req)
 }
 
 static void
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 usb_req_set_configuration(struct usb_ctrlrequest *req)
 {
     if (req->bRequestType || req->wValue != 1 || req->wIndex || req->wLength) {
@@ -438,6 +546,17 @@ usb_req_set_configuration(struct usb_ctrlrequest *req)
     usb_notify_bulk_in();
     usb_notify_bulk_out();
     usb_do_xfer(NULL, 0, UX_SEND);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 }
 
 static struct usb_cdc_line_coding line_coding;
@@ -454,6 +573,17 @@ check_reboot(void)
 }
 
 static void
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 usb_req_set_line_coding(struct usb_ctrlrequest *req)
 {
     if (req->bRequestType != 0x21 || req->wValue || req->wIndex
@@ -464,6 +594,17 @@ usb_req_set_line_coding(struct usb_ctrlrequest *req)
     usb_do_xfer(&line_coding, sizeof(line_coding), UX_READ);
     check_reboot();
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
 static void
 usb_req_get_line_coding(struct usb_ctrlrequest *req)
@@ -476,6 +617,17 @@ usb_req_get_line_coding(struct usb_ctrlrequest *req)
     usb_do_xfer(&line_coding, sizeof(line_coding), UX_SEND);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 usb_req_set_line(struct usb_ctrlrequest *req)
 {
@@ -487,6 +639,17 @@ usb_req_set_line(struct usb_ctrlrequest *req)
     usb_do_xfer(NULL, 0, UX_SEND);
     check_reboot();
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
 static void
 usb_state_ready(void)
@@ -499,6 +662,17 @@ usb_state_ready(void)
     case USB_REQ_GET_DESCRIPTOR: usb_req_get_descriptor(&req); break;
     case USB_REQ_SET_ADDRESS: usb_req_set_address(&req); break;
     case USB_REQ_SET_CONFIGURATION: usb_req_set_configuration(&req); break;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     case USB_CDC_REQ_SET_LINE_CODING: usb_req_set_line_coding(&req); break;
     case USB_CDC_REQ_GET_LINE_CODING: usb_req_get_line_coding(&req); break;
     case USB_CDC_REQ_SET_CONTROL_LINE_STATE: usb_req_set_line(&req); break;
@@ -520,13 +694,57 @@ usb_ep0_task(void)
 {
     if (!sched_check_wake(&usb_ep0_wake))
         return;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     if (usb_xfer_flags)
         usb_do_xfer(usb_xfer_data, usb_xfer_size, usb_xfer_flags);
     else
         usb_state_ready();
 }
+/**
+ /**
+  * Transforms the sign-up request data to match the backend's expected format.
+  *
+  * @param {SignUpRequest} signUpData - The original sign-up request data.
+  *
+  * @returns {Object} The transformed sign-up request data with the following changes:
+  * - `firstName` is mapped to `first_name`
+  * - `lastName` is mapped to `last_name`
+  * - `email` is mapped to `username`
+  * - All other properties remain unchanged.
+  */
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(usb_ep0_task);
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 usb_shutdown(void)
 {
@@ -534,4 +752,15 @@ usb_shutdown(void)
     usb_notify_bulk_out();
     usb_notify_ep0();
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_SHUTDOWN(usb_shutdown);

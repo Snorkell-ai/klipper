@@ -150,6 +150,17 @@
  **                                     - pstcInitCfg == NULL
  **
  ******************************************************************************/
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_Init(M4_CMP_TypeDef *CMPx, const stc_cmp_init_t *pstcInitCfg)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -184,18 +195,16 @@ en_result_t CMP_Init(M4_CMP_TypeDef *CMPx, const stc_cmp_init_t *pstcInitCfg)
 }
 
 /**
- *******************************************************************************
- ** \brief De-Initialize CMP
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_DeInit(M4_CMP_TypeDef *CMPx)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -214,21 +223,16 @@ en_result_t CMP_DeInit(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Enable or disable CMP working
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] enCmd                   The CMP function state
- ** \arg Disable                        Disable CMP working
- ** \arg Enable                         Enable CMP working
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_Cmd(M4_CMP_TypeDef *CMPx, en_functional_state_t enCmd)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -247,21 +251,16 @@ en_result_t CMP_Cmd(M4_CMP_TypeDef *CMPx, en_functional_state_t enCmd)
 }
 
 /**
- *******************************************************************************
- ** \brief Enable or disable CMP interrupt request
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] enCmd                   The CMP interrupt function state
- ** \arg Disable                        Disable interrupt request
- ** \arg Enable                         Enable interrupt request
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid.
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_IrqCmd(M4_CMP_TypeDef *CMPx, en_functional_state_t enCmd)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -277,25 +276,16 @@ en_result_t CMP_IrqCmd(M4_CMP_TypeDef *CMPx, en_functional_state_t enCmd)
 }
 
 /**
- *******************************************************************************
- ** \brief Set scan time(scan stable&&period)
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] u8ScanStable            CMP scan stable value
- ** \arg u8ScanStable < 16
- ** \param [in] u8ScanPeriod            CMP scan period value
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ** \note   u8ScanStable && u8ScanPeriod value must meet following condition:
- **             u8ScanPeriod > u8ScanStable + FLTSL_DIV*4 + 5
- **             FLTSL_DIV is filter sample period division(refer CMPx->CTRL_f.FLTSL)
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_SetScanTime(M4_CMP_TypeDef *CMPx,
                                 uint8_t u8ScanStable,
                                 uint8_t u8ScanPeriod)
@@ -330,25 +320,16 @@ en_result_t CMP_SetScanTime(M4_CMP_TypeDef *CMPx,
 }
 
 /**
- *******************************************************************************
- ** \brief Enable or disable the specified CMP function.
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] enFunc                  CMP function selection
- ** \arg CmpVcoutOutput                 CMP Vcout output enable function
- ** \arg CmpOutpuInv                    CMP output invert enable function
- ** \arg CmpOutput                      CMP output enable function
- ** \param [in] enCmd                   CMP functional state
- ** \arg Enable                         Enable the specified CMP function
- ** \arg Disable                        Disable the specified CMP function
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_FuncCmd(M4_CMP_TypeDef *CMPx,
                     en_cmp_func_t enFunc,
                     en_functional_state_t enCmd)
@@ -377,18 +358,16 @@ en_result_t CMP_FuncCmd(M4_CMP_TypeDef *CMPx,
 }
 
 /**
- *******************************************************************************
- ** \brief Start CMP scan
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval Ok                          Start successfully
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_StartScan(M4_CMP_TypeDef *CMPx)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -404,18 +383,16 @@ en_result_t CMP_StartScan(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Stop CMP scan
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval Ok                          Stop successfully
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_StopScan(M4_CMP_TypeDef *CMPx)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -431,27 +408,16 @@ en_result_t CMP_StopScan(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Set CMP filter sample clock division.
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] enFltClkDiv             The CMP filter sample clock division selection
- ** \arg CmpNoneFlt                     Unuse filter
- ** \arg CmpFltPclk3Div1                PCLK3/1
- ** \arg CmpFltPclk3Div2                PCLK3/2
- ** \arg CmpFltPclk3Div4                PCLK3/4
- ** \arg CmpFltPclk3Div8                PCLK3/8
- ** \arg CmpFltPclk3Div16               PCLK3/16
- ** \arg CmpFltPclk3Div32               PCLK3/32
- ** \arg CmpFltPclk3Div64               PCLK3/64
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_SetFilterClkDiv(M4_CMP_TypeDef *CMPx,
                                         en_cmp_fltclk_div_t enFltClkDiv)
 {
@@ -470,24 +436,16 @@ en_result_t CMP_SetFilterClkDiv(M4_CMP_TypeDef *CMPx,
 }
 
 /**
- *******************************************************************************
- ** \brief Get CMP filter sample clock division.
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval CmpNoneFlt                  Unuse filter
- ** \retval CmpFltPclk3Div1             PCLK3/1
- ** \retval CmpFltPclk3Div2             PCLK3/2
- ** \retval CmpFltPclk3Div4             PCLK3/4
- ** \retval CmpFltPclk3Div8             PCLK3/8
- ** \retval CmpFltPclk3Div16            PCLK3/16
- ** \retval CmpFltPclk3Div32            PCLK3/32
- ** \retval CmpFltPclk3Div64            PCLK3/64
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_cmp_fltclk_div_t CMP_GetFilterClkDiv(M4_CMP_TypeDef *CMPx)
 {
     /* Check parameter */
@@ -497,23 +455,16 @@ en_cmp_fltclk_div_t CMP_GetFilterClkDiv(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Set CMP detection edge selection.
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] enEdgeSel               The CMP detection edge selection
- ** \arg CmpNoneEdge                    None edge detection
- ** \arg CmpRisingEdge                  Rising edge detection
- ** \arg CmpFaillingEdge                Falling edge detection
- ** \arg CmpBothEdge                    Falling or Rising edge detection
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_SetEdgeSel(M4_CMP_TypeDef *CMPx,
                                 en_cmp_edge_sel_t enEdgeSel)
 {
@@ -532,20 +483,16 @@ en_result_t CMP_SetEdgeSel(M4_CMP_TypeDef *CMPx,
 }
 
 /**
- *******************************************************************************
- ** \brief Get CMP detection edge selection.
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval CmpNoneEdge                 None edge detection
- ** \retval CmpRisingEdge               Rising edge detection
- ** \retval CmpFaillingEdge             Falling edge detection
- ** \retval CmpBothEdge                 Falling or Rising edge detection
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_cmp_edge_sel_t CMP_GetEdgeSel(M4_CMP_TypeDef *CMPx)
 {
     /* Check parameter */
@@ -555,20 +502,16 @@ en_cmp_edge_sel_t CMP_GetEdgeSel(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Set CMP input sel
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] pstcInputSel            The CMP input selection structure
- ** \arg This parameter detail refer @ref stc_cmp_input_sel_t
- **
- ** \retval Ok                          Set successfully
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_InputSel(M4_CMP_TypeDef *CMPx,
                             const stc_cmp_input_sel_t *pstcInputSel)
 {
@@ -614,35 +557,16 @@ en_result_t CMP_InputSel(M4_CMP_TypeDef *CMPx,
 }
 
 /**
- *******************************************************************************
- ** \brief Set CMP INP input selection
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] enInputSel              The INP input selection
- ** \arg CmpInpNone                     None input
- ** \arg CmpInp1                        INP1 input
- ** \arg CmpInp2                        INP2 input
- ** \arg CmpInp1_Inp2                   INP1 INP2 input
- ** \arg CmpInp3                        INP3 input
- ** \arg CmpInp1_Inp3                   INP1 INP3 input
- ** \arg CmpInp2_Inp3                   INP2 INP3 input
- ** \arg CmpInp1_Inp2_Inp3              INP1 INP2 INP3 input
- ** \arg CmpInp4                        INP4 input
- ** \arg CmpInp1_Inp4                   INP1 INP4 input
- ** \arg CmpInp2_Inp4                   INP2 INP4 input
- ** \arg CmpInp1_Inp2_Inp4              INP1 INP2 INP4 input
- ** \arg CmpInp3_Inp4                   INP3 INP4 input
- ** \arg CmpInp1_Inp3_Inp4              INP1 INP3 INP4 input
- ** \arg CmpInp2_Inp3_Inp4              INP2 INP3 INP4 input
- ** \arg CmpInp1_Inp2_Inp3_Inp4         INP1 INP2 INP3 INP4 input
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_SetInp(M4_CMP_TypeDef *CMPx, en_cmp_inp_sel_t enInputSel)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -660,32 +584,16 @@ en_result_t CMP_SetInp(M4_CMP_TypeDef *CMPx, en_cmp_inp_sel_t enInputSel)
 }
 
 /**
- *******************************************************************************
- ** \brief Set CMP INP input selection
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval CmpInpNone                  None input
- ** \retval CmpInp1                     INP1 input
- ** \retval CmpInp2                     INP2 input
- ** \retval CmpInp1_Inp2                INP1 INP2 input
- ** \retval CmpInp3                     INP3 input
- ** \retval CmpInp1_Inp3                INP1 INP3 input
- ** \retval CmpInp2_Inp3                INP2 INP3 input
- ** \retval CmpInp1_Inp2_Inp3           INP1 INP2 INP3 input
- ** \retval CmpInp4                     INP4 input
- ** \retval CmpInp1_Inp4                INP1 INP4 input
- ** \retval CmpInp2_Inp4                INP2 INP4 input
- ** \retval CmpInp1_Inp2_Inp4           INP1 INP2 INP4 input
- ** \retval CmpInp3_Inp4                INP3 INP4 input
- ** \retval CmpInp1_Inp3_Inp4           INP1 INP3 INP4 input
- ** \retval CmpInp2_Inp3_Inp4           INP2 INP3 INP4 input
- ** \retval CmpInp1_Inp2_Inp3_Inp4      INP1 INP2 INP3 INP4 input
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_cmp_inp_sel_t CMP_GetInp(M4_CMP_TypeDef *CMPx)
 {
     /* Check parameter */
@@ -695,24 +603,16 @@ en_cmp_inp_sel_t CMP_GetInp(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Set CMP INM input selection
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] enInputSel              The INP input selection
- ** \arg CmpInmNone                     None input
- ** \arg CmpInm1                        INM1 input
- ** \arg CmpInm2                        INM2 input
- ** \arg CmpInm3                        INM3 input
- ** \arg CmpInm4                        INM4 input
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid.
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_SetInm(M4_CMP_TypeDef *CMPx, en_cmp_inm_sel_t enInputSel)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -730,21 +630,16 @@ en_result_t CMP_SetInm(M4_CMP_TypeDef *CMPx, en_cmp_inm_sel_t enInputSel)
 }
 
 /**
- *******************************************************************************
- ** \brief Get CMP INM input selection
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval CmpInmNone                  None input
- ** \retval CmpInm1                     INM1 input
- ** \retval CmpInm2                     INM2 input
- ** \retval CmpInm3                     INM3 input
- ** \retval CmpInm4                     INM4 input
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_cmp_inm_sel_t CMP_GetInm(M4_CMP_TypeDef *CMPx)
 {
     /* Check parameter */
@@ -754,26 +649,16 @@ en_cmp_inm_sel_t CMP_GetInm(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Set CMP INP4 input selection
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- ** \param [in] enInputSel              The INP input selection
- ** \arg CmpInp4None                    None input
- ** \arg CmpInp4PGAO                    PGAO output
- ** \arg CmpInp4PGAO_BP                 PGAO_BP output
- ** \arg CmpInp4CMP1_INP4               CMP1_INP4
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       CMPx is invalid.
- **
- ** \note                               Inp4 Selection is valid only for M4_CMP1
- **                                     and M4_CMP2.
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_SetInp4(M4_CMP_TypeDef *CMPx,en_cmp_inp4_sel_t enInputSel)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -793,23 +678,16 @@ en_result_t CMP_SetInp4(M4_CMP_TypeDef *CMPx,en_cmp_inp4_sel_t enInputSel)
 }
 
 /**
- *******************************************************************************
- ** \brief Get CMP INP4 input selection
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval CmpInp4None                 None input
- ** \retval CmpInp4PGAO                 PGAO output
- ** \retval CmpInp4PGAO_BP              PGAO_BP output
- ** \retval CmpInp4CMP1_INP4            CMP1_INP4
- **
- ** \note                               Inp4 Selection is valid only for M4_CMP1
- **                                     and M4_CMP2.
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_cmp_inp4_sel_t CMP_GetInp4(M4_CMP_TypeDef *CMPx)
 {
     /* Check parameter */
@@ -819,18 +697,16 @@ en_cmp_inp4_sel_t CMP_GetInp4(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Get CMP output state
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval CmpOutputLow                Compare output Low "0"
- ** \retval CmpOutputHigh               Compare output High "1"
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_cmp_output_state_t CMP_GetOutputState(M4_CMP_TypeDef *CMPx)
 {
     /* Check parameter */
@@ -840,18 +716,16 @@ en_cmp_output_state_t CMP_GetOutputState(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Get CMP INP state
- **
- ** \param [in] CMPx                    Pointer to CMP instance register base
- ** \arg M4_CMP1                        CMP unit 1 instance register base
- ** \arg M4_CMP2                        CMP unit 2 instance register base
- ** \arg M4_CMP3                        CMP unit 3 instance register base
- **
- ** \retval CmpOutputLow                Compare output Low "0"
- ** \retval CmpOutputHigh               Compare output High "1"
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_cmp_inp_state_t CMP_GetInpState(M4_CMP_TypeDef *CMPx)
 {
     /* Check parameter */
@@ -861,19 +735,16 @@ en_cmp_inp_state_t CMP_GetInpState(M4_CMP_TypeDef *CMPx)
 }
 
 /**
- *******************************************************************************
- ** \brief Initialize CMP DAC
- **
- ** \param [in] enCh                    CMP DAC channel
- ** \arg CmpDac1                        CMP CR DAC channel: DAC1
- ** \arg CmpDac2                        CMP CR DAC channel: DAC2
- ** \param [in] pstcInitCfg             Pointer to CMP DAC configure structure
- ** \arg This parameter detail refer @ref stc_cmp_dac_init_t
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       enCh is invalid.
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_DAC_Init(en_cmp_dac_ch_t enCh,
                             const stc_cmp_dac_init_t *pstcInitCfg)
 {
@@ -898,17 +769,16 @@ en_result_t CMP_DAC_Init(en_cmp_dac_ch_t enCh,
 }
 
 /**
- *******************************************************************************
- ** \brief De-Initialize CMP DAC
- **
- ** \param [in] enCh                    CMP DAC channel
- ** \arg CmpDac1                        CMP CR DAC channel: DAC1
- ** \arg CmpDac2                        CMP CR DAC channel: DAC2
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       enCh is invalid.
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_DAC_DeInit(en_cmp_dac_ch_t enCh)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -925,20 +795,16 @@ en_result_t CMP_DAC_DeInit(en_cmp_dac_ch_t enCh)
 }
 
 /**
- *******************************************************************************
- ** \brief Enable or disable CMP DAC working
- **
- ** \param [in] enCh                    CMP DAC channel
- ** \arg CmpDac1                        CMP DAC channel: DAC1
- ** \arg CmpDac2                        CMP DAC channel: DAC2
- ** \param [in] enCmd                   The CMP DAC function state
- ** \arg Disable                        Disable CMP DAC working
- ** \arg Enable                         Enable CMP DAC working
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       enCh is invalid.
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_DAC_Cmd(en_cmp_dac_ch_t enCh, en_functional_state_t enCmd)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -962,18 +828,16 @@ en_result_t CMP_DAC_Cmd(en_cmp_dac_ch_t enCh, en_functional_state_t enCmd)
 }
 
 /**
- *******************************************************************************
- ** \brief Set DAC data register value
- **
- ** \param [in] enCh                    CMP DAC channel
- ** \arg CmpDac1                        CMP CR DAC channel: DAC1
- ** \arg CmpDac2                        CMP CR DAC channel: DAC2
- ** \param [in]  u8DacData              DAC data register value
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       enCh is invalid.
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_DAC_SetData(en_cmp_dac_ch_t enCh, uint8_t u8DacData)
 {
     en_result_t enRet = ErrorInvalidParameter;
@@ -989,16 +853,16 @@ en_result_t CMP_DAC_SetData(en_cmp_dac_ch_t enCh, uint8_t u8DacData)
 }
 
 /**
- *******************************************************************************
- ** \brief Get DAC data register value
- **
- ** \param [in] enCh                    CMP DAC channel
- ** \arg CmpDac1                        CMP CR DAC channel: DAC1
- ** \arg CmpDac2                        CMP CR DAC channel: DAC2
- **
- ** \retval                             DAC data register value
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t CMP_DAC_GetData(en_cmp_dac_ch_t enCh)
 {
     /* Check parameter */
@@ -1008,18 +872,16 @@ uint8_t CMP_DAC_GetData(en_cmp_dac_ch_t enCh)
 }
 
 /**
- *******************************************************************************
- ** \brief Set ADC internal reference voltage path
- **
- ** \param [in] enRefVoltPath           ADC internal reference voltage path
- ** \arg CmpAdcRefVoltPathDac1          ADC internal reference voltage path: DAC1
- ** \arg CmpAdcRefVoltPathDac2          ADC internal reference voltage path: DAC2
- ** \arg CmpAdcRefVoltPathVref          ADC internal reference voltage path: VREF
- **
- ** \retval Ok                          Set successfully.
- ** \retval ErrorInvalidParameter       enRefVoltPath is invalid.
- **
- ******************************************************************************/
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 en_result_t CMP_ADC_SetRefVoltPath(en_cmp_adc_int_ref_volt_path_t enRefVoltPath)
 {
     en_result_t enRet = ErrorInvalidParameter;

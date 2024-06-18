@@ -18,15 +18,21 @@ import pathlib
 from typing import Dict, List, Optional, Union
 
 def output_line(msg: str) -> None:
+    """    """
+
     sys.stdout.write(msg + "\n")
     sys.stdout.flush()
 
 def output(msg: str) -> None:
+    """    """
+
     sys.stdout.write(msg)
     sys.stdout.flush()
 
 # Standard crc16 ccitt, take from msgproto.py in Klipper
 def crc16_ccitt(buf: Union[bytes, bytearray]) -> int:
+    """    """
+
     crc = 0xffff
     for data in buf:
         data ^= crc & 0xff
@@ -85,6 +91,8 @@ class CanFlasher:
         self.app_start_addr = 0
 
     async def connect_btl(self):
+        """        """
+
         output_line("Attempting to connect to bootloader")
         ret = await self.send_command('CONNECT')
         pinfo = ret[:12]
@@ -105,6 +113,8 @@ class CanFlasher:
         )
 
     async def verify_canbus_uuid(self, uuid):
+        """        """
+
         output_line("Verifying canbus connection")
         ret = await self.send_command('GET_CANBUS_ID')
         mcu_uuid = sum([v << ((5 - i) * 8) for i, v in enumerate(ret[:6])])
@@ -117,6 +127,8 @@ class CanFlasher:
         payload: bytes = b"",
         tries: int = 5
     ) -> bytearray:
+        """        """
+
         word_cnt = (len(payload) // 4) & 0xFF
         cmd = BOOTLOADER_CMDS[cmdname]
         out_cmd = bytearray(CMD_HEADER)
@@ -187,6 +199,8 @@ class CanFlasher:
                             % (cmdname))
 
     async def send_file(self):
+        """        """
+
         last_percent = 0
         output_line("Flashing '%s'..." % (self.fw_name))
         output("\n[")
@@ -229,6 +243,8 @@ class CanFlasher:
             output_line("]\n\nWrite complete: %d pages" % (page_count))
 
     async def verify_file(self):
+        """        """
+
         last_percent = 0
         output_line("Verifying (block count = %d)..." % (self.block_count,))
         output("\n[")
@@ -262,6 +278,8 @@ class CanFlasher:
         output_line("]\n\nVerification Complete: SHA = %s" % (ver_hex))
 
     async def finish(self):
+        """        """
+
         await self.send_command("COMPLETE")
 
 
@@ -274,19 +292,27 @@ class CanNode:
     async def read(
         self, n: int = -1, timeout: Optional[float] = 2
     ) -> bytes:
+        """        """
+
         return await asyncio.wait_for(self._reader.read(n), timeout)
 
     async def readexactly(
         self, n: int, timeout: Optional[float] = 2
     ) -> bytes:
+        """        """
+
         return await asyncio.wait_for(self._reader.readexactly(n), timeout)
 
     async def readuntil(
         self, sep: bytes = b"\x03", timeout: Optional[float] = 2
     ) -> bytes:
+        """        """
+
         return await asyncio.wait_for(self._reader.readuntil(sep), timeout)
 
     def write(self, payload: Union[bytes, bytearray]) -> None:
+        """        """
+
         if isinstance(payload, bytearray):
             payload = bytes(payload)
         self._cansocket.send(self.node_id, payload)
@@ -297,13 +323,19 @@ class CanNode:
         resp_length: int,
         timeout: Optional[float] = 2.
     ) -> bytes:
+        """        """
+
         self.write(payload)
         return await self.readexactly(resp_length, timeout)
 
     def feed_data(self, data: bytes) -> None:
+        """        """
+
         self._reader.feed_data(data)
 
     def close(self) -> None:
+        """        """
+
         self._reader.feed_eof()
 
 class CanSocket:
@@ -323,6 +355,8 @@ class CanSocket:
         self.closed = True
 
     def _handle_can_response(self) -> None:
+        """        """
+
         try:
             data = self.cansock.recv(4096)
         except socket.error as e:
@@ -348,6 +382,8 @@ class CanSocket:
         self.input_busy = False
 
     def _process_packet(self, packet: bytes) -> None:
+        """        """
+
         can_id, length, data = struct.unpack(CAN_FMT, packet)
         can_id &= socket.CAN_EFF_MASK
         payload = data[:length]
@@ -356,6 +392,8 @@ class CanSocket:
             node.feed_data(payload)
 
     def send(self, can_id: int, payload: bytes = b"") -> None:
+        """        """
+
         if can_id > 0x7FF:
             can_id |= socket.CAN_EFF_FLAG
         if not payload:
@@ -375,6 +413,8 @@ class CanSocket:
         asyncio.create_task(self._do_can_send())
 
     async def _do_can_send(self):
+        """        """
+
         while self.output_packets:
             packet = self.output_packets.pop(0)
             try:
@@ -386,6 +426,8 @@ class CanSocket:
         self.output_busy = False
 
     def _jump_to_bootloader(self, uuid: int):
+        """        """
+
         # TODO: Send Klipper Admin command to jump to bootloader.
         # It will need to be implemented
         output_line("Sending bootloader jump command...")
@@ -394,6 +436,8 @@ class CanSocket:
         self.send(KLIPPER_ADMIN_ID, bytes(plist))
 
     async def _query_uuids(self) -> List[int]:
+        """        """
+
         output_line("Checking for canboot nodes...")
         payload = bytes([CANBUS_CMD_QUERY_UNASSIGNED])
         self.admin_node.write(payload)
@@ -423,11 +467,15 @@ class CanSocket:
         return self.uuids
 
     def _reset_nodes(self) -> None:
+        """        """
+
         output_line("Resetting all bootloader node IDs...")
         payload = bytes([CANBUS_CMD_CLEAR_NODE_ID])
         self.admin_node.write(payload)
 
     def _set_node_id(self, uuid: int) -> CanNode:
+        """        """
+
         # Convert ID to a list
         plist = [(uuid >> ((5 - i) * 8)) & 0xFF for i in range(6)]
         plist.insert(0, CANBUS_CMD_SET_NODEID)
@@ -441,6 +489,8 @@ class CanSocket:
         return node
 
     async def run(self, intf: str, uuid: int, fw_path: pathlib.Path) -> None:
+        """        """
+
         if not fw_path.is_file():
             raise FlashCanError("Invalid firmware path '%s'" % (fw_path))
         try:
@@ -475,6 +525,8 @@ class CanSocket:
             await flasher.finish()
 
     async def run_query(self, intf: str):
+        """        """
+
         try:
             self.cansock.bind((intf,))
         except Exception:
@@ -488,6 +540,8 @@ class CanSocket:
         await self._query_uuids()
 
     def close(self):
+        """        """
+
         if self.closed:
             return
         self.closed = True
@@ -503,6 +557,8 @@ class SerialSocket:
         self.node = CanNode(0, self)
 
     def _handle_response(self) -> None:
+        """        """
+
         try:
             data = self.serial.read(4096)
         except self.serial_error as e:
@@ -511,6 +567,8 @@ class SerialSocket:
         self.node.feed_data(data)
 
     def send(self, can_id: int, payload: bytes = b"") -> None:
+        """        """
+
         try:
             self.serial.write(payload)
         except self.serial_error as e:
@@ -518,6 +576,8 @@ class SerialSocket:
             self.close()
 
     async def run(self, intf: str, baud: int, fw_path: pathlib.Path) -> None:
+        """        """
+
         if not fw_path.is_file():
             raise FlashCanError("Invalid firmware path '%s'" % (fw_path))
         import serial
@@ -543,6 +603,8 @@ class SerialSocket:
             await flasher.finish()
 
     def close(self):
+        """        """
+
         if self.serial is None:
             return
         self._loop.remove_reader(self.serial.fileno())
@@ -550,6 +612,8 @@ class SerialSocket:
         self.serial = None
 
 def main():
+    """    """
+
     parser = argparse.ArgumentParser(
         description="Can Bootloader Flash Utility")
     parser.add_argument(

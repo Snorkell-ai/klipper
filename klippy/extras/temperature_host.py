@@ -33,19 +33,29 @@ class Temperature_HOST:
                                             self.handle_connect)
 
     def handle_connect(self):
+        """        """
+
         self.reactor.update_timer(self.sample_timer, self.reactor.NOW)
 
     def setup_minmax(self, min_temp, max_temp):
+        """        """
+
         self.min_temp = min_temp
         self.max_temp = max_temp
 
     def setup_callback(self, cb):
+        """        """
+
         self._callback = cb
 
     def get_report_time_delta(self):
+        """        """
+
         return HOST_REPORT_TIME
 
     def _sample_pi_temperature(self, eventtime):
+        """        """
+
         try:
             self.file_handle.seek(0)
             self.temp = float(self.file_handle.read())/1000.0
@@ -69,12 +79,16 @@ class Temperature_HOST:
         return measured_time + HOST_REPORT_TIME
 
     def get_status(self, eventtime):
+        """        """
+
         return {
             'temperature': round(self.temp, 2),
         }
 
 
 def load_config(config):
+    """    """
+
     # Register sensor
     pheaters = config.get_printer().load_object(config, "heaters")
     pheaters.add_sensor_factory("temperature_host", Temperature_HOST)

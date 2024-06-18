@@ -34,6 +34,8 @@ class SerialReader:
         self.last_notify_id = 0
         self.pending_notifications = {}
     def _bg_thread(self):
+        """        """
+
         response = self.ffi_main.new('struct pull_queue_message *')
         while 1:
             self.ffi_lib.serialqueue_pull(self.serialqueue, response)
@@ -58,8 +60,12 @@ class SerialReader:
                 logging.exception("%sException in serial callback",
                                   self.warn_prefix)
     def _error(self, msg, *params):
+        """        """
+
         raise error(self.warn_prefix + (msg % params))
     def _get_identify_data(self, eventtime):
+        """        """
+
         # Query the "data dictionary" from the micro-controller
         identify_data = b""
         while 1:
@@ -77,6 +83,8 @@ class SerialReader:
                     return identify_data
                 identify_data += msgdata
     def _start_session(self, serial_dev, serial_fd_type=b'u', client_id=0):
+        """        """
+
         self.serial_dev = serial_dev
         self.serialqueue = self.ffi_main.gc(
             self.ffi_lib.serialqueue_alloc(serial_dev.fileno(),
@@ -109,6 +117,8 @@ class SerialReader:
                 self.serialqueue, receive_window)
         return True
     def connect_canbus(self, canbus_uuid, canbus_nodeid, canbus_iface="can0"):
+        """        """
+
         import can # XXX
         txid = canbus_nodeid * 2 + 256
         filters = [{"can_id": txid+1, "can_mask": 0x7ff, "extended": False}]
@@ -158,6 +168,8 @@ class SerialReader:
                          self.warn_prefix)
             self.disconnect()
     def connect_pipe(self, filename):
+        """        """
+
         logging.info("%sStarting connect", self.warn_prefix)
         start_time = self.reactor.monotonic()
         while 1:
@@ -175,6 +187,8 @@ class SerialReader:
             if ret:
                 break
     def connect_uart(self, serialport, baud, rts=True):
+        """        """
+
         # Initial connection
         logging.info("%sStarting serial connect", self.warn_prefix)
         start_time = self.reactor.monotonic()
@@ -197,15 +211,21 @@ class SerialReader:
             if ret:
                 break
     def connect_file(self, debugoutput, dictionary, pace=False):
+        """        """
+
         self.serial_dev = debugoutput
         self.msgparser.process_identify(dictionary, decompress=False)
         self.serialqueue = self.ffi_main.gc(
             self.ffi_lib.serialqueue_alloc(self.serial_dev.fileno(), b'f', 0),
             self.ffi_lib.serialqueue_free)
     def set_clock_est(self, freq, conv_time, conv_clock, last_clock):
+        """        """
+
         self.ffi_lib.serialqueue_set_clock_est(
             self.serialqueue, freq, conv_time, conv_clock, last_clock)
     def disconnect(self):
+        """        """
+
         if self.serialqueue is not None:
             self.ffi_lib.serialqueue_exit(self.serialqueue)
             if self.background_thread is not None:
@@ -218,21 +238,33 @@ class SerialReader:
             pn.complete(None)
         self.pending_notifications.clear()
     def stats(self, eventtime):
+        """        """
+
         if self.serialqueue is None:
             return ""
         self.ffi_lib.serialqueue_get_stats(self.serialqueue,
                                            self.stats_buf, len(self.stats_buf))
         return str(self.ffi_main.string(self.stats_buf).decode())
     def get_reactor(self):
+        """        """
+
         return self.reactor
     def get_msgparser(self):
+        """        """
+
         return self.msgparser
     def get_serialqueue(self):
+        """        """
+
         return self.serialqueue
     def get_default_command_queue(self):
+        """        """
+
         return self.default_cmd_queue
     # Serial response callbacks
     def register_response(self, callback, name, oid=None):
+        """        """
+
         with self.lock:
             if callback is None:
                 del self.handlers[name, oid]
@@ -240,9 +272,13 @@ class SerialReader:
                 self.handlers[name, oid] = callback
     # Command sending
     def raw_send(self, cmd, minclock, reqclock, cmd_queue):
+        """        """
+
         self.ffi_lib.serialqueue_send(self.serialqueue, cmd_queue,
                                       cmd, len(cmd), minclock, reqclock, 0)
     def raw_send_wait_ack(self, cmd, minclock, reqclock, cmd_queue):
+        """        """
+
         self.last_notify_id += 1
         nid = self.last_notify_id
         completion = self.reactor.completion()
@@ -254,17 +290,25 @@ class SerialReader:
             self._error("Serial connection closed")
         return params
     def send(self, msg, minclock=0, reqclock=0):
+        """        """
+
         cmd = self.msgparser.create_command(msg)
         self.raw_send(cmd, minclock, reqclock, self.default_cmd_queue)
     def send_with_response(self, msg, response):
+        """        """
+
         cmd = self.msgparser.create_command(msg)
         src = SerialRetryCommand(self, response)
         return src.get_response([cmd], self.default_cmd_queue)
     def alloc_command_queue(self):
+        """        """
+
         return self.ffi_main.gc(self.ffi_lib.serialqueue_alloc_commandqueue(),
                                 self.ffi_lib.serialqueue_free_commandqueue)
     # Dumping debug lists
     def dump_debug(self):
+        """        """
+
         out = []
         out.append("Dumping serial stats: %s" % (
             self.stats(self.reactor.monotonic()),))
@@ -289,15 +333,23 @@ class SerialReader:
         return '\n'.join(out)
     # Default message handlers
     def _handle_unknown_init(self, params):
+        """        """
+
         logging.debug("%sUnknown message %d (len %d) while identifying",
                       self.warn_prefix, params['#msgid'], len(params['#msg']))
     def handle_unknown(self, params):
+        """        """
+
         logging.warning("%sUnknown message type %d: %s",
                      self.warn_prefix, params['#msgid'], repr(params['#msg']))
     def handle_output(self, params):
+        """        """
+
         logging.info("%s%s: %s", self.warn_prefix,
                      params['#name'], params['#msg'])
     def handle_default(self, params):
+        """        """
+
         logging.warning("%sgot %s", self.warn_prefix, params)
 
 # Class to send a query command and return the received response
@@ -309,8 +361,12 @@ class SerialRetryCommand:
         self.last_params = None
         self.serial.register_response(self.handle_callback, name, oid)
     def handle_callback(self, params):
+        """        """
+
         self.last_params = params
     def get_response(self, cmds, cmd_queue, minclock=0, reqclock=0):
+        """        """
+
         retries = 5
         retry_delay = .010
         while 1:
@@ -332,6 +388,8 @@ class SerialRetryCommand:
 
 # Attempt to place an AVR stk500v2 style programmer into normal mode
 def stk500v2_leave(ser, reactor):
+    """    """
+
     logging.debug("Starting stk500v2 leave programmer sequence")
     util.clear_hupcl(ser.fileno())
     origbaud = ser.baudrate
@@ -349,6 +407,8 @@ def stk500v2_leave(ser, reactor):
     ser.baudrate = origbaud
 
 def cheetah_reset(serialport, reactor):
+    """    """
+
     # Fysetc Cheetah v1.2 boards have a weird stateful circuitry for
     # configuring the bootloader. This sequence takes care of disabling it for
     # sure.
@@ -376,6 +436,8 @@ def cheetah_reset(serialport, reactor):
 
 # Attempt an arduino style reset on a serial port
 def arduino_reset(serialport, reactor):
+    """    """
+
     # First try opening the port at a different baud
     ser = serial.Serial(serialport, 2400, timeout=0, exclusive=True)
     ser.read(1)

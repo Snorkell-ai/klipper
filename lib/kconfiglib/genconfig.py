@@ -43,6 +43,8 @@ DEFAULT_SYNC_DEPS_PATH = "deps/"
 
 
 def main():
+    """    """
+
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=__doc__)
@@ -142,6 +144,8 @@ only supported for backwards compatibility).
 
 
 def _open_write(path):
+    """    """
+
     # Python 2/3 compatibility. io.open() is available on both, but makes
     # write() expect 'unicode' strings on Python 2.
 

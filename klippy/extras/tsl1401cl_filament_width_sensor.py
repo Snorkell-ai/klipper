@@ -50,6 +50,8 @@ class FilamentWidthSensor:
 
     # Initialization
     def handle_ready(self):
+        """        """
+
         # Load printer objects
         self.toolhead = self.printer.lookup_object('toolhead')
 
@@ -58,10 +60,14 @@ class FilamentWidthSensor:
                                   self.reactor.NOW)
 
     def adc_callback(self, read_time, read_value):
+        """        """
+
         # read sensor value
         self.lastFilamentWidthReading = round(read_value * 5, 2)
 
     def update_filament_array(self, last_epos):
+        """        """
+
         # Fill array
         if len(self.filament_array) > 0:
             # Get last reading position in array & calculate next
@@ -77,6 +83,8 @@ class FilamentWidthSensor:
                                         self.lastFilamentWidthReading])
 
     def extrude_factor_update_event(self, eventtime):
+        """        """
+
         # Update extrude factor
         pos = self.toolhead.get_position()
         last_epos = pos[3]
@@ -108,6 +116,8 @@ class FilamentWidthSensor:
             return self.reactor.NEVER
 
     def cmd_M407(self, gcmd):
+        """        """
+
         response = ""
         if self.lastFilamentWidthReading > 0:
             response += ("Filament dia (measured mm): "
@@ -117,12 +127,16 @@ class FilamentWidthSensor:
         gcmd.respond_info(response)
 
     def cmd_ClearFilamentArray(self, gcmd):
+        """        """
+
         self.filament_array = []
         gcmd.respond_info("Filament width measurements cleared!")
         # Set extrude multiplier to 100%
         self.gcode.run_script_from_command("M221 S100")
 
     def cmd_M405(self, gcmd):
+        """        """
+
         response = "Filament width sensor Turned On"
         if self.is_active:
             response = "Filament width sensor is already On"
@@ -134,6 +148,8 @@ class FilamentWidthSensor:
         gcmd.respond_info(response)
 
     def cmd_M406(self, gcmd):
+        """        """
+
         response = "Filament width sensor Turned Off"
         if not self.is_active:
             response = "Filament width sensor is already Off"
@@ -149,4 +165,6 @@ class FilamentWidthSensor:
         gcmd.respond_info(response)
 
 def load_config(config):
+    """    """
+
     return FilamentWidthSensor(config)

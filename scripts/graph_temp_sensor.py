@@ -18,28 +18,46 @@ class DummyConfig:
         self.sensor_factories = {}
     # Emulate config class
     def getfloat(self, option, default, **kw):
+        """        """
+
         return self.config_settings.get(option, default)
     def get(self, option, default=None):
+        """        """
+
         return default
     def get_printer(self):
+        """        """
+
         return self
     def get_name(self):
+        """        """
+
         return "dummy"
     # Emulate printer class
     def load_object(self, config, name):
+        """        """
+
         return self
     def lookup_object(self, name):
+        """        """
+
         return self
     # Emulate heaters class
     def add_sensor_factory(self, name, factory):
+        """        """
+
         self.sensor_factories[name] = factory
     def do_create_sensor(self, sensor_type):
+        """        """
+
         return self.sensor_factories[sensor_type](self).adc_convert
     # Emulate query_adc class
     def register_adc(self, name, klass):
         pass
     # Emulate pins class
     def setup_pin(self, pin_type, pin_name):
+        """        """
+
         return self
     # Emulate mcu_adc class
     def setup_adc_callback(self, time, callback):
@@ -51,6 +69,8 @@ class DummyConfig:
 ######################################################################
 
 def plot_adc_resolution(config, sensors):
+    """    """
+
     # Temperature list
     all_temps = [float(i) for i in range(1, 351)]
     temps = all_temps[:-1]
@@ -78,6 +98,8 @@ def plot_adc_resolution(config, sensors):
     return fig
 
 def plot_resistance(config, sensors):
+    """    """
+
     # Temperature list
     all_temps = [float(i) for i in range(1, 351)]
     # Build plot
@@ -104,6 +126,8 @@ def plot_resistance(config, sensors):
 ######################################################################
 
 def setup_matplotlib(output_to_file):
+    """    """
+
     global matplotlib
     if output_to_file:
         matplotlib.rcParams.update({'figure.autolayout': True})
@@ -112,6 +136,8 @@ def setup_matplotlib(output_to_file):
     import matplotlib.ticker
 
 def import_sensors(config):
+    """    """
+
     global extras
     # Load adc_temperature.py and thermistor.py modules
     kdir = os.path.join(os.path.dirname(__file__), '..', 'klippy')
@@ -121,6 +147,8 @@ def import_sensors(config):
     extras.adc_temperature.load_config(config)
 
 def main():
+    """    """
+
     # Parse command-line arguments
     usage = "%prog [options]"
     opts = optparse.OptionParser(usage)

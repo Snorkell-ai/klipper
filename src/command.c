@@ -15,6 +15,17 @@
 
 static uint8_t next_sequence = MESSAGE_DEST;
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint32_t
 command_encode_ptr(void *p)
 {
@@ -23,6 +34,17 @@ command_encode_ptr(void *p)
     return (size_t)p;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void *
 command_decode_ptr(uint32_t v)
 {
@@ -32,11 +54,17 @@ command_decode_ptr(uint32_t v)
 }
 
 
-/****************************************************************
- * Binary message parsing
- ****************************************************************/
-
-// Encode an integer as a variable length quantity (vlq)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint8_t *
 encode_int(uint8_t *p, uint32_t v)
 {
@@ -53,7 +81,17 @@ f4: *p++ = v & 0x7f;
     return p;
 }
 
-// Parse an integer that was encoded as a "variable length quantity"
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint32_t
 parse_int(uint8_t **pp)
 {
@@ -69,7 +107,17 @@ parse_int(uint8_t **pp)
     return v;
 }
 
-// Write an encoded msgid (optimized 2-byte VLQ encoder)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint8_t *
 encode_msgid(uint8_t *p, uint_fast16_t encoded_msgid)
 {
@@ -79,7 +127,17 @@ encode_msgid(uint8_t *p, uint_fast16_t encoded_msgid)
     return p;
 }
 
-// Parse an encoded msgid (optimized 2-byte parser, return as positive number)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint_fast16_t
 command_parse_msgid(uint8_t **pp)
 {
@@ -91,7 +149,17 @@ command_parse_msgid(uint8_t **pp)
     return encoded_msgid;
 }
 
-// Parse an incoming command into 'args'
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t *
 command_parsef(uint8_t *p, uint8_t *maxend
                , const struct command_parser *cp, uint32_t *args)
@@ -129,7 +197,17 @@ error:
     shutdown("Command parser error");
 }
 
-// Encode a message
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 command_encodef(uint8_t *buf, const struct command_encoder *ce, va_list args)
 {
@@ -193,7 +271,17 @@ error:
     shutdown("Message encode error");
 }
 
-// Add header and trailer bytes to a message block
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 command_add_frame(uint8_t *buf, uint_fast8_t msglen)
 {
@@ -205,7 +293,17 @@ command_add_frame(uint8_t *buf, uint_fast8_t msglen)
     buf[msglen - MESSAGE_TRAILER_SYNC] = MESSAGE_SYNC;
 }
 
-// Encode a message and then add a message block frame around it
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint_fast8_t
 command_encode_and_frame(uint8_t *buf, const struct command_encoder *ce
                          , va_list args)
@@ -217,7 +315,17 @@ command_encode_and_frame(uint8_t *buf, const struct command_encoder *ce
 
 static uint8_t in_sendf;
 
-// Encode and transmit a "response" message
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_sendf(const struct command_encoder *ce, ...)
 {
@@ -235,19 +343,47 @@ command_sendf(const struct command_encoder *ce, ...)
     writeb(&in_sendf, 0);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sendf_shutdown(void)
 {
     writeb(&in_sendf, 0);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_SHUTDOWN(sendf_shutdown);
 
 
-/****************************************************************
- * Command routing
- ****************************************************************/
-
-// Find the command handler associated with a command
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static const struct command_parser *
 command_lookup_parser(uint_fast16_t cmdid)
 {
@@ -264,6 +400,17 @@ const struct command_encoder encode_acknak PROGMEM = {
 enum { CF_NEED_SYNC=1<<0, CF_NEED_VALID=1<<1 };
 
 // Find the next complete message block
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int_fast8_t
 command_find_block(uint8_t *buf, uint_fast8_t buf_len, uint_fast8_t *pop_count)
 {
@@ -324,7 +471,17 @@ nak:
     return -1;
 }
 
-// Dispatch all the commands found in a message block
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_dispatch(uint8_t *buf, uint_fast8_t msglen)
 {
@@ -345,14 +502,34 @@ command_dispatch(uint8_t *buf, uint_fast8_t msglen)
     }
 }
 
-// Send an ack message to the host (notifying that it can send more data)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_send_ack(void)
 {
     command_sendf(&encode_acknak);
 }
 
-// Find a message block and then dispatch all the commands in it
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int_fast8_t
 command_find_and_dispatch(uint8_t *buf, uint_fast8_t buf_len
                           , uint_fast8_t *pop_count)

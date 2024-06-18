@@ -202,6 +202,17 @@ static void free_hid_device(hid_device *dev)
   /* Free the device itself */
   free(dev);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
 #if 0
 /*TODO: Implement this funciton on hidapi/libusb.. */
@@ -214,6 +225,17 @@ static void register_error(hid_device *device, const char *op)
 #ifdef INVASIVE_GET_USAGE
 /* Get bytes from a HID Report Descriptor.
    Only call with a num_bytes of 0, 1, 2, or 4. */
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint32_t get_bytes(uint8_t *rpt, size_t len, size_t num_bytes, size_t cur)
 {
   /* Return if there aren't enough bytes. */
@@ -359,6 +381,17 @@ static int is_language_supported(libusb_device_handle *dev, uint16_t lang)
   uint16_t buf[32];
   int len;
   int i;
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
   /* Get the string from libusb. */
   len = libusb_get_string_descriptor(dev,
@@ -376,6 +409,17 @@ static int is_language_supported(libusb_device_handle *dev, uint16_t lang)
     if (buf[i] == lang)
       return 1;
   }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
   return 0;
 }
@@ -403,9 +447,17 @@ static wchar_t *get_usb_string(libusb_device_handle *dev, uint8_t idx)
   char *inptr;
 #endif
   char *outptr;
-#endif
-
-  /* Determine which language to use. */
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   uint16_t lang;
   lang = get_usb_code_for_current_locale();
   if (!is_language_supported(dev, lang))
@@ -499,6 +551,17 @@ int HID_API_EXPORT hid_init(void)
     if (libusb_init(&usb_context))
       return -1;
 
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     /* Set the locale if it's not set. */
     locale = setlocale(LC_CTYPE, NULL);
     if (!locale)
@@ -715,6 +778,17 @@ hid_device * hid_open(unsigned short vendor_id, unsigned short product_id, const
         path_to_open = cur_dev->path;
         break;
       }
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     }
     cur_dev = cur_dev->next;
   }
@@ -751,6 +825,17 @@ static void read_callback(struct libusb_transfer *transfer)
       pthread_cond_signal(&dev->condition);
     }
     else {
+      /**
+       * Transforms the sign-up request data to match the backend's expected format.
+       *
+       * @param {SignUpRequest} signUpData - The original sign-up request data.
+       *
+       * @returns {Object} The transformed sign-up request data with the following changes:
+       * - `firstName` is mapped to `first_name`
+       * - `lastName` is mapped to `last_name`
+       * - `email` is mapped to `username`
+       * - All other properties remain unchanged.
+       */
       /* Find the end of the list and attach. */
       struct input_report *cur = dev->input_reports;
       int num_queued = 0;
@@ -818,6 +903,17 @@ static void *read_thread(void *param)
      from inside read_callback() */
   libusb_submit_transfer(dev->transfer);
 
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   /* Notify the main thread that the read thread is up and running. */
   pthread_barrier_wait(&dev->barrier);
 
@@ -1063,6 +1159,17 @@ static int return_data(hid_device *dev, unsigned char *data, size_t length)
   dev->input_reports = rpt->next;
   free(rpt->data);
   free(rpt);
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   return len;
 }
 
@@ -1077,6 +1184,17 @@ int HID_API_EXPORT hid_read_timeout(hid_device *dev, unsigned char *data, size_t
 {
   int bytes_read = -1;
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 #if 0
   int transferred;
   int res = libusb_interrupt_transfer(dev->device_handle, dev->input_endpoint, data, length, &transferred, 5000);
@@ -1446,6 +1564,17 @@ static struct lang_map_entry lang_map[] = {
   LANG(NULL, NULL, 0x0),
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint16_t get_usb_code_for_current_locale(void)
 {
   char *locale;

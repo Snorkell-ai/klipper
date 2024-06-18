@@ -91,8 +91,12 @@ class DeltesianKinematics:
         self.homed_axis = [False] * 3
         self.set_position([0., 0., 0.], ())
     def get_steppers(self):
+        """        """
+
         return [s for rail in self.rails for s in rail.get_steppers()]
     def _actuator_to_cartesian(self, sp):
+        """        """
+
         arm_x, arm2 = self.arm_x, self.arm2
         dx, dz = sum(arm_x), sp[1] - sp[0]
         pivots = math.sqrt(dx**2 + dz**2)
@@ -104,20 +108,28 @@ class DeltesianKinematics:
         z = xt * dz / pivots - zt * dx / pivots + sp[0]
         return [x, z]
     def _pillars_z_max(self, x):
+        """        """
+
         arm_x, arm2 = self.arm_x, self.arm2
         dz = (math.sqrt(arm2[0] - (arm_x[0] + x)**2),
               math.sqrt(arm2[1] - (arm_x[1] - x)**2))
         return min([o - z for o, z in zip(self._abs_endstop, dz)])
     def calc_position(self, stepper_positions):
+        """        """
+
         sp = [stepper_positions[rail.get_name()] for rail in self.rails]
         x, z = self._actuator_to_cartesian(sp[:2])
         return [x, sp[2], z]
     def set_position(self, newpos, homing_axes):
+        """        """
+
         for rail in self.rails:
             rail.set_position(newpos)
         for n in homing_axes:
             self.homed_axis[n] = True
     def home(self, homing_state):
+        """        """
+
         homing_axes = homing_state.get_axes()
         home_xz = 0 in homing_axes or 2 in homing_axes
         home_y = 1 in homing_axes
@@ -143,8 +155,12 @@ class DeltesianKinematics:
                 forcepos[1] += 1.5 * (position_max - hi.position_endstop)
             homing_state.home_rails([self.rails[2]], forcepos, homepos)
     def _motor_off(self, print_time):
+        """        """
+
         self.homed_axis = [False] * 3
     def check_move(self, move):
+        """        """
+
         limits = list(map(list, self.limits))
         spos, epos = move.start_pos, move.end_pos
         homing_move = False
@@ -173,6 +189,8 @@ class DeltesianKinematics:
             elif move_x2 > self.slow_x2:
                 move.limit_speed(self.max_velocity *0.50, self.max_accel *0.50)
     def get_status(self, eventtime):
+        """        """
+
         axes = [a for a, b in zip("xyz", self.homed_axis) if b]
         return {
             'homed_axes': "".join(axes),
@@ -181,4 +199,6 @@ class DeltesianKinematics:
         }
 
 def load_kinematics(toolhead, config):
+    """    """
+
     return DeltesianKinematics(toolhead, config)

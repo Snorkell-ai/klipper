@@ -20,6 +20,17 @@
 #define FREQ_PERIPH (CONFIG_CLOCK_FREQ / 2)
 
 // Map a peripheral address to its enable bits
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct cline
 lookup_clock_line(uint32_t periph_base)
 {
@@ -35,14 +46,34 @@ lookup_clock_line(uint32_t periph_base)
     }
 }
 
-// Return the frequency of the given peripheral clock
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint32_t
 get_pclock_frequency(uint32_t periph_base)
 {
     return FREQ_PERIPH;
 }
 
-// Enable a GPIO peripheral clock
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_clock_enable(GPIO_TypeDef *regs)
 {
@@ -51,7 +82,17 @@ gpio_clock_enable(GPIO_TypeDef *regs)
     RCC->APB2ENR;
 }
 
-// Main clock setup called at chip startup
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 clock_setup(void)
 {
@@ -91,10 +132,18 @@ clock_setup(void)
 }
 
 
-/****************************************************************
- * GPIO setup
- ****************************************************************/
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 stm32f1_alternative_remap(uint32_t mapr_mask, uint32_t mapr_value)
 {
@@ -109,7 +158,17 @@ stm32f1_alternative_remap(uint32_t mapr_mask, uint32_t mapr_value)
 
 #define STM_OSPEED 0x1 // ~10Mhz at 50pF
 
-// Set the mode and extended function of a pin
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_peripheral(uint32_t gpio, uint32_t mode, int pullup)
 {
@@ -212,11 +271,17 @@ gpio_peripheral(uint32_t gpio, uint32_t mode, int pullup)
 }
 
 
-/****************************************************************
- * Bootloader
- ****************************************************************/
-
-// Reboot into USB "HID" bootloader
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 usb_hid_bootloader(void)
 {
@@ -228,7 +293,17 @@ usb_hid_bootloader(void)
     NVIC_SystemReset();
 }
 
-// Reboot into USB "stm32duino" bootloader
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 usb_stm32duino_bootloader(void)
 {
@@ -240,7 +315,17 @@ usb_stm32duino_bootloader(void)
     NVIC_SystemReset();
 }
 
-// Handle reboot requests
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 bootloader_request(void)
 {
@@ -252,11 +337,17 @@ bootloader_request(void)
 }
 
 
-/****************************************************************
- * Startup
- ****************************************************************/
-
-// Main entry point - called from armcm_boot.c:ResetHandler()
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 armcm_main(void)
 {

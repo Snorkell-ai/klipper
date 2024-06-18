@@ -14,6 +14,8 @@ CMD_SET_KLIPPER_NODEID = 0x01
 CMD_SET_CANBOOT_NODEID = 0x11
 
 def query_unassigned(canbus_iface):
+    """    """
+
     # Open CAN socket
     filters = [{"can_id": CANBUS_ID_ADMIN + 1, "can_mask": 0x7ff,
                 "extended": False}]
@@ -52,6 +54,8 @@ def query_unassigned(canbus_iface):
     sys.stdout.write("Total %d uuids found\n" % (len(found_ids,)))
 
 def main():
+    """    """
+
     usage = "%prog [options] <can interface>"
     opts = optparse.OptionParser(usage)
     options, args = opts.parse_args()

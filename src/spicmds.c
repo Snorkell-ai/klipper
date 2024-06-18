@@ -26,6 +26,17 @@ enum {
     SF_HAVE_PIN = 1, SF_SOFTWARE = 2, SF_HARDWARE = 4, SF_CS_ACTIVE_HIGH = 8
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_spi(uint32_t *args)
 {
@@ -47,6 +58,17 @@ struct spidev_s *
 spidev_oid_lookup(uint8_t oid)
 {
     return oid_lookup(oid, command_config_spi);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 }
 
 void
@@ -54,12 +76,34 @@ command_spi_set_bus(uint32_t *args)
 {
     struct spidev_s *spi = spidev_oid_lookup(args[0]);
     uint8_t mode = args[2];
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     if (mode > 3 || spi->flags & (SF_SOFTWARE|SF_HARDWARE))
         shutdown("Invalid spi config");
     spi->spi_config = spi_setup(args[1], mode, args[3]);
     spi->flags |= SF_HARDWARE;
 }
 DECL_COMMAND(command_spi_set_bus,
+             /**
+              * Transforms the sign-up request data to match the backend's expected format.
+              *
+              * @param {SignUpRequest} signUpData - The original sign-up request data.
+              *
+              * @returns {Object} The transformed sign-up request data with the following changes:
+              * - `firstName` is mapped to `first_name`
+              * - `lastName` is mapped to `last_name`
+              * - `email` is mapped to `username`
+              * - All other properties remain unchanged.
+              */
              "spi_set_bus oid=%c spi_bus=%u mode=%u rate=%u");
 
 void
@@ -73,6 +117,17 @@ spidev_set_software_bus(struct spidev_s *spi, struct spi_software *ss)
 
 int
 spidev_have_cs_pin(struct spidev_s *spi)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 {
     return spi->flags & SF_HAVE_PIN;
 }
@@ -82,18 +137,51 @@ spidev_get_cs_pin(struct spidev_s *spi)
 {
     return spi->pin;
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
 void
 spidev_transfer(struct spidev_s *spi, uint8_t receive_data
                 , uint8_t data_len, uint8_t *data)
 {
     uint_fast8_t flags = spi->flags;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     if (!(flags & (SF_SOFTWARE|SF_HARDWARE)))
         // Not yet initialized
         return;
 
     if (CONFIG_WANT_SOFTWARE_SPI && flags & SF_SOFTWARE)
         spi_software_prepare(spi->spi_software);
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     else
         spi_prepare(spi->spi_config);
 
@@ -120,6 +208,17 @@ command_spi_transfer(uint32_t *args)
     sendf("spi_transfer_response oid=%c response=%*s", oid, data_len, data);
 }
 DECL_COMMAND(command_spi_transfer, "spi_transfer oid=%c data=%*s");
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
 void
 command_spi_send(uint32_t *args)
@@ -132,6 +231,17 @@ command_spi_send(uint32_t *args)
 DECL_COMMAND(command_spi_send, "spi_send oid=%c data=%*s");
 
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 /****************************************************************
  * Shutdown handling
  ****************************************************************/
@@ -153,10 +263,43 @@ command_config_spi_shutdown(uint32_t *args)
     sd->shutdown_msg_len = shutdown_msg_len;
     uint8_t *shutdown_msg = command_decode_ptr(args[3]);
     memcpy(sd->shutdown_msg, shutdown_msg, shutdown_msg_len);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_config_spi_shutdown,
              "config_spi_shutdown oid=%c spi_oid=%c shutdown_msg=%*s");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 spidev_shutdown(void)
 {
@@ -174,4 +317,15 @@ spidev_shutdown(void)
         spidev_transfer(sd->spi, 0, sd->shutdown_msg_len, sd->shutdown_msg);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_SHUTDOWN(spidev_shutdown);

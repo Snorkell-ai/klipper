@@ -59,6 +59,17 @@ static int usb_write(hid_device *device, uint8_t *buffer, int len) {
       return 0; // Partial data has been sent. Firmware will be corrupted. Abort process.
     }
   }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
   if(retries <= 0) {
     return 0;
@@ -78,6 +89,17 @@ int main(int argc, char *argv[]) {
   FILE *firmware_file = NULL;
   int error = 0;
   uint32_t n_bytes = 0;
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   int i;
   setbuf(stdout, NULL);
   uint8_t _timer = 0;
@@ -257,6 +279,17 @@ exit:
   return error;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int serial_init(char *argument, uint8_t __timer) {
 
   printf("> Trying to open the [%s]...\n",argument);

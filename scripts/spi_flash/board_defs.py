@@ -180,9 +180,13 @@ BOARD_ALIASES = {
 }
 
 def list_boards():
+    """    """
+
     return sorted(list(BOARD_DEFS.keys()) + list(BOARD_ALIASES.keys()))
 
 def lookup_board(name):
+    """    """
+
     name = name.lower()
     bdef = BOARD_ALIASES.get(name, BOARD_DEFS.get(name, None))
     if bdef is not None:

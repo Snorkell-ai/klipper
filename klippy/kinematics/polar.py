@@ -37,14 +37,20 @@ class PolarKinematics:
         self.axes_min = toolhead.Coord(-max_xy, -max_xy, min_z, 0.)
         self.axes_max = toolhead.Coord(max_xy, max_xy, max_z, 0.)
     def get_steppers(self):
+        """        """
+
         return list(self.steppers)
     def calc_position(self, stepper_positions):
+        """        """
+
         bed_angle = stepper_positions[self.steppers[0].get_name()]
         arm_pos = stepper_positions[self.rails[0].get_name()]
         z_pos = stepper_positions[self.rails[1].get_name()]
         return [math.cos(bed_angle) * arm_pos, math.sin(bed_angle) * arm_pos,
                 z_pos]
     def set_position(self, newpos, homing_axes):
+        """        """
+
         for s in self.steppers:
             s.set_position(newpos)
         if 2 in homing_axes:
@@ -52,9 +58,13 @@ class PolarKinematics:
         if 0 in homing_axes and 1 in homing_axes:
             self.limit_xy2 = self.rails[0].get_range()[1]**2
     def note_z_not_homed(self):
+        """        """
+
         # Helper for Safe Z Home
         self.limit_z = (1.0, -1.0)
     def _home_axis(self, homing_state, axis, rail):
+        """        """
+
         # Determine movement
         position_min, position_max = rail.get_range()
         hi = rail.get_homing_info()
@@ -70,6 +80,8 @@ class PolarKinematics:
         # Perform homing
         homing_state.home_rails([rail], forcepos, homepos)
     def home(self, homing_state):
+        """        """
+
         # Always home XY together
         homing_axes = homing_state.get_axes()
         home_xy = 0 in homing_axes or 1 in homing_axes
@@ -86,9 +98,13 @@ class PolarKinematics:
         if home_z:
             self._home_axis(homing_state, 2, self.rails[1])
     def _motor_off(self, print_time):
+        """        """
+
         self.limit_z = (1.0, -1.0)
         self.limit_xy2 = -1.
     def check_move(self, move):
+        """        """
+
         end_pos = move.end_pos
         xy2 = end_pos[0]**2 + end_pos[1]**2
         if xy2 > self.limit_xy2:
@@ -105,6 +121,8 @@ class PolarKinematics:
             move.limit_speed(self.max_z_velocity * z_ratio,
                              self.max_z_accel * z_ratio)
     def get_status(self, eventtime):
+        """        """
+
         xy_home = "xy" if self.limit_xy2 >= 0. else ""
         z_home = "z" if self.limit_z[0] <= self.limit_z[1] else ""
         return {
@@ -114,4 +132,6 @@ class PolarKinematics:
         }
 
 def load_kinematics(toolhead, config):
+    """    """
+
     return PolarKinematics(toolhead, config)

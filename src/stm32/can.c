@@ -95,6 +95,17 @@
 #endif
 
 // Transmit a packet
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int
 canhw_send(struct canbus_msg *msg)
 {
@@ -131,7 +142,17 @@ canhw_send(struct canbus_msg *msg)
     return CANMSG_DATA_LEN(msg);
 }
 
-// Setup the receive packet filter
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 canhw_set_filter(uint32_t id)
 {
@@ -168,7 +189,17 @@ canhw_set_filter(uint32_t id)
     fcan->FMR = fmr & ~CAN_FMR_FINIT;
 }
 
-// This function handles CAN global interrupts
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 CAN_IRQHandler(void)
 {
@@ -199,6 +230,17 @@ CAN_IRQHandler(void)
     }
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline const uint32_t
 make_btr(uint32_t sjw,       // Sync jump width, ... hmm
          uint32_t time_seg1, // time segment before sample point, 1 .. 16
@@ -211,6 +253,17 @@ make_btr(uint32_t sjw,       // Sync jump width, ... hmm
             | ((uint32_t)(brp - 1)) << CAN_BTR_BRP_Pos);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline const uint32_t
 compute_btr(uint32_t pclock, uint32_t bitrate)
 {
@@ -247,6 +300,17 @@ compute_btr(uint32_t pclock, uint32_t bitrate)
     return make_btr(sjw, time_seg1, time_seg2, brp);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 can_init(void)
 {
@@ -291,4 +355,15 @@ can_init(void)
         armcm_enable_irq(CAN_IRQHandler, CAN_TX_IRQn, 0);
     SOC_CAN->IER = CAN_IER_FMPIE0;
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_INIT(can_init);

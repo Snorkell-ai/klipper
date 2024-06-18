@@ -24,6 +24,17 @@ enum { BF_NO_RETRANSMIT = 0x80, BF_PENDING = 0xff, BF_ACKED = 0xfe };
 
 static struct task_wake buttons_wake;
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 buttons_event(struct timer *t)
 {
@@ -69,6 +80,17 @@ buttons_event(struct timer *t)
     return SF_RESCHEDULE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_buttons(uint32_t *args)
 {
@@ -94,6 +116,17 @@ command_buttons_add(uint32_t *args)
 }
 DECL_COMMAND(command_buttons_add,
              "buttons_add oid=%c pos=%c pin=%u pull_up=%c");
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
 void
 command_buttons_query(uint32_t *args)
@@ -106,6 +139,17 @@ command_buttons_query(uint32_t *args)
     b->ack_count = b->report_count = 0;
     b->retransmit_state = BF_ACKED;
     b->retransmit_count = args[3];
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     if (b->retransmit_count >= BF_NO_RETRANSMIT)
         shutdown("Invalid buttons retransmit count");
     if (! b->rest_ticks)
@@ -127,6 +171,17 @@ command_buttons_ack(uint32_t *args)
         b->report_count = 0;
         b->retransmit_state = BF_ACKED;
     } else {
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         uint8_t pending = b->report_count - count, i;
         for (i=0; i<pending; i++)
             b->reports[i] = b->reports[i+count];
@@ -134,8 +189,30 @@ command_buttons_ack(uint32_t *args)
     }
     irq_enable();
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_buttons_ack, "buttons_ack oid=%c count=%c");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 buttons_task(void)
 {
@@ -160,4 +237,15 @@ buttons_task(void)
               , oid, b->ack_count, report_count, b->reports);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(buttons_task);

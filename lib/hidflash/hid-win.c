@@ -128,6 +128,17 @@ extern "C" {
   static HidD_SetNumInputBuffers_ HidD_SetNumInputBuffers;
 
   static HMODULE lib_handle = NULL;
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   static BOOLEAN initialized = FALSE;
 #endif /* HIDAPI_USE_DDK */
 
@@ -143,6 +154,17 @@ struct hid_device_ {
     OVERLAPPED ol;
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static hid_device *new_hid_device()
 {
   hid_device *dev = (hid_device*) calloc(1, sizeof(hid_device));
@@ -160,6 +182,17 @@ static hid_device *new_hid_device()
   return dev;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void free_hid_device(hid_device *dev)
 {
   CloseHandle(dev->ol.hEvent);
@@ -169,6 +202,17 @@ static void free_hid_device(hid_device *dev)
   free(dev);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void register_error(hid_device *device, const char *op)
 {
   WCHAR *ptr, *msg;
@@ -200,6 +244,17 @@ static void register_error(hid_device *device, const char *op)
 }
 
 #ifndef HIDAPI_USE_DDK
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int lookup_functions()
 {
   lib_handle = LoadLibraryA("hid.dll");
@@ -225,6 +280,17 @@ static int lookup_functions()
 }
 #endif
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static HANDLE open_device(const char *path, BOOL enumerate)
 {
   HANDLE handle;

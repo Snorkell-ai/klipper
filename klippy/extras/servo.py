@@ -40,8 +40,12 @@ class PrinterServo:
                                    self.cmd_SET_SERVO,
                                    desc=self.cmd_SET_SERVO_help)
     def get_status(self, eventtime):
+        """        """
+
         return {'value': self.last_value}
     def _set_pwm(self, print_time, value):
+        """        """
+
         if value == self.last_value:
             return
         print_time = max(print_time, self.last_value_time + PIN_MIN_TIME)
@@ -49,15 +53,21 @@ class PrinterServo:
         self.last_value = value
         self.last_value_time = print_time
     def _get_pwm_from_angle(self, angle):
+        """        """
+
         angle = max(0., min(self.max_angle, angle))
         width = self.min_width + angle * self.angle_to_width
         return width * self.width_to_value
     def _get_pwm_from_pulse_width(self, width):
+        """        """
+
         if width:
             width = max(self.min_width, min(self.max_width, width))
         return width * self.width_to_value
     cmd_SET_SERVO_help = "Set servo angle"
     def cmd_SET_SERVO(self, gcmd):
+        """        """
+
         print_time = self.printer.lookup_object('toolhead').get_last_move_time()
         width = gcmd.get_float('WIDTH', None)
         if width is not None:
@@ -67,4 +77,6 @@ class PrinterServo:
             self._set_pwm(print_time, self._get_pwm_from_angle(angle))
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterServo(config)

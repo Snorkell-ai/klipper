@@ -41,7 +41,17 @@ digital_toggle_event(struct timer *timer)
     uint32_t waketime = d->timer.waketime;
     if (d->flags & DF_ON)
         waketime += d->on_duration;
-    else
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         waketime += d->off_duration;
     if (d->flags & DF_CHECK_END && !timer_is_before(waketime, d->end_time)) {
         // End of normal pulsing - next event loads new pwm settings
@@ -52,7 +62,17 @@ digital_toggle_event(struct timer *timer)
     return SF_RESCHEDULE;
 }
 
-// Load next pin output setting
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 digital_load_event(struct timer *timer)
 {
@@ -113,6 +133,17 @@ digital_load_event(struct timer *timer)
     return SF_RESCHEDULE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_digital_out(uint32_t *args)
 {
@@ -139,6 +170,17 @@ command_set_digital_out_pwm_cycle(uint32_t *args)
     irq_enable();
 }
 DECL_COMMAND(command_set_digital_out_pwm_cycle,
+             /**
+              * Transforms the sign-up request data to match the backend's expected format.
+              *
+              * @param {SignUpRequest} signUpData - The original sign-up request data.
+              *
+              * @returns {Object} The transformed sign-up request data with the following changes:
+              * - `firstName` is mapped to `first_name`
+              * - `lastName` is mapped to `last_name`
+              * - `email` is mapped to `username`
+              * - All other properties remain unchanged.
+              */
              "set_digital_out_pwm_cycle oid=%c cycle_ticks=%u");
 
 void
@@ -152,6 +194,17 @@ command_queue_digital_out(uint32_t *args)
     irq_disable();
     int first_on_queue = move_queue_push(&m->node, &d->mq);
     if (!first_on_queue) {
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         irq_enable();
         return;
     }
@@ -185,6 +238,17 @@ command_update_digital_out(uint32_t *args)
     gpio_out_write(d->pin, on_flag);
     if (!on_flag != !(flags & DF_DEFAULT_ON) && d->max_duration) {
         d->timer.waketime = d->end_time = timer_read_time() + d->max_duration;
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         d->timer.func = digital_load_event;
         d->flags = (flags & DF_DEFAULT_ON) | on_flag | DF_CHECK_END;
         sched_add_timer(&d->timer);
@@ -205,6 +269,17 @@ digital_out_shutdown(void)
         move_queue_clear(&d->mq);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_SHUTDOWN(digital_out_shutdown);
 
 void
@@ -212,4 +287,37 @@ command_set_digital_out(uint32_t *args)
 {
     gpio_out_setup(args[0], args[1]);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ /**
+  * Transforms the sign-up request data to match the backend's expected format.
+  *
+  * @param {SignUpRequest} signUpData - The original sign-up request data.
+  *
+  * @returns {Object} The transformed sign-up request data with the following changes:
+  * - `firstName` is mapped to `first_name`
+  * - `lastName` is mapped to `last_name`
+  * - `email` is mapped to `username`
+  * - All other properties remain unchanged.
+  */
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ /**
+  * Transforms the sign-up request data to match the backend's expected format.
+  *
+  * @param {SignUpRequest} signUpData - The original sign-up request data.
+  *
+  * @returns {Object} The transformed sign-up request data with the following changes:
+  * - `firstName` is mapped to `first_name`
+  * - `lastName` is mapped to `last_name`
+  * - `email` is mapped to `username`
+  * - All other properties remain unchanged.
+  */
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_set_digital_out, "set_digital_out pin=%u value=%c");

@@ -30,9 +30,13 @@ class HandleStatusField:
         self.next_update_time = 0.
         self.result = None
     def get_label(self):
+        """        """
+
         label = '%s field' % (self.field_name,)
         return {'label': label, 'units': 'Unknown'}
     def pull_data(self, req_time):
+        """        """
+
         if req_time < self.next_update_time:
             return self.result
         db, next_update_time = self.status_tracker.pull_status(req_time)
@@ -90,8 +94,12 @@ class HandleTrapQ:
         self.axis = pinfo.get('axis')
         self.pull_data = pinfo['func']
     def get_label(self):
+        """        """
+
         return self.label
     def _find_move(self, req_time):
+        """        """
+
         data_pos = self.data_pos
         while 1:
             move = self.cur_data[data_pos]
@@ -108,30 +116,40 @@ class HandleTrapQ:
             self.cur_data = jmsg['data']
             self.data_pos = data_pos = 0
     def _pull_axis_position(self, req_time):
+        """        """
+
         move, in_range = self._find_move(req_time)
         print_time, move_t, start_v, accel, start_pos, axes_r = move
         mtime = max(0., min(move_t, req_time - print_time))
         dist = (start_v + .5 * accel * mtime) * mtime;
         return start_pos[self.axis] + axes_r[self.axis] * dist
     def _pull_axis_velocity(self, req_time):
+        """        """
+
         move, in_range = self._find_move(req_time)
         if not in_range:
             return 0.
         print_time, move_t, start_v, accel, start_pos, axes_r = move
         return (start_v + accel * (req_time - print_time)) * axes_r[self.axis]
     def _pull_axis_accel(self, req_time):
+        """        """
+
         move, in_range = self._find_move(req_time)
         if not in_range:
             return 0.
         print_time, move_t, start_v, accel, start_pos, axes_r = move
         return accel * axes_r[self.axis]
     def _pull_velocity(self, req_time):
+        """        """
+
         move, in_range = self._find_move(req_time)
         if not in_range:
             return 0.
         print_time, move_t, start_v, accel, start_pos, axes_r = move
         return start_v + accel * (req_time - print_time)
     def _pull_accel(self, req_time):
+        """        """
+
         move, in_range = self._find_move(req_time)
         if not in_range:
             return 0.
@@ -161,9 +179,13 @@ class HandleStepQ:
             except ValueError:
                 raise error("Invalid stepq smooth time '%s'" % (name_parts[2],))
     def get_label(self):
+        """        """
+
         label = '%s position' % (self.stepper_name,)
         return {'label': label, 'units': 'Position\n(mm)'}
     def pull_data(self, req_time):
+        """        """
+
         smooth_time = self.smooth_time
         while 1:
             data_pos = self.data_pos
@@ -193,6 +215,8 @@ class HandleStepQ:
                 return next_halfpos + rtdiff * pdiff / stime
             return last_pos
     def _pull_block(self, req_time):
+        """        """
+
         step_data = self.step_data
         del step_data[:-1]
         self.data_pos = 0
@@ -268,17 +292,23 @@ class HandleStepPhase:
         self.next_status_time = 0.
         self.mcu_phase_offset = 0
     def get_label(self):
+        """        """
+
         if self.report_microsteps:
             return {'label': '%s microstep' % (self.stepper_name,),
                     'units': 'Microstep'}
         return {'label': '%s phase' % (self.stepper_name,), 'units': 'Phase'}
     def _pull_phase_offset(self, req_time):
+        """        """
+
         db, self.next_status_time = self.status_tracker.pull_status(req_time)
         mcu_phase_offset = db.get(self.driver_name, {}).get('mcu_phase_offset')
         if mcu_phase_offset is None:
             mcu_phase_offset = 0
         self.mcu_phase_offset = mcu_phase_offset
     def pull_data(self, req_time):
+        """        """
+
         if req_time >= self.next_status_time:
             self._pull_phase_offset(req_time)
         while 1:
@@ -295,6 +325,8 @@ class HandleStepPhase:
             step_pos = step_data[data_pos][1]
             return (step_pos + self.mcu_phase_offset) % self.phases
     def _pull_block(self, req_time):
+        """        """
+
         step_data = self.step_data
         del step_data[:-1]
         self.data_pos = 0
@@ -353,9 +385,13 @@ class HandleADXL345:
             raise error("Unknown adxl345 data selection '%s'" % (name,))
         self.axis = 'xyz'.index(name_parts[2])
     def get_label(self):
+        """        """
+
         label = '%s %s acceleration' % (self.adxl_name, 'xyz'[self.axis])
         return {'label': label, 'units': 'Acceleration\n(mm/s^2)'}
     def pull_data(self, req_time):
+        """        """
+
         axis = self.axis
         while 1:
             if req_time <= self.next_accel_time:
@@ -410,9 +446,13 @@ class HandleAngle:
                 rotation_distance *= d / n
             self.angle_dist = rotation_distance / 65536.
     def get_label(self):
+        """        """
+
         label = '%s position' % (self.angle_name,)
         return {'label': label, 'units': 'Position\n(mm)'}
     def pull_data(self, req_time):
+        """        """
+
         while 1:
             if req_time <= self.next_angle_time:
                 pdiff = self.next_angle - self.last_angle
@@ -440,6 +480,8 @@ class HandleAngle:
 LogHandlers["angle"] = HandleAngle
 
 def interpolate(next_val, prev_val, next_time, prev_time, req_time):
+    """    """
+
     vdiff = next_val - prev_val
     tdiff = next_time - prev_time
     rtdiff = req_time - prev_time
@@ -467,6 +509,8 @@ class HandleEddyCurrent:
         self.cur_data = []
         self.data_pos = 0
     def get_label(self):
+        """        """
+
         if self.report_frequency:
             label = '%s frequency' % (self.sensor_name,)
             return {'label': label, 'units': 'Frequency\n(Hz)'}
@@ -476,6 +520,8 @@ class HandleEddyCurrent:
         label = '%s period' % (self.sensor_name,)
         return {'label': label, 'units': 'Period\n(s)'}
     def pull_data(self, req_time):
+        """        """
+
         while 1:
             next_time, next_freq, next_z = self.next_samp
             if req_time <= next_time:
@@ -516,9 +562,13 @@ class JsonLogReader:
         self.comp = zlib.decompressobj(31)
         self.msgs = [b""]
     def seek(self, pos):
+        """        """
+
         self.file.seek(pos)
         self.comp = zlib.decompressobj(-15)
     def pull_msg(self):
+        """        """
+
         msgs = self.msgs
         while 1:
             if len(msgs) > 1:
@@ -546,11 +596,17 @@ class JsonDispatcher:
         self.log_reader = JsonLogReader(log_prefix + ".json.gz")
         self.is_eof = False
     def check_end_of_data(self):
+        """        """
+
         return self.is_eof and not any(self.queues.values())
     def add_handler(self, name, subscription_id):
+        """        """
+
         self.names[name] = q = []
         self.queues.setdefault(subscription_id, []).append(q)
     def pull_msg(self, req_time, name):
+        """        """
+
         q = self.names[name]
         while 1:
             if q:
@@ -583,6 +639,8 @@ class TrackStatus:
         self.status = dict(start_status)
         self.next_update = {}
     def pull_status(self, req_time):
+        """        """
+
         status = self.status
         while 1:
             if req_time < self.next_status_time:
@@ -600,6 +658,8 @@ class TrackStatus:
 
 # Split a string by commas while keeping parenthesis intact
 def param_split(line):
+    """    """
+
     out = []
     level = prev = 0
     for i, c in enumerate(line):
@@ -615,6 +675,8 @@ def param_split(line):
 
 # Split a dataset name (eg, "abc(def,ghi)") into parts
 def name_split(name):
+    """    """
+
     if '(' not in name or not name.endswith(')'):
         raise error("Malformed dataset name '%s'" % (name,))
     aname, aparams = name.split('(', 1)
@@ -622,6 +684,8 @@ def name_split(name):
 
 # Return a description of possible datasets
 def list_datasets():
+    """    """
+
     datasets = []
     for lh in sorted(LogHandlers.keys()):
         datasets += LogHandlers[lh].DataSets
@@ -640,6 +704,8 @@ class LogManager:
         self.log_subscriptions = {}
         self.status_tracker = None
     def setup_index(self):
+        """        """
+
         fmsg = self.index_reader.pull_msg()
         self.initial_status = status = fmsg['status']
         self.start_status = dict(status)
@@ -647,12 +713,20 @@ class LogManager:
         self.initial_start_time = self.start_time = start_time
         self.log_subscriptions = fmsg.get('subscriptions', {})
     def get_initial_status(self):
+        """        """
+
         return self.initial_status
     def available_dataset_types(self):
+        """        """
+
         return {name: None for name in LogHandlers}
     def get_jdispatch(self):
+        """        """
+
         return self.jdispatch
     def seek_time(self, req_time):
+        """        """
+
         self.start_time = req_start_time = self.initial_start_time + req_time
         start_status = self.start_status
         seek_time = max(self.initial_start_time, req_start_time - 1.)
@@ -671,15 +745,23 @@ class LogManager:
         if file_position:
             self.jdispatch.log_reader.seek(file_position)
     def get_initial_start_time(self):
+        """        """
+
         return self.initial_start_time
     def get_start_time(self):
+        """        """
+
         return self.start_time
     def get_status_tracker(self):
+        """        """
+
         if self.status_tracker is None:
             self.status_tracker = TrackStatus(self, "status", self.start_status)
             self.jdispatch.add_handler("status", "status")
         return self.status_tracker
     def setup_dataset(self, name):
+        """        """
+
         if name in self.datasets:
             return self.datasets[name]
         name_parts = name_split(name)

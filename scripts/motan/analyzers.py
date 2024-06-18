@@ -25,6 +25,8 @@ class GenDerivative:
         self.source = name_parts[1]
         amanager.setup_dataset(self.source)
     def get_label(self):
+        """        """
+
         label = self.amanager.get_label(self.source)
         lname = label['label']
         units = label['units']
@@ -39,6 +41,8 @@ class GenDerivative:
             units = units.replace(old, new).replace(old.lower(), new.lower())
         return {'label': lname, 'units': units}
     def generate_data(self):
+        """        """
+
         inv_seg_time = 1. / self.amanager.get_segment_time()
         data = self.amanager.get_datasets()[self.source]
         deriv = [(data[i+1] - data[i]) * inv_seg_time
@@ -69,6 +73,8 @@ class GenIntegral:
             if len(name_parts) == 4:
                 self.half_life = float(name_parts[3])
     def get_label(self):
+        """        """
+
         label = self.amanager.get_label(self.source)
         lname = label['label']
         units = label['units']
@@ -83,6 +89,8 @@ class GenIntegral:
             units = units.replace(old, new).replace(old.lower(), new.lower())
         return {'label': lname, 'units': units}
     def generate_data(self):
+        """        """
+
         seg_time = self.amanager.get_segment_time()
         src = self.amanager.get_datasets()[self.source]
         offset = sum(src) / len(src)
@@ -126,6 +134,8 @@ class GenNorm2:
         for dataset in self.datasets:
             amanager.setup_dataset(dataset)
     def get_label(self):
+        """        """
+
         label = self.amanager.get_label(self.datasets[0])
         units = label['units']
         datas = ['position', 'velocity', 'acceleration']
@@ -145,6 +155,8 @@ class GenNorm2:
         lname += ' ' + data_name + ' norm2'
         return {'label': lname, 'units': units}
     def generate_data(self):
+        """        """
+
         seg_time = self.amanager.get_segment_time()
         data = []
         for dataset in self.datasets:
@@ -175,9 +187,13 @@ class GenSmoothed:
         if len(name_parts) > 2:
             self.smooth_time = float(name_parts[2])
     def get_label(self):
+        """        """
+
         label = self.amanager.get_label(self.source)
         return {'label': 'Smoothed ' + label['label'], 'units': label['units']}
     def generate_data(self):
+        """        """
+
         seg_time = self.amanager.get_segment_time()
         src = self.amanager.get_datasets()[self.source]
         n = len(src)
@@ -226,18 +242,26 @@ class GenKinematicPosition:
             self.generate_data = self.generate_data_passthrough
             amanager.setup_dataset(self.source1)
     def get_label(self):
+        """        """
+
         return {'label': 'Position', 'units': 'Position\n(mm)'}
     def generate_data_corexy_plus(self):
+        """        """
+
         datasets = self.amanager.get_datasets()
         data1 = datasets[self.source1]
         data2 = datasets[self.source2]
         return [d1 + d2 for d1, d2 in zip(data1, data2)]
     def generate_data_corexy_minus(self):
+        """        """
+
         datasets = self.amanager.get_datasets()
         data1 = datasets[self.source1]
         data2 = datasets[self.source2]
         return [d1 - d2 for d1, d2 in zip(data1, data2)]
     def generate_data_passthrough(self):
+        """        """
+
         return self.amanager.get_datasets()[self.source1]
 AHandlers["kin"] = GenKinematicPosition
 
@@ -255,12 +279,16 @@ class GenCorexyPosition:
         amanager.setup_dataset(self.source1)
         amanager.setup_dataset(self.source2)
     def get_label(self):
+        """        """
+
         axis = 'x'
         if not self.is_plus:
             axis = 'y'
         return {'label': 'Derived %s position' % (axis,),
                 'units': 'Position\n(mm)'}
     def generate_data(self):
+        """        """
+
         datasets = self.amanager.get_datasets()
         data1 = datasets[self.source1]
         data2 = datasets[self.source2]
@@ -281,6 +309,8 @@ class GenDeviation:
         amanager.setup_dataset(self.source1)
         amanager.setup_dataset(self.source2)
     def get_label(self):
+        """        """
+
         label1 = self.amanager.get_label(self.source1)
         label2 = self.amanager.get_label(self.source2)
         if label1['units'] != label2['units']:
@@ -289,6 +319,8 @@ class GenDeviation:
         units = '\n'.join([parts[0]] + ['Deviation'] + parts[1:])
         return {'label': label1['label'] + ' deviation', 'units': units}
     def generate_data(self):
+        """        """
+
         datasets = self.amanager.get_datasets()
         data1 = datasets[self.source1]
         data2 = datasets[self.source2]
@@ -302,6 +334,8 @@ AHandlers["deviation"] = GenDeviation
 
 # Return a description of available analyzers
 def list_datasets():
+    """    """
+
     datasets = []
     for ah in sorted(AHandlers.keys()):
         datasets += AHandlers[ah].DataSets
@@ -320,16 +354,28 @@ class AnalyzerManager:
         self.dataset_times = []
         self.duration = 5.
     def set_duration(self, duration):
+        """        """
+
         self.duration = duration
     def get_segment_time(self):
+        """        """
+
         return self.segment_time
     def get_datasets(self):
+        """        """
+
         return self.datasets
     def get_dataset_times(self):
+        """        """
+
         return self.dataset_times
     def get_initial_status(self):
+        """        """
+
         return self.lmanager.get_initial_status()
     def setup_dataset(self, name):
+        """        """
+
         name = name.strip()
         if name in self.raw_datasets:
             return self.raw_datasets[name]
@@ -351,6 +397,8 @@ class AnalyzerManager:
         self.datasets[name] = []
         return hdl
     def get_label(self, dataset):
+        """        """
+
         hdl = self.raw_datasets.get(dataset)
         if hdl is None:
             hdl = self.gen_datasets.get(dataset)
@@ -358,6 +406,8 @@ class AnalyzerManager:
                 raise self.error("Unknown dataset '%s'" % (dataset,))
         return hdl.get_label()
     def generate_datasets(self):
+        """        """
+
         # Generate raw data
         list_hdls = [(self.datasets[name], hdl)
                      for name, hdl in self.raw_datasets.items()]

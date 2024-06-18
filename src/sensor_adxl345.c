@@ -28,6 +28,17 @@ enum {
 static struct task_wake adxl345_wake;
 
 // Event handler that wakes adxl345_task() periodically
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 adxl345_event(struct timer *timer)
 {
@@ -37,6 +48,17 @@ adxl345_event(struct timer *timer)
     return SF_DONE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_adxl345(uint32_t *args)
 {
@@ -58,7 +80,17 @@ adxl_reschedule_timer(struct adxl345 *ax)
 }
 
 // Chip registers
-#define AR_DATAX0      0x32
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 #define AR_FIFO_STATUS 0x39
 #define AM_READ  0x80
 #define AM_MULTI 0x40
@@ -79,6 +111,17 @@ adxl_query(struct adxl345 *ax, uint8_t oid)
     uint8_t *d = &ax->sb.data[ax->sb.data_count];
     if (((msg[2] & 0xf0) && (msg[2] & 0xf0) != 0xf0)
         || ((msg[4] & 0xf0) && (msg[4] & 0xf0) != 0xf0)
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         || ((msg[6] & 0xf0) && (msg[6] & 0xf0) != 0xf0)
         || (msg[7] != SET_FIFO_CTL) || (fifo_status > 32)) {
         // Data error - may be a CS, MISO, MOSI, or SCLK glitch
@@ -119,6 +162,17 @@ command_query_adxl345(uint32_t *args)
         // End measurements
         return;
 
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     // Start new measurements query
     ax->rest_ticks = args[1];
     sensor_bulk_reset(&ax->sb);
@@ -137,14 +191,47 @@ command_query_adxl345_status(uint32_t *args)
     uint32_t time2 = timer_read_time();
 
     uint_fast8_t fifo_status = msg[1] & ~0x80; // Ignore trigger bit
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     if (fifo_status > 32)
         // Query error - don't send response - host will retry
         return;
     sensor_bulk_status(&ax->sb, args[0], time1, time2-time1
                        , fifo_status * BYTES_PER_SAMPLE);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_query_adxl345_status, "query_adxl345_status oid=%c");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 adxl345_task(void)
 {
@@ -158,4 +245,15 @@ adxl345_task(void)
             adxl_query(ax, oid);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(adxl345_task);

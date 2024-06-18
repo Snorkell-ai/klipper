@@ -17,9 +17,13 @@ class dac084S085:
             if val is not None:
                 self.set_register(chan, int(val * 255. / scale))
     def set_register(self, chan, value):
+        """        """
+
         b1 = (chan << 6) | (1 << 4) | ((value >> 4) & 0x0f)
         b2 = (value << 4) & 0xf0
         self.spi.spi_send([b1, b2])
 
 def load_config_prefix(config):
+    """    """
+
     return dac084S085(config)

@@ -45,11 +45,17 @@ class DriveCurrentCalibrate:
                                    self.cmd_LDC_CALIBRATE,
                                    desc=self.cmd_LDC_CALIBRATE_help)
     def get_drive_current(self):
+        """        """
+
         return self.drive_cur
     cmd_LDC_CALIBRATE_help = "Calibrate LDC1612 DRIVE_CURRENT register"
     def cmd_LDC_CALIBRATE(self, gcmd):
+        """        """
+
         is_in_progress = True
         def handle_batch(msg):
+            """            """
+
             return is_in_progress
         self.sensor.add_client(handle_batch)
         toolhead = self.printer.lookup_object("toolhead")
@@ -114,6 +120,8 @@ class LDC1612:
         self.batch_bulk.add_mux_endpoint("ldc1612/dump_ldc1612", "sensor",
                                          self.name, {'header': hdr})
     def _build_config(self):
+        """        """
+
         cmdqueue = self.i2c.get_command_queue()
         self.query_ldc1612_cmd = self.mcu.lookup_command(
             "query_ldc1612 oid=%c rest_ticks=%u", cq=cmdqueue)
@@ -127,24 +135,36 @@ class LDC1612:
             "ldc1612_home_state oid=%c homing=%c trigger_clock=%u",
             oid=self.oid, cq=cmdqueue)
     def get_mcu(self):
+        """        """
+
         return self.i2c.get_mcu()
     def read_reg(self, reg):
+        """        """
+
         params = self.i2c.i2c_read([reg], 2)
         response = bytearray(params['response'])
         return (response[0] << 8) | response[1]
     def set_reg(self, reg, val, minclock=0):
+        """        """
+
         self.i2c.i2c_write([reg, (val >> 8) & 0xff, val & 0xff],
                            minclock=minclock)
     def add_client(self, cb):
+        """        """
+
         self.batch_bulk.add_client(cb)
     # Homing
     def setup_home(self, print_time, trigger_freq,
                    trsync_oid, hit_reason, err_reason):
+        """        """
+
         clock = self.mcu.print_time_to_clock(print_time)
         tfreq = int(trigger_freq * (1<<28) / float(LDC1612_FREQ) + 0.5)
         self.ldc1612_setup_home_cmd.send(
             [self.oid, clock, tfreq, trsync_oid, hit_reason, err_reason])
     def clear_home(self):
+        """        """
+
         self.ldc1612_setup_home_cmd.send([self.oid, 0, 0, 0, 0, 0])
         if self.mcu.is_fileoutput():
             return 0.
@@ -153,6 +173,8 @@ class LDC1612:
         return self.mcu.clock_to_print_time(tclock)
     # Measurement decoding
     def _convert_samples(self, samples):
+        """        """
+
         freq_conv = float(LDC1612_FREQ) / (1<<28)
         count = 0
         for ptime, val in samples:
@@ -163,6 +185,8 @@ class LDC1612:
             count += 1
     # Start, stop, and process message batches
     def _start_measurements(self):
+        """        """
+
         # In case of miswiring, testing LDC1612 device ID prevents treating
         # noise or wrong signal as a correctly initialized device
         manuf_id = self.read_reg(REG_MANUFACTURER_ID)
@@ -191,11 +215,15 @@ class LDC1612:
         self.ffreader.note_start()
         self.last_error_count = 0
     def _finish_measurements(self):
+        """        """
+
         # Halt bulk reading
         self.query_ldc1612_cmd.send_wait_ack([self.oid, 0])
         self.ffreader.note_end()
         logging.info("LDC1612 finished '%s' measurements", self.name)
     def _process_batch(self, eventtime):
+        """        """
+
         samples = self.ffreader.pull_samples()
         self._convert_samples(samples)
         if not samples:

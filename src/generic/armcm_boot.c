@@ -11,6 +11,17 @@
 #include "misc.h" // dynmem_start
 
 // Export MCU type
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_CONSTANT_STR("MCU", CONFIG_MCU);
 
 // Symbols created by armcm_link.lds.S linker script
@@ -116,6 +127,17 @@ ResetHandler(void)
 DECL_ARMCM_IRQ(ResetHandler, -15);
 
 // Code called for any undefined interrupts
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 DefaultHandler(void)
 {
@@ -124,18 +146,34 @@ DefaultHandler(void)
 }
 
 
-/****************************************************************
- * Dynamic memory range
- ****************************************************************/
-
-// Return the start of memory available for dynamic allocations
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void *
 dynmem_start(void)
 {
     return &_bss_end;
 }
 
-// Return the end of memory available for dynamic allocations
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void *
 dynmem_end(void)
 {

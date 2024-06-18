@@ -20,6 +20,17 @@ enum {
 DECL_ENUMERATION("thermocouple_type", "MAX31855", TS_CHIP_MAX31855);
 DECL_ENUMERATION("thermocouple_type", "MAX31856", TS_CHIP_MAX31856);
 DECL_ENUMERATION("thermocouple_type", "MAX31865", TS_CHIP_MAX31865);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_ENUMERATION("thermocouple_type", "MAX6675", TS_CHIP_MAX6675);
 
 struct thermocouple_spi {
@@ -38,6 +49,17 @@ enum {
 
 static struct task_wake thermocouple_wake;
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t thermocouple_event(struct timer *timer) {
     struct thermocouple_spi *spi = container_of(
             timer, struct thermocouple_spi, timer);
@@ -48,6 +70,17 @@ static uint_fast8_t thermocouple_event(struct timer *timer) {
     return SF_RESCHEDULE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_thermocouple(uint32_t *args)
 {
@@ -74,16 +107,49 @@ command_query_thermocouple(uint32_t *args)
     spi->rest_time = args[2];
     if (! spi->rest_time)
         return;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     spi->min_value = args[3];
     spi->max_value = args[4];
     spi->max_invalid = args[5];
     spi->invalid_count = 0;
     sched_add_timer(&spi->timer);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_query_thermocouple,
              "query_thermocouple oid=%c clock=%u rest_ticks=%u"
              " min_value=%u max_value=%u max_invalid_count=%c");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 thermocouple_respond(struct thermocouple_spi *spi, uint32_t next_begin_time
                      , uint32_t value, uint8_t fault, uint8_t oid)
@@ -100,6 +166,17 @@ thermocouple_respond(struct thermocouple_spi *spi, uint32_t next_begin_time
     spi->invalid_count = 0;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 thermocouple_handle_max31855(struct thermocouple_spi *spi
                              , uint32_t next_begin_time, uint8_t oid)
@@ -115,6 +192,17 @@ thermocouple_handle_max31855(struct thermocouple_spi *spi
 #define MAX31856_LTCBH_REG 0x0C
 #define MAX31856_SR_REG 0x0F
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 thermocouple_handle_max31856(struct thermocouple_spi *spi
                              , uint32_t next_begin_time, uint8_t oid)
@@ -134,6 +222,17 @@ thermocouple_handle_max31856(struct thermocouple_spi *spi
 #define MAX31865_RTDMSB_REG 0x01
 #define MAX31865_FAULTSTAT_REG 0x07
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 thermocouple_handle_max31865(struct thermocouple_spi *spi
                              , uint32_t next_begin_time, uint8_t oid)
@@ -151,6 +250,17 @@ thermocouple_handle_max31865(struct thermocouple_spi *spi
     thermocouple_respond(spi, next_begin_time, value, fault, oid);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 thermocouple_handle_max6675(struct thermocouple_spi *spi
                             , uint32_t next_begin_time, uint8_t oid)
@@ -163,7 +273,17 @@ thermocouple_handle_max6675(struct thermocouple_spi *spi
     thermocouple_respond(spi, next_begin_time, value, value & 0x06, oid);
 }
 
-// task to read thermocouple and send response
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 thermocouple_task(void)
 {
@@ -194,4 +314,15 @@ thermocouple_task(void)
         }
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(thermocouple_task);

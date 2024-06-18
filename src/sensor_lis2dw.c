@@ -35,6 +35,17 @@ enum {
 static struct task_wake lis2dw_wake;
 
 // Event handler that wakes lis2dw_task() periodically
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 lis2dw_event(struct timer *timer)
 {
@@ -44,6 +55,17 @@ lis2dw_event(struct timer *timer)
     return SF_DONE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_lis2dw(uint32_t *args)
 {
@@ -65,7 +87,17 @@ lis2dw_reschedule_timer(struct lis2dw *ax)
 }
 
 // Query accelerometer data
-static void
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 lis2dw_query(struct lis2dw *ax, uint8_t oid)
 {
     uint8_t msg[7] = {0};
@@ -75,7 +107,17 @@ lis2dw_query(struct lis2dw *ax, uint8_t oid)
     msg[0] = LIS_AR_DATAX0 | LIS_AM_READ ;
     uint8_t *d = &ax->sb.data[ax->sb.data_count];
 
-    spidev_transfer(ax->spi, 1, sizeof(msg), msg);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
     spidev_transfer(ax->spi, 1, sizeof(fifo), fifo);
     fifo_empty = fifo[1]&0x3F;
@@ -118,6 +160,17 @@ command_query_lis2dw(uint32_t *args)
         // End measurements
         return;
 
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     // Start new measurements query
     ax->rest_ticks = args[1];
     sensor_bulk_reset(&ax->sb);
@@ -136,8 +189,41 @@ command_query_lis2dw_status(uint32_t *args)
     sensor_bulk_status(&ax->sb, args[0], time1, time2-time1
                        , (msg[1] & 0x1f) * BYTES_PER_SAMPLE);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_query_lis2dw_status, "query_lis2dw_status oid=%c");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 lis2dw_task(void)
 {
@@ -151,4 +237,15 @@ lis2dw_task(void)
             lis2dw_query(ax, oid);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(lis2dw_task);

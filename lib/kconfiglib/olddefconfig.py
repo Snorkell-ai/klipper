@@ -19,6 +19,8 @@ import kconfiglib
 
 
 def main():
+    """    """
+
     kconf = kconfiglib.standard_kconfig(__doc__)
     print(kconf.load_config())
     print(kconf.write_config())

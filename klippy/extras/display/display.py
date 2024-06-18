@@ -40,8 +40,12 @@ class DisplayTemplate:
         gcode_macro = self.printer.load_object(config, 'gcode_macro')
         self.template = gcode_macro.load_template(config, 'text')
     def get_params(self):
+        """        """
+
         return self.params
     def render(self, context, **kwargs):
+        """        """
+
         params = dict(self.params)
         params.update(**kwargs)
         if len(params) != len(self.params):
@@ -75,9 +79,13 @@ class DisplayGroup:
                 template = gcode_macro.load_template(c, 'text')
                 self.data_items.append((row, col, template))
     def show(self, display, templates, eventtime):
+        """        """
+
         context = self.data_items[0][2].create_template_context(eventtime)
         context['draw_progress_bar'] = display.draw_progress_bar
         def render(name, **kwargs):
+            """            """
+
             return templates[name].render(context, **kwargs)
         context['render'] = render
         for row, col, template in self.data_items:
@@ -94,12 +102,20 @@ class PrinterDisplayTemplate:
         self.display_glyphs = {}
         self.load_config(config)
     def get_display_templates(self):
+        """        """
+
         return self.display_templates
     def get_display_data_groups(self):
+        """        """
+
         return self.display_data_groups
     def get_display_glyphs(self):
+        """        """
+
         return self.display_glyphs
     def _parse_glyph(self, config, glyph_name, data, width, height):
+        """        """
+
         glyph_data = []
         for line in data.split('\n'):
             line = line.strip().replace('.', '0').replace('*', '1')
@@ -112,6 +128,8 @@ class PrinterDisplayTemplate:
             raise config.error("Glyph %s incorrect lines" % (glyph_name,))
         return glyph_data
     def load_config(self, config):
+        """        """
+
         # Load default display config file
         pconfig = self.printer.lookup_object('configfile')
         filename = os.path.join(os.path.dirname(__file__), 'display.cfg')
@@ -165,6 +183,8 @@ class PrinterDisplayTemplate:
                 icons.setdefault(glyph_name, {})['icon5x8'] = (slot, idata)
 
 def lookup_display_templates(config):
+    """    """
+
     printer = config.get_printer()
     dt = printer.lookup_object("display_template", None)
     if dt is None:
@@ -212,13 +232,19 @@ class PrinterLCD:
             gcode.register_mux_command('SET_DISPLAY_GROUP', 'DISPLAY', None,
                                        self.cmd_SET_DISPLAY_GROUP)
     def get_dimensions(self):
+        """        """
+
         return self.lcd_chip.get_dimensions()
     def handle_ready(self):
+        """        """
+
         self.lcd_chip.init()
         # Start screen update timer
         self.reactor.update_timer(self.screen_update_timer, self.reactor.NOW)
     # Screen updating
     def screen_update_event(self, eventtime):
+        """        """
+
         if self.redraw_request_pending:
             self.redraw_request_pending = False
             self.redraw_time = eventtime + REDRAW_MIN_TIME
@@ -237,11 +263,15 @@ class PrinterLCD:
         self.lcd_chip.flush()
         return eventtime + REDRAW_TIME
     def request_redraw(self):
+        """        """
+
         if self.redraw_request_pending:
             return
         self.redraw_request_pending = True
         self.reactor.update_timer(self.screen_update_timer, self.redraw_time)
     def draw_text(self, row, col, mixed_text, eventtime):
+        """        """
+
         pos = col
         for i, text in enumerate(mixed_text.split('~')):
             if i & 1 == 0:
@@ -253,6 +283,8 @@ class PrinterLCD:
                 pos += self.lcd_chip.write_glyph(pos, row, text)
         return pos
     def draw_progress_bar(self, row, col, width, value):
+        """        """
+
         pixels = -1 << int(width * 8 * (1. - value) + .5)
         pixels |= (1 << (width * 8 - 1)) | 1
         for i in range(width):
@@ -261,6 +293,8 @@ class PrinterLCD:
         return ""
     cmd_SET_DISPLAY_GROUP_help = "Set the active display group"
     def cmd_SET_DISPLAY_GROUP(self, gcmd):
+        """        """
+
         group = gcmd.get('GROUP')
         new_dg = self.display_data_groups.get(group)
         if new_dg is None:
@@ -268,4 +302,6 @@ class PrinterLCD:
         self.show_data_group = new_dg
 
 def load_config(config):
+    """    """
+
     return PrinterLCD(config)

@@ -48,9 +48,13 @@ class ManualProbe:
                 desc=self.cmd_Z_OFFSET_APPLY_ENDSTOP_help)
         self.reset_status()
     def manual_probe_finalize(self, kin_pos):
+        """        """
+
         if kin_pos is not None:
             self.gcode.respond_info("Z position is %.3f" % (kin_pos[2],))
     def reset_status(self):
+        """        """
+
         self.status = {
             'is_active': False,
             'z_position': None,
@@ -58,11 +62,17 @@ class ManualProbe:
             'z_position_upper': None
         }
     def get_status(self, eventtime):
+        """        """
+
         return self.status
     cmd_MANUAL_PROBE_help = "Start manual probe helper script"
     def cmd_MANUAL_PROBE(self, gcmd):
+        """        """
+
         ManualProbeHelper(self.printer, gcmd, self.manual_probe_finalize)
     def z_endstop_finalize(self, kin_pos):
+        """        """
+
         if kin_pos is None:
             return
         z_pos = self.z_position_endstop - kin_pos[2]
@@ -74,8 +84,12 @@ class ManualProbe:
         configfile.set('stepper_z', 'position_endstop', "%.3f" % (z_pos,))
     cmd_Z_ENDSTOP_CALIBRATE_help = "Calibrate a Z endstop"
     def cmd_Z_ENDSTOP_CALIBRATE(self, gcmd):
+        """        """
+
         ManualProbeHelper(self.printer, gcmd, self.z_endstop_finalize)
     def cmd_Z_OFFSET_APPLY_ENDSTOP(self,gcmd):
+        """        """
+
         offset = self.gcode_move.get_status()['homing_origin'].z
         configfile = self.printer.lookup_object('configfile')
         if offset == 0:
@@ -89,6 +103,8 @@ class ManualProbe:
             configfile.set('stepper_z', 'position_endstop',
                 "%.3f" % (new_calibrate,))
     def cmd_Z_OFFSET_APPLY_DELTA_ENDSTOPS(self,gcmd):
+        """        """
+
         offset = self.gcode_move.get_status()['homing_origin'].z
         configfile = self.printer.lookup_object('configfile')
         if offset == 0:
@@ -115,6 +131,8 @@ class ManualProbe:
 
 # Verify that a manual probe isn't already in progress
 def verify_no_manual_probe(printer):
+    """    """
+
     gcode = printer.lookup_object('gcode')
     try:
         gcode.register_command('ACCEPT', 'dummy')
@@ -152,6 +170,8 @@ class ManualProbeHelper:
         self.start_position = self.toolhead.get_position()
         self.report_z_status()
     def get_kinematics_pos(self):
+        """        """
+
         toolhead_pos = self.toolhead.get_position()
         if toolhead_pos == self.last_toolhead_pos:
             return self.last_kinematics_pos
@@ -164,6 +184,8 @@ class ManualProbeHelper:
         self.last_kinematics_pos = kin_pos
         return kin_pos
     def move_z(self, z_pos):
+        """        """
+
         curpos = self.toolhead.get_position()
         try:
             z_bob_pos = z_pos + Z_BOB_MINIMUM
@@ -174,6 +196,8 @@ class ManualProbeHelper:
             self.finalize(False)
             raise
     def report_z_status(self, warn_no_change=False, prev_pos=None):
+        """        """
+
         # Get position
         kin_pos = self.get_kinematics_pos()
         z_pos = kin_pos[2]
@@ -205,6 +229,8 @@ class ManualProbeHelper:
                                 % (prev_str, z_pos, next_str))
     cmd_ACCEPT_help = "Accept the current Z position"
     def cmd_ACCEPT(self, gcmd):
+        """        """
+
         pos = self.toolhead.get_position()
         start_pos = self.start_position
         if pos[:2] != start_pos[:2] or pos[2] >= start_pos[2]:
@@ -216,9 +242,13 @@ class ManualProbeHelper:
         self.finalize(True)
     cmd_ABORT_help = "Abort manual Z probing tool"
     def cmd_ABORT(self, gcmd):
+        """        """
+
         self.finalize(False)
     cmd_TESTZ_help = "Move to new Z height"
     def cmd_TESTZ(self, gcmd):
+        """        """
+
         # Store current position for later reference
         kin_pos = self.get_kinematics_pos()
         z_pos = kin_pos[2]
@@ -248,6 +278,8 @@ class ManualProbeHelper:
         self.move_z(next_z_pos)
         self.report_z_status(next_z_pos != z_pos, z_pos)
     def finalize(self, success):
+        """        """
+
         self.manual_probe.reset_status()
         self.gcode.register_command('ACCEPT', None)
         self.gcode.register_command('NEXT', None)
@@ -259,4 +291,6 @@ class ManualProbeHelper:
         self.finalize_callback(kin_pos)
 
 def load_config(config):
+    """    """
+
     return ManualProbe(config)

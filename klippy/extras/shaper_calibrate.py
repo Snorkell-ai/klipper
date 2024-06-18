@@ -31,6 +31,8 @@ class CalibrationData:
                          'all': self.psd_sum}
         self.data_sets = 1
     def add_data(self, other):
+        """        """
+
         np = self.numpy
         joined_data_sets = self.data_sets + other.data_sets
         for psd, other_psd in zip(self._psd_list, other._psd_list):
@@ -42,14 +44,20 @@ class CalibrationData:
             psd[:] = (psd + other_normalized) * (1. / joined_data_sets)
         self.data_sets = joined_data_sets
     def set_numpy(self, numpy):
+        """        """
+
         self.numpy = numpy
     def normalize_to_frequencies(self):
+        """        """
+
         for psd in self._psd_list:
             # Avoid division by zero errors
             psd /= self.freq_bins + .1
             # Remove low-frequency noise
             psd[self.freq_bins < MIN_FREQ] = 0.
     def get_psd(self, axis='all'):
+        """        """
+
         return self._psd_map[axis]
 
 
@@ -70,11 +78,15 @@ class ShaperCalibrate:
                     "docs/Measuring_Resonances.md for more details).")
 
     def background_process_exec(self, method, args):
+        """        """
+
         if self.printer is None:
             return method(*args)
         import queuelogger
         parent_conn, child_conn = multiprocessing.Pipe()
         def wrapper():
+            """            """
+
             queuelogger.clear_bg_logging()
             try:
                 res = method(*args)
@@ -106,6 +118,8 @@ class ShaperCalibrate:
         return res
 
     def _split_into_windows(self, x, window_size, overlap):
+        """        """
+
         # Memory-efficient algorithm to split an input 'x' into a series
         # of overlapping windows
         step_between_windows = window_size - overlap
@@ -116,6 +130,8 @@ class ShaperCalibrate:
                 x, shape=shape, strides=strides, writeable=False)
 
     def _psd(self, x, fs, nfft):
+        """        """
+
         # Calculate power spectral density (PSD) using Welch's algorithm
         np = self.numpy
         window = np.kaiser(nfft, 6.)
@@ -146,6 +162,8 @@ class ShaperCalibrate:
         return freqs, psd
 
     def calc_freq_response(self, raw_values):
+        """        """
+
         np = self.numpy
         if raw_values is None:
             return None
@@ -173,6 +191,8 @@ class ShaperCalibrate:
         return CalibrationData(fx, px+py+pz, px, py, pz)
 
     def process_accelerometer_data(self, data):
+        """        """
+
         calibration_data = self.background_process_exec(
                 self.calc_freq_response, (data,))
         if calibration_data is None:
@@ -182,6 +202,8 @@ class ShaperCalibrate:
         return calibration_data
 
     def _estimate_shaper(self, shaper, test_damping_ratio, test_freqs):
+        """        """
+
         np = self.numpy
 
         A, T = np.array(shaper[0]), np.array(shaper[1])
@@ -197,6 +219,8 @@ class ShaperCalibrate:
 
     def _estimate_remaining_vibrations(self, shaper, test_damping_ratio,
                                        freq_bins, psd):
+        """        """
+
         vals = self._estimate_shaper(shaper, test_damping_ratio, freq_bins)
         # The input shaper can only reduce the amplitude of vibrations by
         # SHAPER_VIBRATION_REDUCTION times, so all vibrations below that
@@ -208,6 +232,8 @@ class ShaperCalibrate:
         return (remaining_vibrations / all_vibrations, vals)
 
     def _get_shaper_smoothing(self, shaper, accel=5000, scv=5.):
+        """        """
+
         half_accel = accel * .5
 
         A, T = shaper
@@ -230,6 +256,8 @@ class ShaperCalibrate:
     def fit_shaper(self, shaper_cfg, calibration_data, shaper_freqs,
                    damping_ratio, scv, max_smoothing, test_damping_ratios,
                    max_freq):
+        """        """
+
         np = self.numpy
 
         damping_ratio = damping_ratio or shaper_defs.DEFAULT_DAMPING_RATIO
@@ -292,6 +320,8 @@ class ShaperCalibrate:
         return selected
 
     def _bisect(self, func):
+        """        """
+
         left = right = 1.
         if not func(1e-9):
             return 0.
@@ -310,6 +340,8 @@ class ShaperCalibrate:
         return left
 
     def find_shaper_max_accel(self, shaper, scv):
+        """        """
+
         # Just some empirically chosen value which produces good projections
         # for max_accel without much smoothing
         TARGET_SMOOTHING = 0.12
@@ -321,6 +353,8 @@ class ShaperCalibrate:
                          damping_ratio=None, scv=None, shaper_freqs=None,
                          max_smoothing=None, test_damping_ratios=None,
                          max_freq=None, logger=None):
+        """        """
+
         best_shaper = None
         all_shapers = []
         shapers = shapers or AUTOTUNE_SHAPERS
@@ -348,6 +382,8 @@ class ShaperCalibrate:
         return best_shaper, all_shapers
 
     def save_params(self, configfile, axis, shaper_name, shaper_freq):
+        """        """
+
         if axis == 'xy':
             self.save_params(configfile, 'x', shaper_name, shaper_freq)
             self.save_params(configfile, 'y', shaper_name, shaper_freq)
@@ -357,6 +393,8 @@ class ShaperCalibrate:
                            '%.1f' % (shaper_freq,))
 
     def apply_params(self, input_shaper, axis, shaper_name, shaper_freq):
+        """        """
+
         if axis == 'xy':
             self.apply_params(input_shaper, 'x', shaper_name, shaper_freq)
             self.apply_params(input_shaper, 'y', shaper_name, shaper_freq)
@@ -370,6 +408,8 @@ class ShaperCalibrate:
 
     def save_calibration_data(self, output, calibration_data, shapers=None,
                               max_freq=None):
+        """        """
+
         try:
             max_freq = max_freq or MAX_FREQ
             with open(output, "w") as csvfile:

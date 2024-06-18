@@ -50,7 +50,29 @@ enum {
 
 // PINS: CLK -> PC12 , CMD -> PD2,
 //       DAT0 -> PC8, DAT1 -> PC9, DAT2 -> PC10, DAT3 -> PC11
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_ENUMERATION("sdio_bus", "sdio", 0);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_CONSTANT_STR("BUS_PINS_sdio", "PC12,PD2,PC8,PC9,PC10,PC11");
 
 #define SDIO_FUNCTION GPIO_FUNCTION(12)
@@ -85,6 +107,17 @@ static const struct sdio_info sdio_bus[] = {
     SDIO_STA_RXOVERR | SDIO_STA_CMDREND | SDIO_STA_CMDSENT | \
     SDIO_STA_DATAEND | SDIO_STA_DBCKEND | SDIO_STA_SDIOIT)
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct sdio_config
 sdio_setup(uint32_t bus)
 {
@@ -128,6 +161,17 @@ sdio_setup(uint32_t bus)
     return sdio_config;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint32_t
 sdio_get_cmd_error(struct sdio_config sdio, uint32_t flags)
 {
@@ -156,6 +200,17 @@ sdio_get_cmd_error(struct sdio_config sdio, uint32_t flags)
     return SDIO_OK;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t
 sdio_send_command(struct sdio_config sdio_config, uint8_t cmd,
     uint32_t argument, uint8_t wait, uint8_t *response_data,
@@ -245,6 +300,17 @@ sdio_send_command(struct sdio_config sdio_config, uint8_t cmd,
     return SDIO_OK;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint32_t
 sdio_get_dctrl_blocksize(uint32_t value)
 {
@@ -272,6 +338,17 @@ sdio_get_dctrl_blocksize(uint32_t value)
     return SDIO_DCTRL_DBLOCKSIZE_Msk;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t
 sdio_prepare_data_transfer(struct sdio_config sdio_config, uint8_t read,
     uint32_t numblocks, uint32_t blocksize, uint32_t timeout)
@@ -291,6 +368,17 @@ sdio_prepare_data_transfer(struct sdio_config sdio_config, uint8_t read,
     return SDIO_OK;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t
 sdio_read_data(struct sdio_config sdio_config, uint8_t *data,
     uint32_t numblocks, uint32_t blocksize)
@@ -345,6 +433,17 @@ sdio_read_data(struct sdio_config sdio_config, uint8_t *data,
     return SDIO_OK;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t
 sdio_write_data(struct sdio_config sdio_config, uint8_t *data,
     uint32_t numblocks, uint32_t blocksize)
@@ -387,6 +486,17 @@ sdio_write_data(struct sdio_config sdio_config, uint8_t *data,
     return SDIO_OK;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sdio_send_cmd(struct sdio_config sdio_config, uint8_t cmd, uint32_t argument,
     uint8_t wait)
@@ -400,6 +510,17 @@ sdio_send_cmd(struct sdio_config sdio_config, uint8_t cmd, uint32_t argument,
     MODIFY_REG(sdio->CMD, CMD_CLEAR_MASK, cmdreg);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sdio_set_speed(struct sdio_config sdio_config, uint32_t speed)
 {

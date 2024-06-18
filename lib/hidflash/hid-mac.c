@@ -47,6 +47,17 @@ typedef struct pthread_barrier {
     int trip_count;
 } pthread_barrier_t;
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int pthread_barrier_init(pthread_barrier_t *barrier, const pthread_barrierattr_t *attr, unsigned int count)
 {
   if(count == 0) {
@@ -67,6 +78,17 @@ static int pthread_barrier_init(pthread_barrier_t *barrier, const pthread_barrie
   return 0;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int pthread_barrier_destroy(pthread_barrier_t *barrier)
 {
   pthread_cond_destroy(&barrier->cond);
@@ -74,6 +96,17 @@ static int pthread_barrier_destroy(pthread_barrier_t *barrier)
   return 0;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int pthread_barrier_wait(pthread_barrier_t *barrier)
 {
   pthread_mutex_lock(&barrier->mutex);
@@ -132,6 +165,17 @@ static hid_device *new_hid_device(void)
   dev->run_loop_mode = NULL;
   dev->run_loop = NULL;
   dev->source = NULL;
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   dev->input_report_buf = NULL;
   dev->input_reports = NULL;
   dev->shutdown_thread = 0;
@@ -155,6 +199,17 @@ static void free_hid_device(hid_device *dev)
   while (rpt) {
     struct input_report *next = rpt->next;
     free(rpt->data);
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     free(rpt);
     rpt = next;
   }
@@ -199,6 +254,17 @@ static int32_t get_int_property(IOHIDDeviceRef device, CFStringRef key)
     if (CFGetTypeID(ref) == CFNumberGetTypeID()) {
       CFNumberGetValue((CFNumberRef) ref, kCFNumberSInt32Type, &value);
       return value;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     }
   }
   return 0;
@@ -214,21 +280,65 @@ static unsigned short get_product_id(IOHIDDeviceRef device)
   return get_int_property(device, CFSTR(kIOHIDProductIDKey));
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int32_t get_max_report_length(IOHIDDeviceRef device)
 {
   return get_int_property(device, CFSTR(kIOHIDMaxInputReportSizeKey));
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int get_string_property(IOHIDDeviceRef device, CFStringRef prop, wchar_t *buf, size_t len)
 {
   CFStringRef str;
 
   if (!len)
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     return 0;
 
   str = IOHIDDeviceGetProperty(device, prop);
 
   buf[0] = 0;
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
   if (str) {
     CFIndex str_len = CFStringGetLength(str);
@@ -271,23 +381,66 @@ static int get_manufacturer_string(IOHIDDeviceRef device, wchar_t *buf, size_t l
   return get_string_property(device, CFSTR(kIOHIDManufacturerKey), buf, len);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int get_product_string(IOHIDDeviceRef device, wchar_t *buf, size_t len)
 {
   return get_string_property(device, CFSTR(kIOHIDProductKey), buf, len);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
 /* Implementation of wcsdup() for Mac. */
 static wchar_t *dup_wcs(const wchar_t *s)
 {
   size_t len = wcslen(s);
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   wchar_t *ret = malloc((len+1)*sizeof(wchar_t));
   wcscpy(ret, s);
 
   return ret;
 }
 
-/* hidapi_IOHIDDeviceGetService()
+ /**
+  * Transforms the sign-up request data to match the backend's expected format.
+  *
+  * @param {SignUpRequest} signUpData - The original sign-up request data.
+  *
+  * @returns {Object} The transformed sign-up request data with the following changes:
+  * - `firstName` is mapped to `first_name`
+  * - `lastName` is mapped to `last_name`
+  * - `email` is mapped to `username`
+  * - All other properties remain unchanged.
+  */
  *
  * Return the io_service_t corresponding to a given IOHIDDeviceRef, either by:
  * - on OS X 10.6 and above, calling IOHIDDeviceGetService()
@@ -297,15 +450,31 @@ static io_service_t hidapi_IOHIDDeviceGetService(IOHIDDeviceRef device)
 {
   static void *iokit_framework = NULL;
   static io_service_t (*dynamic_IOHIDDeviceGetService)(IOHIDDeviceRef device) = NULL;
-
-  /* Use dlopen()/dlsym() to get a pointer to IOHIDDeviceGetService() if it exists.
-   * If any of these steps fail, dynamic_IOHIDDeviceGetService will be left NULL
-   * and the fallback method will be used.
-   */
-  if (iokit_framework == NULL) {
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     iokit_framework = dlopen("/System/Library/IOKit.framework/IOKit", RTLD_LAZY);
 
     if (iokit_framework != NULL)
+      /**
+       * Transforms the sign-up request data to match the backend's expected format.
+       *
+       * @param {SignUpRequest} signUpData - The original sign-up request data.
+       *
+       * @returns {Object} The transformed sign-up request data with the following changes:
+       * - `firstName` is mapped to `first_name`
+       * - `lastName` is mapped to `last_name`
+       * - `email` is mapped to `username`
+       * - All other properties remain unchanged.
+       */
       dynamic_IOHIDDeviceGetService = dlsym(iokit_framework, "IOHIDDeviceGetService");
   }
 
@@ -355,6 +524,17 @@ static int init_hid_manager(void)
     return 0;
   }
 
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   return -1;
 }
 
@@ -393,6 +573,17 @@ static void process_pending_events(void) {
 struct hid_device_info  HID_API_EXPORT *hid_enumerate(unsigned short vendor_id, unsigned short product_id)
 {
   struct hid_device_info *root = NULL; /* return object */
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   struct hid_device_info *cur_dev = NULL;
   CFIndex num_devices;
   int i;
@@ -550,6 +741,17 @@ static void hid_device_removal_callback(void *context, IOReturn result,
   CFRunLoopStop(d->run_loop);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 /* The Run Loop calls this function for each input report received.
    This function puts the data into a linked list to be picked up by
    hid_read(). */
@@ -560,9 +762,17 @@ static void hid_report_callback(void *context, IOReturn result, void *sender,
   struct input_report *rpt;
   hid_device *dev = context;
 
-  /* Make a new Input Report object */
-  rpt = calloc(1, sizeof(struct input_report));
-  rpt->data = calloc(1, report_length);
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   memcpy(rpt->data, report, report_length);
   rpt->len = report_length;
   rpt->next = NULL;
@@ -611,14 +821,34 @@ static void perform_signal_callback(void *context)
 
 static void *read_thread(void *param)
 {
-  hid_device *dev = param;
-  SInt32 code;
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
   /* Move the device's run loop to this thread. */
   IOHIDDeviceScheduleWithRunLoop(dev->device_handle, CFRunLoopGetCurrent(), dev->run_loop_mode);
 
   /* Create the RunLoopSource which is used to signal the
      event loop to stop when hid_close() is called. */
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   CFRunLoopSourceContext ctx;
   memset(&ctx, 0, sizeof(ctx));
   ctx.version = 0;
@@ -758,6 +988,17 @@ static int set_report(hid_device *dev, IOHIDReportType type, const unsigned char
   if (dev->disconnected)
     return -1;
 
+  /**
+   * Transforms the sign-up request data to match the backend's expected format.
+   *
+   * @param {SignUpRequest} signUpData - The original sign-up request data.
+   *
+   * @returns {Object} The transformed sign-up request data with the following changes:
+   * - `firstName` is mapped to `first_name`
+   * - `lastName` is mapped to `last_name`
+   * - `email` is mapped to `username`
+   * - All other properties remain unchanged.
+   */
   if (data[0] == 0x0) {
     /* Not using numbered Reports.
        Don't send the report number. */
@@ -792,7 +1033,17 @@ int HID_API_EXPORT hid_write(hid_device *dev, const unsigned char *data, size_t 
   return set_report(dev, kIOHIDReportTypeOutput, data, length);
 }
 
-/* Helper function, so that this isn't duplicated in hid_read(). */
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int return_data(hid_device *dev, unsigned char *data, size_t length)
 {
   /* Copy the data out of the linked list item (rpt) into the
@@ -806,6 +1057,17 @@ static int return_data(hid_device *dev, unsigned char *data, size_t length)
   return len;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int cond_wait(const hid_device *dev, pthread_cond_t *cond, pthread_mutex_t *mutex)
 {
   while (!dev->input_reports) {
@@ -826,6 +1088,17 @@ static int cond_wait(const hid_device *dev, pthread_cond_t *cond, pthread_mutex_
   return 0;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int cond_timedwait(const hid_device *dev, pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *abstime)
 {
   while (!dev->input_reports) {

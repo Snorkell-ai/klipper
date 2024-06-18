@@ -14,6 +14,8 @@ XOR_PATTERN = [
 ]
 
 def main():
+    """    """
+
     # Parse command-line arguments
     usage = "%prog <input_file> <output_file>"
     opts = optparse.OptionParser(usage)

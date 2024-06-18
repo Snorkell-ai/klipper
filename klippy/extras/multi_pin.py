@@ -16,6 +16,8 @@ class PrinterMultiPin:
         self.pin_list = config.getlist('pins')
         self.mcu_pins = []
     def setup_pin(self, pin_type, pin_params):
+        """        """
+
         ppins = self.printer.lookup_object('pins')
         pin_name = pin_params['pin']
         pin = self.printer.lookup_object('multi_pin ' + pin_name, None)
@@ -33,22 +35,36 @@ class PrinterMultiPin:
                          for pin_desc in self.pin_list]
         return self
     def get_mcu(self):
+        """        """
+
         return self.mcu_pins[0].get_mcu()
     def setup_max_duration(self, max_duration):
+        """        """
+
         for mcu_pin in self.mcu_pins:
             mcu_pin.setup_max_duration(max_duration)
     def setup_start_value(self, start_value, shutdown_value):
+        """        """
+
         for mcu_pin in self.mcu_pins:
             mcu_pin.setup_start_value(start_value, shutdown_value)
     def setup_cycle_time(self, cycle_time, hardware_pwm=False):
+        """        """
+
         for mcu_pin in self.mcu_pins:
             mcu_pin.setup_cycle_time(cycle_time, hardware_pwm)
     def set_digital(self, print_time, value):
+        """        """
+
         for mcu_pin in self.mcu_pins:
             mcu_pin.set_digital(print_time, value)
     def set_pwm(self, print_time, value):
+        """        """
+
         for mcu_pin in self.mcu_pins:
             mcu_pin.set_pwm(print_time, value)
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterMultiPin(config)

@@ -6,9 +6,13 @@
 from . import display
 
 def load_config(config):
+    """    """
+
     return display.load_config(config)
 
 def load_config_prefix(config):
+    """    """
+
     if not config.has_section('display'):
         raise config.error(
             "A primary [display] section must be defined in printer.cfg "

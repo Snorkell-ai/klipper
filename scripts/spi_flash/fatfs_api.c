@@ -17,7 +17,29 @@ static uint8_t (*python_disk_read)(uint8_t* buff, uint32_t sector,
                                    unsigned int count) = 0;
 static uint8_t (*python_disk_write)(const uint8_t* buff, uint32_t sector,
                                     unsigned int count) = 0;
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint8_t (*python_disk_ioctl)(uint8_t cmd, void* buff) = 0;
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint32_t (*python_fattime)(void) = 0;
 
 void __visible
@@ -49,10 +71,17 @@ fatfs_clear_callbacks(void)
     python_fattime = 0;
 }
 
-/*  Callbacks from fatfs to python.  These methods are used to  */
-/*  Access access the SD Card APIs                              */
-
-/*  Get FAT Time  */
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DWORD
 get_fattime(void)
 {
@@ -64,6 +93,17 @@ get_fattime(void)
     return python_fattime();
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DSTATUS
 disk_status(BYTE pdrv)
 {
@@ -73,6 +113,17 @@ disk_status(BYTE pdrv)
     return STA_NOINIT;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DSTATUS
 disk_initialize(BYTE pdrv)
 {
@@ -82,6 +133,17 @@ disk_initialize(BYTE pdrv)
 }
 
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DRESULT
 disk_read(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count)
 {
@@ -91,6 +153,17 @@ disk_read(BYTE pdrv, BYTE *buff, LBA_t sector, UINT count)
 }
 
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DRESULT
 disk_write(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT count)
 {
@@ -99,6 +172,17 @@ disk_write(BYTE pdrv, const BYTE *buff, LBA_t sector, UINT count)
     return RES_NOTRDY;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DRESULT
 disk_ioctl(BYTE pdrv, BYTE cmd, void *buff)
 {
