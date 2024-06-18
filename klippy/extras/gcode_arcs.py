@@ -45,21 +45,33 @@ class ArcSupport:
         self.plane = ARC_PLANE_X_Y
 
     def cmd_G2(self, gcmd):
+        """        """
+
         self._cmd_inner(gcmd, True)
 
     def cmd_G3(self, gcmd):
+        """        """
+
         self._cmd_inner(gcmd, False)
 
     def cmd_G17(self, gcmd):
+        """        """
+
         self.plane = ARC_PLANE_X_Y
 
     def cmd_G18(self, gcmd):
+        """        """
+
         self.plane = ARC_PLANE_X_Z
 
     def cmd_G19(self, gcmd):
+        """        """
+
         self.plane = ARC_PLANE_Y_Z
 
     def _cmd_inner(self, gcmd, clockwise):
+        """        """
+
         gcodestatus = self.gcode_move.get_status()
         if not gcodestatus['absolute_coordinates']:
             raise gcmd.error("G2/G3 does not support relative move mode")
@@ -121,6 +133,8 @@ class ArcSupport:
     # alpha and beta axes are the current plane, helical axis is linear travel
     def planArc(self, currentPos, targetPos, offset, clockwise,
                 alpha_axis, beta_axis, helical_axis):
+        """        """
+
         # todo: sometimes produces full circles
 
         # Radius vector from center to current location
@@ -178,4 +192,6 @@ class ArcSupport:
         return coords
 
 def load_config(config):
+    """    """
+
     return ArcSupport(config)

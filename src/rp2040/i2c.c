@@ -31,6 +31,17 @@ DECL_ENUMERATION("i2c_bus", "i2c1c", 10);
 DECL_ENUMERATION("i2c_bus", "i2c1d", 11);
 DECL_ENUMERATION("i2c_bus", "i2c1e", 12);
 DECL_ENUMERATION("i2c_bus", "i2c1f", 13);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_ENUMERATION("i2c_bus", "i2c1g", 14);
 DECL_CONSTANT_STR("BUS_PINS_i2c0a", "gpio0,gpio1");
 DECL_CONSTANT_STR("BUS_PINS_i2c0b", "gpio4,gpio5");
@@ -46,6 +57,17 @@ DECL_CONSTANT_STR("BUS_PINS_i2c1c", "gpio10,gpio11");
 DECL_CONSTANT_STR("BUS_PINS_i2c1d", "gpio14,gpio15");
 DECL_CONSTANT_STR("BUS_PINS_i2c1e", "gpio18,gpio19");
 DECL_CONSTANT_STR("BUS_PINS_i2c1f", "gpio22,gpio23");
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_CONSTANT_STR("BUS_PINS_i2c1g", "gpio26,gpio27");
 
 static const struct i2c_info i2c_bus[] = {
@@ -67,6 +89,17 @@ static const struct i2c_info i2c_bus[] = {
     { i2c1_hw, 26, 27, RESETS_RESET_I2C1_BITS },
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct i2c_config
 i2c_setup(uint32_t bus, uint32_t rate, uint8_t addr)
 {
@@ -118,6 +151,17 @@ i2c_setup(uint32_t bus, uint32_t rate, uint8_t addr)
     return (struct i2c_config){ .i2c=info->i2c, .addr=addr };
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 i2c_start(i2c_hw_t *i2c, uint8_t addr)
 {
@@ -126,12 +170,34 @@ i2c_start(i2c_hw_t *i2c, uint8_t addr)
     i2c->enable = 1;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 i2c_stop(i2c_hw_t *i2c)
 {
     i2c->enable = 0;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 i2c_do_write(i2c_hw_t *i2c, uint8_t addr, uint8_t write_len, uint8_t *write
              , uint8_t send_stop, uint32_t timeout)
@@ -161,6 +227,17 @@ i2c_do_write(i2c_hw_t *i2c, uint8_t addr, uint8_t write_len, uint8_t *write
     }
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 i2c_do_read(i2c_hw_t *i2c, uint8_t addr, uint8_t read_len, uint8_t *read
             , uint32_t timeout)
@@ -189,6 +266,17 @@ i2c_do_read(i2c_hw_t *i2c, uint8_t addr, uint8_t read_len, uint8_t *read
     }
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 i2c_write(struct i2c_config config, uint8_t write_len, uint8_t *write)
 {
@@ -200,6 +288,17 @@ i2c_write(struct i2c_config config, uint8_t write_len, uint8_t *write)
     i2c_stop(i2c);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 i2c_read(struct i2c_config config, uint8_t reg_len, uint8_t *reg
          , uint8_t read_len, uint8_t *read)

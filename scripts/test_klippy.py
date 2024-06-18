@@ -25,6 +25,8 @@ class TestCase:
         self.verbose = verbose
         self.keepfiles = keepfiles
     def relpath(self, fname, rel='test'):
+        """        """
+
         if rel == 'dict':
             reldir = self.dictdir
         elif rel == 'temp':
@@ -33,6 +35,8 @@ class TestCase:
             reldir = os.path.dirname(self.fname)
         return os.path.join(reldir, fname)
     def parse_test(self):
+        """        """
+
         # Parse file into test cases
         config_fname = gcode_fname = dict_fnames = None
         should_fail = multi_tests = False
@@ -74,6 +78,8 @@ class TestCase:
                              gcode_fname, gcode, should_fail)
     def launch_test(self, config_fname, dict_fnames, gcode_fname, gcode,
                     should_fail):
+        """        """
+
         gcode_is_temp = False
         if gcode_fname is None:
             gcode_fname = self.relpath(TEMP_GCODE_FILE, 'temp')
@@ -117,6 +123,8 @@ class TestCase:
         if gcode_is_temp:
             os.unlink(gcode_fname)
     def run(self):
+        """        """
+
         try:
             self.parse_test()
         except error as e:
@@ -126,6 +134,8 @@ class TestCase:
             return "internal error"
         return "success"
     def show_log(self):
+        """        """
+
         f = open(TEMP_LOG_FILE, 'r')
         data = f.read()
         f.close()
@@ -137,6 +147,8 @@ class TestCase:
 ######################################################################
 
 def main():
+    """    """
+
     # Parse args
     usage = "%prog [options] <test cases>"
     opts = optparse.OptionParser(usage)

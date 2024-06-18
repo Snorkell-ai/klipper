@@ -78,17 +78,25 @@ class RotaryDeltaKinematics:
         self.axes_max = toolhead.Coord(max_xy, max_xy, self.max_z, 0.)
         self.set_position([0., 0., 0.], ())
     def get_steppers(self):
+        """        """
+
         return [s for rail in self.rails for s in rail.get_steppers()]
     def calc_position(self, stepper_positions):
+        """        """
+
         spos = [stepper_positions[rail.get_name()] for rail in self.rails]
         return self.calibration.actuator_to_cartesian(spos)
     def set_position(self, newpos, homing_axes):
+        """        """
+
         for rail in self.rails:
             rail.set_position(newpos)
         self.limit_xy2 = -1.
         if tuple(homing_axes) == (0, 1, 2):
             self.need_home = False
     def home(self, homing_state):
+        """        """
+
         # All axes are homed simultaneously
         homing_state.set_axes([0, 1, 2])
         forcepos = list(self.home_position)
@@ -97,9 +105,13 @@ class RotaryDeltaKinematics:
         forcepos[2] = -1.
         homing_state.home_rails(self.rails, forcepos, self.home_position)
     def _motor_off(self, print_time):
+        """        """
+
         self.limit_xy2 = -1.
         self.need_home = True
     def check_move(self, move):
+        """        """
+
         end_pos = move.end_pos
         end_xy2 = end_pos[0]**2 + end_pos[1]**2
         if end_xy2 <= self.limit_xy2 and not move.axes_d[2]:
@@ -122,12 +134,16 @@ class RotaryDeltaKinematics:
             limit_xy2 = -1.
         self.limit_xy2 = limit_xy2
     def get_status(self, eventtime):
+        """        """
+
         return {
             'homed_axes': '' if self.need_home else 'xyz',
             'axis_minimum': self.axes_min,
             'axis_maximum': self.axes_max,
         }
     def get_calibration(self):
+        """        """
+
         return self.calibration
 
 # Rotary delta parameter calibration for DELTA_CALIBRATE tool
@@ -151,6 +167,8 @@ class RotaryDeltaCalibration:
             self.ffi_lib.itersolve_calc_position_from_coord(sk, 0., 0., es)
             for sk, es in zip(self.sks, endstops)]
     def coordinate_descent_params(self, is_extended):
+        """        """
+
         # Determine adjustment parameters (for use with coordinate_descent)
         adj_params = ('shoulder_height', 'endstop_a', 'endstop_b', 'endstop_c')
         if is_extended:
@@ -165,6 +183,8 @@ class RotaryDeltaCalibration:
             params['stepdist_'+axis] = self.stepdists[i]
         return adj_params, params
     def new_calibration(self, params):
+        """        """
+
         # Create a new calibration object from coordinate_descent params
         shoulder_radius = params['shoulder_radius']
         shoulder_height = params['shoulder_height']
@@ -177,6 +197,8 @@ class RotaryDeltaCalibration:
             shoulder_radius, shoulder_height, angles, upper_arms, lower_arms,
             endstops, stepdists)
     def elbow_coord(self, elbow_id, spos):
+        """        """
+
         # Calculate elbow position in coordinate system at shoulder joint
         sj_elbow_x = self.upper_arms[elbow_id] * math.cos(spos)
         sj_elbow_y = self.upper_arms[elbow_id] * math.sin(spos)
@@ -187,16 +209,22 @@ class RotaryDeltaCalibration:
         z = sj_elbow_y + self.shoulder_height
         return (x, y, z)
     def actuator_to_cartesian(self, spos):
+        """        """
+
         sphere_coords = [self.elbow_coord(i, sp) for i, sp in enumerate(spos)]
         lower_arm2 = [la**2 for la in self.lower_arms]
         return mathutil.trilateration(sphere_coords, lower_arm2)
     def get_position_from_stable(self, stable_position):
+        """        """
+
         # Return cartesian coordinates for the given stable_position
         spos = [ea - sp * sd
                 for ea, sp, sd in zip(self.abs_endstops, stable_position,
                                       self.stepdists)]
         return self.actuator_to_cartesian(spos)
     def calc_stable_position(self, coord):
+        """        """
+
         # Return a stable_position from a cartesian coordinate
         pos = [ self.ffi_lib.itersolve_calc_position_from_coord(
             sk, coord[0], coord[1], coord[2])
@@ -204,6 +232,8 @@ class RotaryDeltaCalibration:
         return [(ep - sp) / sd
                 for sd, ep, sp in zip(self.stepdists, self.abs_endstops, pos)]
     def save_state(self, configfile):
+        """        """
+
         # Save the current parameters (for use with SAVE_CONFIG)
         configfile.set('printer', 'shoulder_radius', "%.6f"
                        % (self.shoulder_radius,))
@@ -225,4 +255,6 @@ class RotaryDeltaCalibration:
                self.shoulder_radius, self.shoulder_height))
 
 def load_kinematics(toolhead, config):
+    """    """
+
     return RotaryDeltaKinematics(toolhead, config)

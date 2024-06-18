@@ -38,6 +38,8 @@ class SX1509(object):
                          REG_INPUT_DISABLE : 0, REG_ANALOG_DRIVER_ENABLE : 0}
         self.reg_i_on_dict = {reg : 0 for reg in REG_I_ON}
     def _build_config(self):
+        """        """
+
         # Reset the chip
         self._mcu.add_config_cmd("i2c_write oid=%d data=%02x%02x" % (
             self._oid, REG_RESET, 0x12))
@@ -56,6 +58,8 @@ class SX1509(object):
             self._mcu.add_config_cmd("i2c_write oid=%d data=%02x%04x" % (
                 self._oid, _reg, _data), is_init=True)
     def setup_pin(self, pin_type, pin_params):
+        """        """
+
         if pin_type == 'digital_out' and pin_params['pin'][0:4] == "PIN_":
             return SX1509_digital_out(self, pin_params)
         elif pin_type == 'pwm' and pin_params['pin'][0:4] == "PIN_":
@@ -63,25 +67,37 @@ class SX1509(object):
         raise pins.error("Wrong pin or incompatible type: %s with type %s! " % (
             pin_params['pin'][0:4], pin_type))
     def get_mcu(self):
+        """        """
+
         return self._mcu
     def get_oid(self):
+        """        """
+
         return self._oid
     def clear_bits_in_register(self, reg, bitmask):
+        """        """
+
         if reg in self.reg_dict:
             self.reg_dict[reg] &= ~(bitmask)
         elif reg in self.reg_i_on_dict:
             self.reg_i_on_dict[reg] &= ~(bitmask)
     def set_bits_in_register(self, reg, bitmask):
+        """        """
+
         if reg in self.reg_dict:
             self.reg_dict[reg] |= bitmask
         elif reg in self.reg_i_on_dict:
             self.reg_i_on_dict[reg] |= bitmask
     def set_register(self, reg, value):
+        """        """
+
         if reg in self.reg_dict:
             self.reg_dict[reg] = value
         elif reg in self.reg_i_on_dict:
             self.reg_i_on_dict[reg] = value
     def send_register(self, reg, print_time):
+        """        """
+
         data = [reg & 0xFF]
         if reg in self.reg_dict:
             # Word
@@ -109,13 +125,21 @@ class SX1509_digital_out(object):
         # Set direction to output
         self._sx1509.clear_bits_in_register(REG_DIR, self._bitmask)
     def _build_config(self):
+        """        """
+
         if self._max_duration:
             raise pins.error("SX1509 pins are not suitable for heaters")
     def get_mcu(self):
+        """        """
+
         return self._mcu
     def setup_max_duration(self, max_duration):
+        """        """
+
         self._max_duration = max_duration
     def setup_start_value(self, start_value, shutdown_value):
+        """        """
+
         self._start_value = (not not start_value) ^ self._invert
         self._shutdown_value = self._invert
         # We need to set the start value here so the register is
@@ -125,12 +149,16 @@ class SX1509_digital_out(object):
         else:
             self._sx1509.clear_bits_in_register(REG_DATA, self._bitmask)
     def set_digital(self, print_time, value):
+        """        """
+
         if int(value) ^ self._invert:
             self._sx1509.set_bits_in_register(REG_DATA, self._bitmask)
         else:
             self._sx1509.clear_bits_in_register(REG_DATA, self._bitmask)
         self._sx1509.send_register(REG_DATA, print_time)
     def set_pwm(self, print_time, value, cycle_time=None):
+        """        """
+
         self.set_digital(print_time, value >= 0.5)
 
 class SX1509_pwm(object):
@@ -157,6 +185,8 @@ class SX1509_pwm(object):
                                           self._bitmask)
         self._sx1509.clear_bits_in_register(REG_DATA, self._bitmask)
     def _build_config(self):
+        """        """
+
         if not self._hardware_pwm:
             raise pins.error("SX1509_pwm must have hardware_pwm enabled")
         if self._max_duration:
@@ -171,23 +201,35 @@ class SX1509_pwm(object):
             ),
                                  is_init=True)
     def get_mcu(self):
+        """        """
+
         return self._mcu
     def setup_max_duration(self, max_duration):
+        """        """
+
         self._max_duration = max_duration
     def setup_cycle_time(self, cycle_time, hardware_pwm=False):
+        """        """
+
         self._cycle_time = cycle_time
         self._hardware_pwm = hardware_pwm
     def setup_start_value(self, start_value, shutdown_value):
+        """        """
+
         if self._invert:
             start_value = 1. - start_value
             shutdown_value = 1. - shutdown_value
         self._start_value = max(0., min(1., start_value))
         self._shutdown_value = max(0., min(1., shutdown_value))
     def set_pwm(self, print_time, value):
+        """        """
+
         self._sx1509.set_register(self._i_on_reg, ~int(255 * value)
                                   if not self._invert
                                   else int(255 * value) & 0xFF)
         self._sx1509.send_register(self._i_on_reg, print_time)
 
 def load_config_prefix(config):
+    """    """
+
     return SX1509(config)

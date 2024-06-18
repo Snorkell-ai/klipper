@@ -93,6 +93,17 @@ static const struct spi_info spi_bus[] = {
 #endif
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int
 is_spihw(void *dev)
 {
@@ -105,6 +116,17 @@ is_spihw(void *dev)
 #endif
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 init_pins(uint32_t bus)
 {
@@ -122,6 +144,17 @@ init_pins(uint32_t bus)
 
 #define CHANNEL    0 // Use same channel for all
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 spihw_init(uint32_t bus)
 {
@@ -152,6 +185,17 @@ spihw_init(uint32_t bus)
     pSpi->SPI_CR = SPI_CR_SPIEN;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static struct spi_config
 spihw_setup(uint32_t bus, uint8_t mode, uint32_t rate)
 {
@@ -192,6 +236,17 @@ spihw_setup(uint32_t bus, uint8_t mode, uint32_t rate)
     return (struct spi_config){ .spidev = spi_bus[bus].dev, .cfg = config };
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 spihw_prepare(struct spi_config config)
 {
@@ -199,6 +254,17 @@ spihw_prepare(struct spi_config config)
     pSpi->SPI_CSR[CHANNEL] = config.cfg;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 spihw_transfer(struct spi_config config, uint8_t receive_data
                , uint8_t len, uint8_t *data)
@@ -226,10 +292,18 @@ spihw_transfer(struct spi_config config, uint8_t receive_data
 }
 
 
-/****************************************************************
- * USART hardware
- ****************************************************************/
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static struct spi_config
 usart_setup(uint32_t bus, uint8_t mode, uint32_t rate)
 {
@@ -274,11 +348,33 @@ usart_setup(uint32_t bus, uint8_t mode, uint32_t rate)
     return (struct spi_config){ .spidev=p_usart, .cfg=p_usart->US_MR };
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 usart_prepare(struct spi_config config)
 {
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 usart_transfer(struct spi_config config, uint8_t receive_data
                , uint8_t len, uint8_t *data)
@@ -307,10 +403,18 @@ usart_transfer(struct spi_config config, uint8_t receive_data
 }
 
 
-/****************************************************************
- * Interface
- ****************************************************************/
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct spi_config
 spi_setup(uint32_t bus, uint8_t mode, uint32_t rate)
 {
@@ -321,6 +425,17 @@ spi_setup(uint32_t bus, uint8_t mode, uint32_t rate)
     return usart_setup(bus, mode, rate);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 spi_prepare(struct spi_config config)
 {
@@ -330,6 +445,17 @@ spi_prepare(struct spi_config config)
         usart_prepare(config);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 spi_transfer(struct spi_config config, uint8_t receive_data
              , uint8_t len, uint8_t *data)

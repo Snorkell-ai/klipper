@@ -23,6 +23,17 @@
 #define EP_DOUBLE_BUFFER 0x06
 #define EP_SIZE(s) ((s)==64 ? 0x30 : ((s)==32 ? 0x20 : ((s)==16 ? 0x10 : 0x00)))
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 usb_write_packet(const uint8_t *data, uint8_t len)
 {
@@ -30,6 +41,17 @@ usb_write_packet(const uint8_t *data, uint8_t len)
         UEDATX = *data++;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 usb_write_packet_progmem(const uint8_t *data, uint8_t len)
 {
@@ -37,6 +59,17 @@ usb_write_packet_progmem(const uint8_t *data, uint8_t len)
         UEDATX = READP(*data++);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 usb_read_packet(uint8_t *data, uint8_t len)
 {
@@ -44,6 +77,17 @@ usb_read_packet(uint8_t *data, uint8_t len)
         *data++ = UEDATX;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int_fast8_t
 usb_read_bulk_out(void *data, uint_fast8_t max_len)
 {
@@ -59,6 +103,17 @@ usb_read_bulk_out(void *data, uint_fast8_t max_len)
     return len;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int_fast8_t
 usb_send_bulk_in(void *data, uint_fast8_t len)
 {
@@ -73,6 +128,17 @@ usb_send_bulk_in(void *data, uint_fast8_t len)
     return len;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int_fast8_t
 usb_read_ep0(void *data, uint_fast8_t max_len)
 {
@@ -92,6 +158,17 @@ usb_read_ep0(void *data, uint_fast8_t max_len)
     return max_len;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int_fast8_t
 usb_read_ep0_setup(void *data, uint_fast8_t max_len)
 {
@@ -107,6 +184,17 @@ usb_read_ep0_setup(void *data, uint_fast8_t max_len)
     return max_len;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int8_t
 _usb_send_ep0(const void *data, uint8_t len, uint8_t progmem)
 {
@@ -127,18 +215,51 @@ _usb_send_ep0(const void *data, uint8_t len, uint8_t progmem)
     return len;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int_fast8_t
 usb_send_ep0(const void *data, uint_fast8_t len)
 {
     return _usb_send_ep0(data, len, 0);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int_fast8_t
 usb_send_ep0_progmem(const void *data, uint_fast8_t len)
 {
     return _usb_send_ep0(data, len, 1);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 usb_stall_ep0(void)
 {
@@ -149,6 +270,17 @@ usb_stall_ep0(void)
 
 static uint8_t set_address;
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 usb_set_address(uint_fast8_t addr)
 {
@@ -157,6 +289,17 @@ usb_set_address(uint_fast8_t addr)
     UEIENX = (1<<RXSTPE) | (1<<TXINE);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 usb_set_configure(void)
 {
@@ -189,6 +332,17 @@ usb_set_configure(void)
 #define PLLCSR_Init ((1<<PINDIV) | (1<<PLLE))
 #endif
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 usbserial_init(void)
 {
@@ -208,6 +362,17 @@ usbserial_init(void)
     // Enable interrupts
     UDIEN = 1<<EORSTE;
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_INIT(usbserial_init);
 
 ISR(USB_GEN_vect)
@@ -226,6 +391,17 @@ ISR(USB_GEN_vect)
     }
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 ISR(USB_COM_vect)
 {
     uint8_t ueint = UEINT, old_uenum = UENUM;

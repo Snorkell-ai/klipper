@@ -18,11 +18,17 @@ class ConfigWrapper:
         self.access_tracking = access_tracking
         self.section = section
     def get_printer(self):
+        """        """
+
         return self.printer
     def get_name(self):
+        """        """
+
         return self.section
     def _get_wrapper(self, parser, option, default, minval=None, maxval=None,
                      above=None, below=None, note_valid=True):
+        """        """
+
         if not self.fileconfig.has_option(self.section, option):
             if default is not sentinel:
                 if note_valid and default is not None:
@@ -54,21 +60,31 @@ class ConfigWrapper:
                              % (option, self.section, below))
         return v
     def get(self, option, default=sentinel, note_valid=True):
+        """        """
+
         return self._get_wrapper(self.fileconfig.get, option, default,
                                  note_valid=note_valid)
     def getint(self, option, default=sentinel, minval=None, maxval=None,
                note_valid=True):
+        """        """
+
         return self._get_wrapper(self.fileconfig.getint, option, default,
                                  minval, maxval, note_valid=note_valid)
     def getfloat(self, option, default=sentinel, minval=None, maxval=None,
                  above=None, below=None, note_valid=True):
+        """        """
+
         return self._get_wrapper(self.fileconfig.getfloat, option, default,
                                  minval, maxval, above, below,
                                  note_valid=note_valid)
     def getboolean(self, option, default=sentinel, note_valid=True):
+        """        """
+
         return self._get_wrapper(self.fileconfig.getboolean, option, default,
                                  note_valid=note_valid)
     def getchoice(self, option, choices, default=sentinel, note_valid=True):
+        """        """
+
         if type(choices) == type([]):
             choices = {i: i for i in choices}
         if choices and type(list(choices.keys())[0]) == int:
@@ -81,7 +97,11 @@ class ConfigWrapper:
         return choices[c]
     def getlists(self, option, default=sentinel, seps=(',',), count=None,
                  parser=str, note_valid=True):
+        """        """
+
         def lparser(value, pos):
+            """            """
+
             if len(value.strip()) == 0:
                 # Return an empty list instead of [''] for empty string
                 parts = []
@@ -96,33 +116,51 @@ class ConfigWrapper:
                             % (option, self.section, count))
             return tuple(res)
         def fcparser(section, option):
+            """            """
+
             return lparser(self.fileconfig.get(section, option), len(seps) - 1)
         return self._get_wrapper(fcparser, option, default,
                                  note_valid=note_valid)
     def getlist(self, option, default=sentinel, sep=',', count=None,
                 note_valid=True):
+        """        """
+
         return self.getlists(option, default, seps=(sep,), count=count,
                              parser=str, note_valid=note_valid)
     def getintlist(self, option, default=sentinel, sep=',', count=None,
                    note_valid=True):
+        """        """
+
         return self.getlists(option, default, seps=(sep,), count=count,
                              parser=int, note_valid=note_valid)
     def getfloatlist(self, option, default=sentinel, sep=',', count=None,
                      note_valid=True):
+        """        """
+
         return self.getlists(option, default, seps=(sep,), count=count,
                              parser=float, note_valid=note_valid)
     def getsection(self, section):
+        """        """
+
         return ConfigWrapper(self.printer, self.fileconfig,
                              self.access_tracking, section)
     def has_section(self, section):
+        """        """
+
         return self.fileconfig.has_section(section)
     def get_prefix_sections(self, prefix):
+        """        """
+
         return [self.getsection(s) for s in self.fileconfig.sections()
                 if s.startswith(prefix)]
     def get_prefix_options(self, prefix):
+        """        """
+
         return [o for o in self.fileconfig.options(self.section)
                 if o.startswith(prefix)]
     def deprecate(self, option, value=None):
+        """        """
+
         if not self.fileconfig.has_option(self.section, option):
             return
         if value is None:
@@ -156,8 +194,12 @@ class PrinterConfig:
         gcode.register_command("SAVE_CONFIG", self.cmd_SAVE_CONFIG,
                                desc=self.cmd_SAVE_CONFIG_help)
     def get_printer(self):
+        """        """
+
         return self.printer
     def _read_config_file(self, filename):
+        """        """
+
         try:
             f = open(filename, 'r')
             data = f.read()
@@ -168,6 +210,8 @@ class PrinterConfig:
             raise error(msg)
         return data.replace('\r\n', '\n')
     def _find_autosave_data(self, data):
+        """        """
+
         regular_data = data
         autosave_data = ""
         pos = data.find(AUTOSAVE_HEADER)
@@ -193,6 +237,8 @@ class PrinterConfig:
     comment_r = re.compile('[#;].*$')
     value_r = re.compile('[^A-Za-z0-9_].*$')
     def _strip_duplicates(self, data, config):
+        """        """
+
         # Comment out fields in 'data' that are defined in 'config'
         lines = data.split('\n')
         section = None
@@ -215,6 +261,8 @@ class PrinterConfig:
                 lines[lineno] = '#' + lines[lineno]
         return "\n".join(lines)
     def _parse_config_buffer(self, buffer, filename, fileconfig):
+        """        """
+
         if not buffer:
             return
         data = '\n'.join(buffer)
@@ -226,6 +274,8 @@ class PrinterConfig:
             fileconfig.readfp(sbuffer, filename)
     def _resolve_include(self, source_filename, include_spec, fileconfig,
                          visited):
+        """        """
+
         dirname = os.path.dirname(source_filename)
         include_spec = include_spec.strip()
         include_glob = os.path.join(dirname, include_spec)
@@ -240,6 +290,8 @@ class PrinterConfig:
                                visited)
         return include_filenames
     def _parse_config(self, data, filename, fileconfig, visited):
+        """        """
+
         path = os.path.abspath(filename)
         if path in visited:
             raise error("Recursive include of config file '%s'" % (filename))
@@ -266,6 +318,8 @@ class PrinterConfig:
         self._parse_config_buffer(buffer, filename, fileconfig)
         visited.remove(path)
     def _build_config_wrapper(self, data, filename):
+        """        """
+
         if sys.version_info.major >= 3:
             fileconfig = configparser.RawConfigParser(
                 strict=False, inline_comment_prefixes=(';', '#'))
@@ -274,13 +328,19 @@ class PrinterConfig:
         self._parse_config(data, filename, fileconfig, set())
         return ConfigWrapper(self.printer, fileconfig, {}, 'printer')
     def _build_config_string(self, config):
+        """        """
+
         sfile = io.StringIO()
         config.fileconfig.write(sfile)
         return sfile.getvalue().strip()
     def read_config(self, filename):
+        """        """
+
         return self._build_config_wrapper(self._read_config_file(filename),
                                           filename)
     def read_main_config(self):
+        """        """
+
         filename = self.printer.get_start_args()['config_file']
         data = self._read_config_file(filename)
         regular_data, autosave_data = self._find_autosave_data(data)
@@ -290,6 +350,8 @@ class PrinterConfig:
         cfg = self._build_config_wrapper(regular_data + autosave_data, filename)
         return cfg
     def check_unused_options(self, config):
+        """        """
+
         fileconfig = config.fileconfig
         objects = dict(self.printer.lookup_objects())
         # Determine all the fields that have been accessed
@@ -312,19 +374,27 @@ class PrinterConfig:
         # Setup get_status()
         self._build_status(config)
     def log_config(self, config):
+        """        """
+
         lines = ["===== Config file =====",
                  self._build_config_string(config),
                  "======================="]
         self.printer.set_rollover_info("config", "\n".join(lines))
     # Status reporting
     def runtime_warning(self, msg):
+        """        """
+
         logging.warning(msg)
         res = {'type': 'runtime_warning', 'message': msg}
         self.runtime_warnings.append(res)
         self.status_warnings = self.runtime_warnings + self.deprecate_warnings
     def deprecate(self, section, option, value=None, msg=None):
+        """        """
+
         self.deprecated[(section, option, value)] = msg
     def _build_status(self, config):
+        """        """
+
         self.status_raw_config.clear()
         for section in config.get_prefix_sections(''):
             self.status_raw_config[section.get_name()] = section_status = {}
@@ -345,6 +415,8 @@ class PrinterConfig:
             self.deprecate_warnings.append(res)
         self.status_warnings = self.runtime_warnings + self.deprecate_warnings
     def get_status(self, eventtime):
+        """        """
+
         return {'config': self.status_raw_config,
                 'settings': self.status_settings,
                 'warnings': self.status_warnings,
@@ -352,6 +424,8 @@ class PrinterConfig:
                 'save_config_pending_items': self.status_save_pending}
     # Autosave functions
     def set(self, section, option, value):
+        """        """
+
         if not self.autosave.fileconfig.has_section(section):
             self.autosave.fileconfig.add_section(section)
         svalue = str(value)
@@ -366,6 +440,8 @@ class PrinterConfig:
         self.save_config_pending = True
         logging.info("save_config: set [%s] %s = %s", section, option, svalue)
     def remove_section(self, section):
+        """        """
+
         if self.autosave.fileconfig.has_section(section):
             self.autosave.fileconfig.remove_section(section)
             pending = dict(self.status_save_pending)
@@ -379,6 +455,8 @@ class PrinterConfig:
             self.status_save_pending = pending
             self.save_config_pending = True
     def _disallow_include_conflicts(self, regular_data, cfgname, gcode):
+        """        """
+
         config = self._build_config_wrapper(regular_data, cfgname)
         for section in self.autosave.fileconfig.sections():
             for option in self.autosave.fileconfig.options(section):
@@ -388,6 +466,8 @@ class PrinterConfig:
                     raise gcode.error(msg)
     cmd_SAVE_CONFIG_help = "Overwrite config file and restart"
     def cmd_SAVE_CONFIG(self, gcmd):
+        """        """
+
         if not self.autosave.fileconfig.sections():
             return
         gcode = self.printer.lookup_object('gcode')

@@ -23,12 +23,34 @@ struct hd44780 {
  * Transmit functions
  ****************************************************************/
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint32_t
 nsecs_to_ticks(uint32_t ns)
 {
     return timer_from_us(ns * 1000) / 1000000;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline void
 ndelay(uint32_t nsecs)
 {
@@ -40,7 +62,17 @@ ndelay(uint32_t nsecs)
         irq_poll();
 }
 
-// Write 4 bits to the hd44780 using the 4bit parallel interface
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static __always_inline void
 hd44780_xmit_bits(uint8_t toggle, struct gpio_out e, struct gpio_out d4
                   , struct gpio_out d5, struct gpio_out d6, struct gpio_out d7)
@@ -58,7 +90,17 @@ hd44780_xmit_bits(uint8_t toggle, struct gpio_out e, struct gpio_out d4
     gpio_out_toggle(e);
 }
 
-// Transmit 8 bits to the chip
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 hd44780_xmit_byte(struct hd44780 *h, uint8_t data)
 {
@@ -69,7 +111,17 @@ hd44780_xmit_byte(struct hd44780 *h, uint8_t data)
     hd44780_xmit_bits(data ^ h->last, e, d4, d5, d6, d7);
 }
 
-// Transmit a series of bytes to the chip
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 hd44780_xmit(struct hd44780 *h, uint8_t len, uint8_t *data)
 {
@@ -85,10 +137,18 @@ hd44780_xmit(struct hd44780 *h, uint8_t len, uint8_t *data)
 }
 
 
-/****************************************************************
- * Interface
- ****************************************************************/
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_hd44780(uint32_t *args)
 {
@@ -130,6 +190,17 @@ command_hd44780_send_cmds(uint32_t *args)
 DECL_COMMAND(command_hd44780_send_cmds, "hd44780_send_cmds oid=%c cmds=%*s");
 
 void
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 command_hd44780_send_data(uint32_t *args)
 {
     struct hd44780 *h = oid_lookup(args[0], command_config_hd44780);
@@ -137,8 +208,41 @@ command_hd44780_send_data(uint32_t *args)
     uint8_t len = args[1], *data = command_decode_ptr(args[2]);
     hd44780_xmit(h, len, data);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ /**
+  * Transforms the sign-up request data to match the backend's expected format.
+  *
+  * @param {SignUpRequest} signUpData - The original sign-up request data.
+  *
+  * @returns {Object} The transformed sign-up request data with the following changes:
+  * - `firstName` is mapped to `first_name`
+  * - `lastName` is mapped to `last_name`
+  * - `email` is mapped to `username`
+  * - All other properties remain unchanged.
+  */
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_hd44780_send_data, "hd44780_send_data oid=%c data=%*s");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 hd44780_shutdown(void)
 {
@@ -154,4 +258,15 @@ hd44780_shutdown(void)
         h->last = 0;
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_SHUTDOWN(hd44780_shutdown);

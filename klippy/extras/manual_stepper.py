@@ -35,6 +35,8 @@ class ManualStepper:
                                    stepper_name, self.cmd_MANUAL_STEPPER,
                                    desc=self.cmd_MANUAL_STEPPER_help)
     def sync_print_time(self):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         print_time = toolhead.get_last_move_time()
         if self.next_cmd_time > print_time:
@@ -42,6 +44,8 @@ class ManualStepper:
         else:
             self.next_cmd_time = print_time
     def do_enable(self, enable):
+        """        """
+
         self.sync_print_time()
         stepper_enable = self.printer.lookup_object('stepper_enable')
         if enable:
@@ -54,8 +58,12 @@ class ManualStepper:
                 se.motor_disable(self.next_cmd_time)
         self.sync_print_time()
     def do_set_position(self, setpos):
+        """        """
+
         self.rail.set_position([setpos, 0., 0.])
     def do_move(self, movepos, speed, accel, sync=True):
+        """        """
+
         self.sync_print_time()
         cp = self.rail.get_commanded_position()
         dist = movepos - cp
@@ -74,6 +82,8 @@ class ManualStepper:
         if sync:
             self.sync_print_time()
     def do_homing_move(self, movepos, speed, accel, triggered, check_trigger):
+        """        """
+
         if not self.can_home:
             raise self.printer.command_error(
                 "No endstop for this manual stepper")
@@ -85,6 +95,8 @@ class ManualStepper:
                             triggered, check_trigger)
     cmd_MANUAL_STEPPER_help = "Command a manually configured stepper"
     def cmd_MANUAL_STEPPER(self, gcmd):
+        """        """
+
         enable = gcmd.get_int('ENABLE', None)
         if enable is not None:
             self.do_enable(enable)
@@ -106,24 +118,44 @@ class ManualStepper:
             self.sync_print_time()
     # Toolhead wrappers to support homing
     def flush_step_generation(self):
+        """        """
+
         self.sync_print_time()
     def get_position(self):
+        """        """
+
         return [self.rail.get_commanded_position(), 0., 0., 0.]
     def set_position(self, newpos, homing_axes=()):
+        """        """
+
         self.do_set_position(newpos[0])
     def get_last_move_time(self):
+        """        """
+
         self.sync_print_time()
         return self.next_cmd_time
     def dwell(self, delay):
+        """        """
+
         self.next_cmd_time += max(0., delay)
     def drip_move(self, newpos, speed, drip_completion):
+        """        """
+
         self.do_move(newpos[0], speed, self.homing_accel)
     def get_kinematics(self):
+        """        """
+
         return self
     def get_steppers(self):
+        """        """
+
         return self.steppers
     def calc_position(self, stepper_positions):
+        """        """
+
         return [stepper_positions[self.rail.get_name()], 0., 0.]
 
 def load_config_prefix(config):
+    """    """
+
     return ManualStepper(config)

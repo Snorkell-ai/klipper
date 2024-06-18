@@ -24,10 +24,14 @@ import clocksync
 ###########################################################
 
 def output_line(msg):
+    """    """
+
     sys.stdout.write("%s\n" % (msg,))
     sys.stdout.flush()
 
 def output(msg):
+    """    """
+
     sys.stdout.write("%s" % (msg,))
     sys.stdout.flush()
 
@@ -60,6 +64,8 @@ class MCUDump:
         self.connected = False
 
     def connect(self):
+        """        """
+
         output("Connecting to MCU..")
         self.connect_completion = self.reactor.completion()
         self.connected = False
@@ -83,6 +89,8 @@ class MCUDump:
         output_line("Frequency: %s\n" % (freq,))
 
     def _do_serial_connect(self, eventtime):
+        """        """
+
         endtime = eventtime + 60.
         while True:
             try:
@@ -111,12 +119,16 @@ class MCUDump:
         self.connect_completion.complete(True)
 
     def disconnect(self):
+        """        """
+
         if not self.connected:
             return
         self._serial.disconnect()
         self.connected = False
 
     def _dump_flash(self):
+        """        """
+
         addr = self.read_start
         count = self.read_length
         order = [2, 0, 1, 0][(addr | count) & 3]
@@ -152,11 +164,15 @@ class MCUDump:
         output_line("Wrote %d bytes to '%s'" % (len(data), self.output_file))
 
     def _run_dump_task(self, eventtime):
+        """        """
+
         self.connect()
         self._dump_flash()
         self.reactor.end()
 
     def run(self):
+        """        """
+
         self.reactor.register_callback(self._run_dump_task)
         try:
             self.reactor.run()
@@ -165,6 +181,8 @@ class MCUDump:
             self.reactor.finalize()
 
 def main():
+    """    """
+
     parser = argparse.ArgumentParser(description="MCU Flash Dump Utility")
 
     parser.add_argument(

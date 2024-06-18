@@ -48,10 +48,14 @@ class QuadGantryLevel:
     cmd_QUAD_GANTRY_LEVEL_help = (
         "Conform a moving, twistable gantry to the shape of a stationary bed")
     def cmd_QUAD_GANTRY_LEVEL(self, gcmd):
+        """        """
+
         self.z_status.reset()
         self.retry_helper.start(gcmd)
         self.probe_helper.start_probe(gcmd)
     def probe_finalize(self, offsets, positions):
+        """        """
+
         # Mirror our perspective so the adjustments make sense
         # from the perspective of the gantry
         z_positions = [self.horizontal_move_z - p[2] for p in positions]
@@ -113,6 +117,8 @@ class QuadGantryLevel:
             self.retry_helper.check_retry(z_positions))
 
     def linefit(self,p1,p2):
+        """        """
+
         if p1[1] == p2[1]:
             # Straight line
             return 0,p1[1]
@@ -120,9 +126,15 @@ class QuadGantryLevel:
         b = p1[1] - m * p1[0]
         return m,b
     def plot(self,f,x):
+        """        """
+
         return f[0]*x + f[1]
     def get_status(self, eventtime):
+        """        """
+
         return self.z_status.get_status(eventtime)
 
 def load_config(config):
+    """    """
+
     return QuadGantryLevel(config)

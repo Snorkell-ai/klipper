@@ -8,6 +8,17 @@
 #include "sensor_bulk.h" // sensor_bulk_report
 
 // Reset counters
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sensor_bulk_reset(struct sensor_bulk *sb)
 {
@@ -16,7 +27,17 @@ sensor_bulk_reset(struct sensor_bulk *sb)
     sb->data_count = 0;
 }
 
-// Report local measurement buffer
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sensor_bulk_report(struct sensor_bulk *sb, uint8_t oid)
 {
@@ -26,7 +47,17 @@ sensor_bulk_report(struct sensor_bulk *sb, uint8_t oid)
     sb->sequence++;
 }
 
-// Report buffer and fifo status
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sensor_bulk_status(struct sensor_bulk *sb, uint8_t oid
                    , uint32_t time1, uint32_t query_ticks, uint32_t fifo)

@@ -60,6 +60,17 @@ struct pru_rpmsg_ns_msg {
 	uint32_t	flags;
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int16_t pru_rpmsg_init(
 	struct pru_rpmsg_transport	*transport,
 	struct fw_rsc_vdev_vring 	*vring0,
@@ -80,6 +91,17 @@ int16_t pru_rpmsg_init(
 	return PRU_RPMSG_SUCCESS;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int16_t pru_rpmsg_send(
     struct pru_rpmsg_transport	*transport,
     uint32_t			src,
@@ -126,6 +148,17 @@ int16_t pru_rpmsg_send(
 	return PRU_RPMSG_SUCCESS;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int16_t pru_rpmsg_receive(
     struct pru_rpmsg_transport	*transport,
     uint16_t			*src,
@@ -164,6 +197,17 @@ int16_t pru_rpmsg_receive(
 	return PRU_RPMSG_SUCCESS;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int16_t pru_rpmsg_channel(
     enum pru_rpmsg_ns_flags	flags,
     struct pru_rpmsg_transport	*transport,

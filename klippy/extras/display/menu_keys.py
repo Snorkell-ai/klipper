@@ -43,6 +43,8 @@ class MenuKeys:
         self.register_button(config, 'kill_pin', self.kill_callback)
 
     def register_button(self, config, name, callback, push_only=True):
+        """        """
+
         pin = config.get(name, None)
         if pin is None:
             return
@@ -62,6 +64,8 @@ class MenuKeys:
 
     # Rotary encoder callbacks
     def encoder_cw_callback(self, eventtime):
+        """        """
+
         fast_rate = ((eventtime - self.last_encoder_cw_eventtime)
                      <= self.encoder_fast_rate)
         self.last_encoder_cw_eventtime = eventtime
@@ -71,6 +75,8 @@ class MenuKeys:
             self.callback('up', eventtime)
 
     def encoder_ccw_callback(self, eventtime):
+        """        """
+
         fast_rate = ((eventtime - self.last_encoder_ccw_eventtime)
                      <= self.encoder_fast_rate)
         self.last_encoder_ccw_eventtime = eventtime
@@ -81,11 +87,15 @@ class MenuKeys:
 
     # Click handling
     def long_click_event(self, eventtime):
+        """        """
+
         self.is_short_click = False
         self.callback('long_click', eventtime)
         return self.reactor.NEVER
 
     def click_callback(self, eventtime, state):
+        """        """
+
         if state:
             self.is_short_click = True
             self.reactor.update_timer(self.click_timer,
@@ -96,13 +106,21 @@ class MenuKeys:
 
     # Other button callbacks
     def back_callback(self, eventtime):
+        """        """
+
         self.callback('back', eventtime)
 
     def up_callback(self, eventtime):
+        """        """
+
         self.callback('up', eventtime)
 
     def down_callback(self, eventtime):
+        """        """
+
         self.callback('down', eventtime)
 
     def kill_callback(self, eventtime):
+        """        """
+
         self.printer.invoke_shutdown("Shutdown due to kill button!")

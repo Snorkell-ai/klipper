@@ -18,10 +18,14 @@ class PrinterSysStats:
             pass
         printer.register_event_handler("klippy:disconnect", self._disconnect)
     def _disconnect(self):
+        """        """
+
         if self.mem_file is not None:
             self.mem_file.close()
             self.mem_file = None
     def stats(self, eventtime):
+        """        """
+
         # Get core usage stats
         ptime = time.process_time()
         pdiff = ptime - self.last_process_time
@@ -45,6 +49,8 @@ class PrinterSysStats:
                 pass
         return (False, msg)
     def get_status(self, eventtime):
+        """        """
+
         return {'sysload': self.last_load_avg,
                 'cputime': self.total_process_time,
                 'memavail': self.last_mem_avail}
@@ -57,12 +63,16 @@ class PrinterStats:
         self.stats_cb = []
         self.printer.register_event_handler("klippy:ready", self.handle_ready)
     def handle_ready(self):
+        """        """
+
         self.stats_cb = [o.stats for n, o in self.printer.lookup_objects()
                          if hasattr(o, 'stats')]
         if self.printer.get_start_args().get('debugoutput') is None:
             reactor = self.printer.get_reactor()
             reactor.update_timer(self.stats_timer, reactor.NOW)
     def generate_stats(self, eventtime):
+        """        """
+
         stats = [cb(eventtime) for cb in self.stats_cb]
         if max([s[0] for s in stats]):
             logging.info("Stats %.1f: %s", eventtime,
@@ -70,5 +80,7 @@ class PrinterStats:
         return eventtime + 1.
 
 def load_config(config):
+    """    """
+
     config.get_printer().add_object('system_stats', PrinterSysStats(config))
     return PrinterStats(config)

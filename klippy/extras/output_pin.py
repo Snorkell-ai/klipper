@@ -55,8 +55,12 @@ class PrinterOutputPin:
                                    self.cmd_SET_PIN,
                                    desc=self.cmd_SET_PIN_help)
     def get_status(self, eventtime):
+        """        """
+
         return {'value': self.last_value}
     def _set_pin(self, print_time, value, is_resend=False):
+        """        """
+
         if value == self.last_value and not is_resend:
             return
         print_time = max(print_time, self.last_print_time + PIN_MIN_TIME)
@@ -71,6 +75,8 @@ class PrinterOutputPin:
                 self._resend_current_val, self.reactor.NOW)
     cmd_SET_PIN_help = "Set the value of an output pin"
     def cmd_SET_PIN(self, gcmd):
+        """        """
+
         # Read requested value
         value = gcmd.get_float('VALUE', minval=0., maxval=self.scale)
         value /= self.scale
@@ -82,6 +88,8 @@ class PrinterOutputPin:
             lambda print_time: self._set_pin(print_time, value))
 
     def _resend_current_val(self, eventtime):
+        """        """
+
         if self.last_value == self.shutdown_value:
             self.reactor.unregister_timer(self.resend_timer)
             self.resend_timer = None
@@ -97,4 +105,6 @@ class PrinterOutputPin:
         return systime + self.resend_interval
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterOutputPin(config)

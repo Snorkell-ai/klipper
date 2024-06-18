@@ -16,8 +16,12 @@ class mcp4728:
             if val is not None:
                 self.set_dac(i, int(val * 4095. / scale + .5))
     def set_dac(self, dac, value):
+        """        """
+
         self.i2c.i2c_write([0x40 | (dac << 1),
                             ((value >> 8) & 0x0f) | 0x80, value & 0xff])
 
 def load_config_prefix(config):
+    """    """
+
     return mcp4728(config)

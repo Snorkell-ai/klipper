@@ -46,6 +46,8 @@ class hd44780_spi:
             # Glyph framebuffer
             (self.glyph_framebuffer, bytearray(b'~'*64), 0x40) ]
     def send_4_bits(self, cmd, is_data, minclock):
+        """        """
+
         if is_data:
             mask = self.data_mask
         else:
@@ -54,10 +56,14 @@ class hd44780_spi:
         self.spi.spi_send([(cmd & 0xF0) | mask | self.enable_mask], minclock)
         self.spi.spi_send([(cmd & 0xF0) | mask], minclock)
     def send(self, cmds, is_data=False, minclock=0):
+        """        """
+
         for data in cmds:
             self.send_4_bits(data,is_data,minclock)
             self.send_4_bits(data<<4,is_data,minclock)
     def flush(self):
+        """        """
+
         # Find all differences in the framebuffers and send them to the chip
         for new_data, old_data, fb_id in self.all_framebuffers:
             if new_data == old_data:
@@ -79,6 +85,8 @@ class hd44780_spi:
                 self.send(new_data[pos:pos+count], is_data=True)
             old_data[:] = new_data
     def init(self):
+        """        """
+
         curtime = self.printer.get_reactor().monotonic()
         print_time = self.mcu.estimated_print_time(curtime)
         # Program 4bit / 2-line mode and then issue 0x02 "Home" command
@@ -93,16 +101,22 @@ class hd44780_spi:
             self.send(cmds, minclock=minclock)
         self.flush()
     def write_text(self, x, y, data):
+        """        """
+
         if x + len(data) > self.line_length:
             data = data[:self.line_length - min(x, self.line_length)]
         pos = x + ((y & 0x02) >> 1) * self.line_length
         self.text_framebuffers[y & 1][pos:pos+len(data)] = data
     def set_glyphs(self, glyphs):
+        """        """
+
         for glyph_name, glyph_data in glyphs.items():
             data = glyph_data.get('icon5x8')
             if data is not None:
                 self.icons[glyph_name] = data
     def write_glyph(self, x, y, glyph_name):
+        """        """
+
         data = self.icons.get(glyph_name)
         if data is not None:
             slot, bits = data
@@ -118,8 +132,12 @@ class hd44780_spi:
     def write_graphics(self, x, y, data):
         pass
     def clear(self):
+        """        """
+
         spaces = b' ' * 2*self.line_length
         self.text_framebuffers[0][:] = spaces
         self.text_framebuffers[1][:] = spaces
     def get_dimensions(self):
+        """        """
+
         return (self.line_length, 4)

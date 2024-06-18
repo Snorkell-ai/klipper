@@ -47,6 +47,8 @@ class TemperatureFan:
             desc=self.cmd_SET_TEMPERATURE_FAN_TARGET_help)
 
     def set_speed(self, read_time, value):
+        """        """
+
         if value <= 0.:
             value = 0.
         elif value < self.min_speed:
@@ -62,15 +64,25 @@ class TemperatureFan:
         self.last_speed_value = value
         self.fan.set_speed(speed_time, value)
     def temperature_callback(self, read_time, temp):
+        """        """
+
         self.last_temp = temp
         self.control.temperature_callback(read_time, temp)
     def get_temp(self, eventtime):
+        """        """
+
         return self.last_temp, self.target_temp
     def get_min_speed(self):
+        """        """
+
         return self.min_speed
     def get_max_speed(self):
+        """        """
+
         return self.max_speed
     def get_status(self, eventtime):
+        """        """
+
         status = self.fan.get_status(eventtime)
         status["temperature"] = round(self.last_temp, 2)
         status["target"] = self.target_temp
@@ -78,6 +90,8 @@ class TemperatureFan:
     cmd_SET_TEMPERATURE_FAN_TARGET_help = \
         "Sets a temperature fan target and fan speed limits"
     def cmd_SET_TEMPERATURE_FAN_TARGET(self, gcmd):
+        """        """
+
         temp = gcmd.get_float('TARGET', self.target_temp_conf)
         self.set_temp(temp)
         min_speed = gcmd.get_float('MIN_SPEED', self.min_speed)
@@ -90,6 +104,8 @@ class TemperatureFan:
         self.set_max_speed(max_speed)
 
     def set_temp(self, degrees):
+        """        """
+
         if degrees and (degrees < self.min_temp or degrees > self.max_temp):
             raise self.printer.command_error(
                 "Requested temperature (%.1f) out of range (%.1f:%.1f)"
@@ -97,6 +113,8 @@ class TemperatureFan:
         self.target_temp = degrees
 
     def set_min_speed(self, speed):
+        """        """
+
         if speed and (speed < 0. or speed > 1.):
             raise self.printer.command_error(
                 "Requested min speed (%.1f) out of range (0.0 : 1.0)"
@@ -104,6 +122,8 @@ class TemperatureFan:
         self.min_speed = speed
 
     def set_max_speed(self, speed):
+        """        """
+
         if speed and (speed < 0. or speed > 1.):
             raise self.printer.command_error(
                 "Requested max speed (%.1f) out of range (0.0 : 1.0)"
@@ -120,6 +140,8 @@ class ControlBangBang:
         self.max_delta = config.getfloat('max_delta', 2.0, above=0.)
         self.heating = False
     def temperature_callback(self, read_time, temp):
+        """        """
+
         current_temp, target_temp = self.temperature_fan.get_temp(read_time)
         if (self.heating
             and temp >= target_temp+self.max_delta):
@@ -155,6 +177,8 @@ class ControlPID:
         self.prev_temp_deriv = 0.
         self.prev_temp_integ = 0.
     def temperature_callback(self, read_time, temp):
+        """        """
+
         current_temp, target_temp = self.temperature_fan.get_temp(read_time)
         time_diff = read_time - self.prev_temp_time
         # Calculate change of temperature
@@ -182,4 +206,6 @@ class ControlPID:
             self.prev_temp_integ = temp_integ
 
 def load_config_prefix(config):
+    """    """
+
     return TemperatureFan(config)

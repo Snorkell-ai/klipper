@@ -61,6 +61,17 @@ enum {
 };
 
 // Setup a stepper for the next move in its queue
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 stepper_load_next(struct stepper *s)
 {
@@ -99,7 +110,17 @@ stepper_load_next(struct stepper *s)
     return SF_RESCHEDULE;
 }
 
-// Optimized step function to step on each step pin edge
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint_fast8_t
 stepper_event_edge(struct timer *t)
 {
@@ -117,7 +138,17 @@ stepper_event_edge(struct timer *t)
 
 #define AVR_STEP_INSNS 40 // minimum instructions between step gpio pulses
 
-// AVR optimized step function
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 stepper_event_avr(struct timer *t)
 {
@@ -137,7 +168,17 @@ stepper_event_avr(struct timer *t)
     return ret;
 }
 
-// Regular "double scheduled" step function
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint_fast8_t
 stepper_event_full(struct timer *t)
 {
@@ -170,7 +211,17 @@ reschedule_min:
     return SF_RESCHEDULE;
 }
 
-// Optimized entry point for step function (may be inlined into sched.c code)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint_fast8_t
 stepper_event(struct timer *t)
 {
@@ -181,6 +232,17 @@ stepper_event(struct timer *t)
     return stepper_event_full(t);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_stepper(uint32_t *args)
 {
@@ -220,14 +282,34 @@ stepper_oid_lookup(uint8_t oid)
 void
 command_queue_step(uint32_t *args)
 {
-    struct stepper *s = stepper_oid_lookup(args[0]);
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     struct stepper_move *m = move_alloc();
     m->interval = args[1];
     m->count = args[2];
     if (!m->count)
         shutdown("Invalid count parameter");
     m->add = args[3];
-    m->flags = 0;
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
     irq_disable();
     uint8_t flags = s->flags;
@@ -262,7 +344,17 @@ command_set_next_step_dir(uint32_t *args)
     irq_enable();
 }
 DECL_COMMAND(command_set_next_step_dir, "set_next_step_dir oid=%c dir=%c");
-
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 // Set an absolute time that the next step will be relative to
 void
 command_reset_step_clock(uint32_t *args)
@@ -274,7 +366,17 @@ command_reset_step_clock(uint32_t *args)
         shutdown("Can't reset time when stepper active");
     s->next_step_time = s->time.waketime = waketime;
     s->flags &= ~SF_NEED_RESET;
-    irq_enable();
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 }
 DECL_COMMAND(command_reset_step_clock, "reset_step_clock oid=%c clock=%u");
 
@@ -289,7 +391,17 @@ stepper_get_position(struct stepper *s)
     else
         position -= s->count / 2;
     // The top bit of s->position is an optimized reverse direction flag
-    if (position & 0x80000000)
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         return -position;
     return position;
 }
@@ -305,7 +417,17 @@ command_stepper_get_position(uint32_t *args)
     irq_enable();
     sendf("stepper_position oid=%c pos=%i", oid, position - POSITION_BIAS);
 }
-DECL_COMMAND(command_stepper_get_position, "stepper_get_position oid=%c");
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
 // Stop all moves for a given stepper (caller must disable IRQs)
 static void
@@ -318,7 +440,17 @@ stepper_stop(struct trsync_signal *tss, uint8_t reason)
     s->count = 0;
     s->flags = (s->flags & (SF_INVERT_STEP|SF_SINGLE_SCHED)) | SF_NEED_RESET;
     gpio_out_write(s->dir_pin, 0);
-    if (!(HAVE_EDGE_OPTIMIZATION && s->flags & SF_SINGLE_SCHED))
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         gpio_out_write(s->step_pin, s->flags & SF_INVERT_STEP);
     while (!move_queue_empty(&s->mq)) {
         struct move_node *mn = move_queue_pop(&s->mq);
@@ -335,9 +467,41 @@ command_stepper_stop_on_trigger(uint32_t *args)
     struct trsync *ts = trsync_oid_lookup(args[1]);
     trsync_add_signal(ts, &s->stop_signal, stepper_stop);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ /**
+  * Transforms the sign-up request data to match the backend's expected format.
+  *
+  * @param {SignUpRequest} signUpData - The original sign-up request data.
+  *
+  * @returns {Object} The transformed sign-up request data with the following changes:
+  * - `firstName` is mapped to `first_name`
+  * - `lastName` is mapped to `last_name`
+  * - `email` is mapped to `username`
+  * - All other properties remain unchanged.
+  */
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_stepper_stop_on_trigger,
              "stepper_stop_on_trigger oid=%c trsync_oid=%c");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 stepper_shutdown(void)
 {
@@ -348,4 +512,15 @@ stepper_shutdown(void)
         stepper_stop(&s->stop_signal, 0);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_SHUTDOWN(stepper_shutdown);

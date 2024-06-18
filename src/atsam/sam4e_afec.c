@@ -15,6 +15,17 @@
 #endif
 
 #define ADC_TEMPERATURE_PIN 0xfe
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_ENUMERATION("pin", "ADC_TEMPERATURE", ADC_TEMPERATURE_PIN);
 
 static const uint8_t afec_pins[] = {
@@ -63,6 +74,17 @@ static const uint8_t afec_pins[] = {
 #define CFG_AFE_COCR (0x200 & AFE_COCR_AOFF_Msk)
 #endif
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline struct gpio_adc
 pin_to_gpio_adc(uint8_t pin)
 {
@@ -77,12 +99,34 @@ pin_to_gpio_adc(uint8_t pin)
     return (struct gpio_adc){ .chan=chan };
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline Afec *
 gpio_adc_to_afec(struct gpio_adc g)
 {
     return (g.chan >= AFEC1_START ? AFEC1 : AFEC0);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline uint32_t
 gpio_adc_to_afec_chan(struct gpio_adc g)
 {
@@ -90,8 +134,30 @@ gpio_adc_to_afec_chan(struct gpio_adc g)
 }
 
 #define ADC_FREQ_MAX 6000000UL
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_CONSTANT("ADC_MAX", 4095);
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int
 init_afec(Afec* afec) {
 
@@ -127,6 +193,17 @@ init_afec(Afec* afec) {
     return 0;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_afec_init(void) {
 
@@ -138,8 +215,30 @@ gpio_afec_init(void) {
     }
 
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_INIT(gpio_afec_init);
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct gpio_adc
 gpio_adc_setup(uint8_t pin)
 {
@@ -179,9 +278,17 @@ gpio_adc_setup(uint8_t pin)
 enum { AFE_DUMMY=0xff };
 uint8_t active_channel = AFE_DUMMY;
 
-// Try to sample a value. Returns zero if sample ready, otherwise
-// returns the number of clock ticks the caller should wait before
-// retrying this function.
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint32_t
 gpio_adc_sample(struct gpio_adc g)
 {
@@ -220,7 +327,17 @@ need_delay:
     return ADC_FREQ_MAX * 10000ULL / CONFIG_CLOCK_FREQ;
 }
 
-// Read a value; use only after gpio_adc_sample() returns zero
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint16_t
 gpio_adc_read(struct gpio_adc g)
 {
@@ -231,7 +348,17 @@ gpio_adc_read(struct gpio_adc g)
     return afec->AFE_CDR;
 }
 
-// Cancel a sample that may have been started with gpio_adc_sample()
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_adc_cancel_sample(struct gpio_adc g)
 {

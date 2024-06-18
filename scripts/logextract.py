@@ -7,6 +7,8 @@
 import sys, re, collections, ast, itertools
 
 def format_comment(line_num, line):
+    """    """
+
     return "# %6d: %s" % (line_num, line)
 
 
@@ -23,12 +25,16 @@ class GatherConfig:
         self.config_lines = []
         self.comments = []
     def add_line(self, line_num, line):
+        """        """
+
         if line != '=======================':
             self.config_lines.append(line)
             return True
         self.finalize()
         return False
     def finalize(self):
+        """        """
+
         lines = tuple(self.config_lines)
         ch = self.configs.get(lines)
         if ch is None:
@@ -37,9 +43,13 @@ class GatherConfig:
             ch.comments.extend(self.comments)
         ch.comments.append(format_comment(self.line_num, "config file"))
     def add_comment(self, comment):
+        """        """
+
         if comment is not None:
             self.comments.append(comment)
     def write_file(self):
+        """        """
+
         lines = itertools.chain(self.comments, self.config_lines)
         lines = ('%s\n' % l for l in lines)
         with open(self.filename, 'wt') as f:
@@ -54,6 +64,8 @@ uart_r = re.compile(r"tmcuart_(?:send|response) oid=[0-9]+ (?:read|write)=")
 
 class TMCUartHelper:
     def _calc_crc8(self, data):
+        """        """
+
         # Generate a CRC8-ATM value for a bytearray
         crc = 0
         for b in data:
@@ -66,6 +78,8 @@ class TMCUartHelper:
                 b >>= 1
         return crc
     def _add_serial_bits(self, data):
+        """        """
+
         # Add serial start and stop bits to a message in a bytearray
         out = 0
         pos = 0
@@ -78,17 +92,23 @@ class TMCUartHelper:
             res.append((out >> (i*8)) & 0xff)
         return res
     def _encode_read(self, sync, addr, reg):
+        """        """
+
         # Generate a uart read register message
         msg = bytearray([sync, addr, reg])
         msg.append(self._calc_crc8(msg))
         return self._add_serial_bits(msg)
     def _encode_write(self, sync, addr, reg, val):
+        """        """
+
         # Generate a uart write register message
         msg = bytearray([sync, addr, reg, (val >> 24) & 0xff,
                          (val >> 16) & 0xff, (val >> 8) & 0xff, val & 0xff])
         msg.append(self._calc_crc8(msg))
         return self._add_serial_bits(msg)
     def _decode_read(self, data):
+        """        """
+
         # Extract a uart read request message
         if len(data) != 5:
             return
@@ -106,6 +126,8 @@ class TMCUartHelper:
             return "Invalid: %s" % (self.pretty_print(addr, reg),)
         return self.pretty_print(addr, reg)
     def _decode_reg(self, data):
+        """        """
+
         # Extract a uart read response message
         if len(data) != 10:
             return
@@ -129,12 +151,16 @@ class TMCUartHelper:
             return "Invalid:%s" % (self.pretty_print(addr, reg, val),)
         return self.pretty_print(addr, reg, val)
     def pretty_print(self, addr, reg, val=None):
+        """        """
+
         if val is None:
             return "(%x@%x)" % (reg, addr)
         if reg & 0x80:
             return "(%x@%x=%08x)" % (reg & ~0x80, addr, val)
         return "(%x@%x==%08x)" % (reg, addr, val)
     def parse_msg(self, msg):
+        """        """
+
         data = bytearray(msg)
         if len(data) == 10:
             return self._decode_reg(data)
@@ -150,6 +176,8 @@ class TMCUartHelper:
 ######################################################################
 
 def add_high_bits(val, ref, mask):
+    """    """
+
     half = (mask + 1) // 2
     return ref + ((val - (ref & mask) + half) & mask) - half
 
@@ -167,6 +195,8 @@ class MCUSentStream:
         self.sent_stream = []
         self.send_count = count
     def parse_line(self, line_num, line):
+        """        """
+
         m = sent_r.match(line)
         if m is not None:
             shortseq = int(m.group('shortseq'), 16)
@@ -182,6 +212,8 @@ class MCUSentStream:
             return True, None
         return self.mcu.parse_line(line_num, line)
     def get_lines(self):
+        """        """
+
         return self.sent_stream
 
 receive_r = re.compile(r"^Receive: " + count_s + " " + time_s + " " + esttime_s
@@ -193,6 +225,8 @@ class MCUReceiveStream:
         self.mcu = mcu
         self.receive_stream = []
     def parse_line(self, line_num, line):
+        """        """
+
         m = receive_r.match(line)
         if m is not None:
             shortseq = int(m.group('shortseq'), 16)
@@ -206,6 +240,8 @@ class MCUReceiveStream:
             return True, None
         return self.mcu.parse_line(line_num, line)
     def get_lines(self):
+        """        """
+
         return self.receive_stream
 
 stats_seq_s = r" send_seq=(?P<sseq>[0-9]+) receive_seq=(?P<rseq>[0-9]+) "
@@ -233,18 +269,26 @@ class MCUStream:
         self.clock_est = (0., 0., 1.)
         self.shutdown_seq = None
     def trans_clock(self, clock, ts):
+        """        """
+
         sample_time, sample_clock, freq = self.clock_est
         exp_clock = int(sample_clock + (ts - sample_time) * freq)
         ext_clock = add_high_bits(clock, exp_clock, 0xffffffff)
         return sample_time + (ext_clock - sample_clock) / freq
     def annotate(self, line, seq, ts):
+        """        """
+
         if seq is not None:
             line = repl_seq_r.sub(r"\g<0>(%d)" % (seq,), line)
         def clock_update(m):
+            """            """
+
             return m.group(0).rstrip() + "(%.6f)" % (
                 self.trans_clock(int(m.group('clock')), ts),)
         line = repl_clock_r.sub(clock_update, line)
         def uart_update(m):
+            """            """
+
             msg = ast.literal_eval('b' + m.group('msg'))
             msg = TMCUartHelper().parse_msg(msg)
             return m.group(0).rstrip() + msg
@@ -253,6 +297,8 @@ class MCUStream:
             line = "mcu '%s': %s" % (self.name, line)
         return line
     def parse_line(self, line_num, line):
+        """        """
+
         m = clock_r.match(line)
         if m is not None:
             self.mcu_freq = int(m.group('freq'))
@@ -271,6 +317,8 @@ class MCUStream:
             return True, MCUReceiveStream(self)
         return False, None
     def get_lines(self):
+        """        """
+
         return []
 
 stepper_move_r = re.compile(r"^queue_step " + count_s + r": t=" + clock_s
@@ -286,6 +334,8 @@ class StepperStream:
         if mcu is not None:
             self.clock_est = mcu.clock_est
     def parse_line(self, line_num, line):
+        """        """
+
         m = stepper_move_r.match(line)
         if m is not None:
             # Convert clock to systime
@@ -300,6 +350,8 @@ class StepperStream:
             return True, None
         return False, None
     def get_lines(self):
+        """        """
+
         return self.stepper_stream
 
 trapq_move_r = re.compile(r"^move " + count_s + r": pt=" + time_s)
@@ -316,6 +368,8 @@ class TrapQStream:
             self.mcu_freq = mcu.mcu_freq
             self.clock_est = mcu.clock_est
     def parse_line(self, line_num, line):
+        """        """
+
         m = trapq_move_r.match(line)
         if m is not None:
             # Convert print_time to systime
@@ -331,6 +385,8 @@ class TrapQStream:
             return True, None
         return False, None
     def get_lines(self):
+        """        """
+
         return self.trapq_stream
 
 gcode_cmd_r = re.compile(r"^Read " + time_s + r": (?P<gcode>['\"].*)$")
@@ -344,6 +400,8 @@ class GCodeStream:
         self.gcode_state = ''
         self.gcode_filename = "%s.gcode%05d" % (logname, shutdown_line_num)
     def extract_params(self, line):
+        """        """
+
         parts = varlist_split_r.split(line)
         try:
             return { parts[i]: ast.literal_eval(parts[i+1].strip())
@@ -351,6 +409,8 @@ class GCodeStream:
         except:
             return {}
     def handle_gcode_state(self, line):
+        """        """
+
         kv = self.extract_params(line)
         out = ['; Start g-code state restore', 'G28']
         if not kv.get('absolute_coord', kv.get('absolutecoord')):
@@ -374,6 +434,8 @@ class GCodeStream:
         out.extend(['; End of state restore', '', ''])
         self.gcode_state = '\n'.join(out)
     def parse_line(self, line_num, line):
+        """        """
+
         m = gcode_cmd_r.match(line)
         if m is not None:
             ts = float(m.group('time'))
@@ -382,6 +444,8 @@ class GCodeStream:
             return True, None
         return False, None
     def get_lines(self):
+        """        """
+
         # Produce output gcode stream
         if self.gcode_stream:
             data = (ast.literal_eval(gc) for gc in self.gcode_commands)
@@ -396,6 +460,8 @@ class APIStream:
     def __init__(self):
         self.api_stream = []
     def parse_line(self, line_num, line):
+        """        """
+
         m = api_cmd_r.match(line)
         if m is not None:
             ts = float(m.group('time'))
@@ -403,6 +469,8 @@ class APIStream:
             return True, None
         return False, None
     def get_lines(self):
+        """        """
+
         return self.api_stream
 
 stats_r = re.compile(r"^Stats " + time_s + ": ")
@@ -425,10 +493,16 @@ class StatsStream:
         self.first_stat_time = self.last_stat_time = None
         self.stats_stream = []
     def reset_first_stat_time(self):
+        """        """
+
         self.first_stat_time = self.last_stat_time
     def get_stat_times(self):
+        """        """
+
         return self.first_stat_time, self.last_stat_time
     def check_stats_seq(self, ts, line):
+        """        """
+
         # Parse stats
         parts = line.split()
         mcu = ""
@@ -454,6 +528,8 @@ class StatsStream:
                          mcu.receive_seq_to_time.get(rseq+1, 999999999999))
         return min(max(ts, min_ts + 0.00000001), max_ts - 0.00000001)
     def parse_line(self, line_num, line):
+        """        """
+
         m = stats_r.match(line)
         if m is not None:
             ts = float(m.group('time'))
@@ -488,6 +564,8 @@ class StatsStream:
             return True, APIStream()
         return False, None
     def get_lines(self):
+        """        """
+
         # Ignore old stats
         all_ts = []
         for mcu_name, mcu in self.mcus.items():
@@ -534,9 +612,13 @@ class GatherShutdown:
             self.parse_line(line_num, line)
         self.stats_stream.reset_first_stat_time()
     def add_comment(self, comment):
+        """        """
+
         if comment is not None:
             self.comments.append(comment)
     def add_line(self, line_num, line):
+        """        """
+
         self.parse_line(line_num, line)
         first, last = self.stats_stream.get_stat_times()
         if first is not None and last > first + 5.:
@@ -549,6 +631,8 @@ class GatherShutdown:
             return False
         return True
     def parse_line(self, line_num, line):
+        """        """
+
         for s in self.active_streams:
             did_parse, new_stream = s.parse_line(line_num, line)
             if did_parse:
@@ -557,6 +641,8 @@ class GatherShutdown:
                     self.active_streams = [new_stream, self.stats_stream]
                 break
     def finalize(self):
+        """        """
+
         # Make sure no timestamp goes backwards
         streams = [p.get_lines() for p in self.all_streams]
         for s in streams:
@@ -577,6 +663,8 @@ class GatherShutdown:
 ######################################################################
 
 def main():
+    """    """
+
     logname = sys.argv[1]
     last_git = last_start = None
     configs = {}

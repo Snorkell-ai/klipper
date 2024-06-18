@@ -33,6 +33,8 @@ class DisplayBase:
         self.cached_glyphs = {}
         self.icons = {}
     def flush(self):
+        """        """
+
         # Find all differences in the framebuffers and send them to the chip
         for new_data, old_data, fb_id in self.all_framebuffers:
             if new_data == old_data:
@@ -61,6 +63,8 @@ class DisplayBase:
                 self.send(new_data[pos:pos+count], is_data=True)
             old_data[:] = new_data
     def init(self):
+        """        """
+
         cmds = [0x24, # Enter extended mode
                 0x40, # Clear vertical scroll address
                 0x02, # Enable CGRAM access
@@ -72,6 +76,8 @@ class DisplayBase:
         self.send(cmds)
         self.flush()
     def cache_glyph(self, glyph_name, base_glyph_name, glyph_id):
+        """        """
+
         icon = self.icons.get(glyph_name)
         base_icon = self.icons.get(base_glyph_name)
         if icon is None or base_icon is None:
@@ -84,6 +90,8 @@ class DisplayBase:
             self.all_framebuffers[1][1][pos:pos+2] = [x1 ^ 1, x2 ^ 1]
         self.cached_glyphs[glyph_name] = (base_glyph_name, (0, glyph_id*2))
     def set_glyphs(self, glyphs):
+        """        """
+
         for glyph_name, glyph_data in glyphs.items():
             icon = glyph_data.get('icon16x16')
             if icon is not None:
@@ -92,11 +100,15 @@ class DisplayBase:
         self.cache_glyph('fan2', 'fan1', 0)
         self.cache_glyph('bed_heat2', 'bed_heat1', 1)
     def write_text(self, x, y, data):
+        """        """
+
         if x + len(data) > 16:
             data = data[:16 - min(x, 16)]
         pos = [0, 32, 16, 48][y] + x
         self.text_framebuffer[pos:pos+len(data)] = data
     def write_graphics(self, x, y, data):
+        """        """
+
         if x >= 16 or y >= 4 or len(data) != 16:
             return
         gfx_fb = y * 16
@@ -106,6 +118,8 @@ class DisplayBase:
         for i, bits in enumerate(data):
             self.graphics_framebuffers[gfx_fb + i][x] = bits
     def write_glyph(self, x, y, glyph_name):
+        """        """
+
         glyph_id = self.cached_glyphs.get(glyph_name)
         if glyph_id is not None and x & 1 == 0:
             # Render cached icon using character generator
@@ -129,11 +143,15 @@ class DisplayBase:
             return 1
         return 0
     def clear(self):
+        """        """
+
         self.text_framebuffer[:] = b' '*64
         zeros = bytearray(32)
         for gfb in self.graphics_framebuffers:
             gfb[:] = zeros
     def get_dimensions(self):
+        """        """
+
         return (16, 4)
 
 # Display driver for stock ST7920 displays
@@ -159,6 +177,8 @@ class ST7920(DisplayBase):
         # init display base
         DisplayBase.__init__(self)
     def build_config(self):
+        """        """
+
         # configure send functions
         self.mcu.add_config_cmd(
             "config_st7920 oid=%u cs_pin=%s sclk_pin=%s sid_pin=%s"
@@ -172,6 +192,8 @@ class ST7920(DisplayBase):
         self.send_data_cmd = self.mcu.lookup_command(
             "st7920_send_data oid=%c data=%*s", cq=cmd_queue)
     def send(self, cmds, is_data=False, is_extended=False):
+        """        """
+
         cmd_type = self.send_cmds_cmd
         if is_data:
             cmd_type = self.send_data_cmd
@@ -190,6 +212,8 @@ class EnableHelper:
         self.en_pin = bus.MCU_bus_digital_out(spi.get_mcu(), pin_desc,
                                               spi.get_command_queue())
     def init(self):
+        """        """
+
         mcu = self.en_pin.get_mcu()
         curtime = mcu.get_printer().get_reactor().monotonic()
         print_time = mcu.estimated_print_time(curtime)
@@ -230,6 +254,8 @@ class EmulatedST7920(DisplayBase):
         self.is_extended = False
         DisplayBase.__init__(self)
     def send(self, cmds, is_data=False, is_extended=False):
+        """        """
+
         # setup sync byte and check for exten mode switch
         sync_byte = 0xfa
         if not is_data:

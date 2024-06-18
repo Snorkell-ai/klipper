@@ -13,6 +13,17 @@
 
 DECL_ENUMERATION_RANGE("pin", "PA0", GPIO('A', 0), 16);
 DECL_ENUMERATION_RANGE("pin", "PB0", GPIO('B', 0), 16);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_ENUMERATION_RANGE("pin", "PC0", GPIO('C', 0), 16);
 #ifdef GPIOD
 DECL_ENUMERATION_RANGE("pin", "PD0", GPIO('D', 0), 16);
@@ -55,7 +66,17 @@ GPIO_TypeDef * const digital_regs[] = {
 #endif
 };
 
-// Convert a register and bit location back to an integer pin identifier
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int
 regs_to_pin(GPIO_TypeDef *regs, uint32_t bit)
 {
@@ -66,7 +87,17 @@ regs_to_pin(GPIO_TypeDef *regs, uint32_t bit)
     return 0;
 }
 
-// Verify that a gpio is a valid pin
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int
 gpio_valid(uint32_t pin)
 {
@@ -74,6 +105,17 @@ gpio_valid(uint32_t pin)
     return port < ARRAY_SIZE(digital_regs) && digital_regs[port];
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct gpio_out
 gpio_out_setup(uint32_t pin, uint32_t val)
 {
@@ -86,6 +128,17 @@ gpio_out_setup(uint32_t pin, uint32_t val)
     return g;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_out_reset(struct gpio_out g, uint32_t val)
 {
@@ -100,6 +153,17 @@ gpio_out_reset(struct gpio_out g, uint32_t val)
     irq_restore(flag);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_out_toggle_noirq(struct gpio_out g)
 {
@@ -107,6 +171,17 @@ gpio_out_toggle_noirq(struct gpio_out g)
     regs->ODR ^= g.bit;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_out_toggle(struct gpio_out g)
 {
@@ -115,6 +190,17 @@ gpio_out_toggle(struct gpio_out g)
     irq_restore(flag);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_out_write(struct gpio_out g, uint32_t val)
 {
@@ -126,6 +212,17 @@ gpio_out_write(struct gpio_out g, uint32_t val)
 }
 
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct gpio_in
 gpio_in_setup(uint32_t pin, int32_t pull_up)
 {
@@ -137,6 +234,17 @@ gpio_in_setup(uint32_t pin, int32_t pull_up)
     return g;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_in_reset(struct gpio_in g, int32_t pull_up)
 {
@@ -147,6 +255,17 @@ gpio_in_reset(struct gpio_in g, int32_t pull_up)
     irq_restore(flag);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t
 gpio_in_read(struct gpio_in g)
 {

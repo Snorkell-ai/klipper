@@ -15,6 +15,8 @@ shaper_calibrate = importlib.import_module('.shaper_calibrate', 'extras')
 MAX_TITLE_LENGTH=65
 
 def parse_log(logname, opts):
+    """    """
+
     with open(logname) as f:
         for header in f:
             if header.startswith('#'):
@@ -37,6 +39,8 @@ def parse_log(logname, opts):
 ######################################################################
 
 def plot_accel(datas, lognames):
+    """    """
+
     fig, axes = matplotlib.pyplot.subplots(nrows=3, sharex=True)
     axes[0].set_title("\n".join(wrap(
         "Accelerometer data (%s)" % (', '.join(lognames)), MAX_TITLE_LENGTH)))
@@ -71,12 +75,16 @@ def plot_accel(datas, lognames):
 
 # Calculate estimated "power spectral density"
 def calc_freq_response(data, max_freq):
+    """    """
+
     if isinstance(data, shaper_calibrate.CalibrationData):
         return data
     helper = shaper_calibrate.ShaperCalibrate(printer=None)
     return helper.process_accelerometer_data(data)
 
 def calc_specgram(data, axis):
+    """    """
+
     if isinstance(data, shaper_calibrate.CalibrationData):
         raise error("Cannot calculate the spectrogram using the processed"
                     " resonances, raw_data input is required")
@@ -86,6 +94,8 @@ def calc_specgram(data, axis):
     M = 1 << int(.5 * Fs - 1).bit_length()
     window = np.kaiser(M, 6.)
     def _specgram(x):
+        """        """
+
         return matplotlib.mlab.specgram(
                 x, Fs=Fs, NFFT=M, noverlap=M//2, window=window,
                 mode='psd', detrend='mean', scale_by_freq=False)
@@ -100,6 +110,8 @@ def calc_specgram(data, axis):
     return pdata, bins, t
 
 def plot_frequency(datas, lognames, max_freq):
+    """    """
+
     calibration_data = calc_freq_response(datas[0], max_freq)
     for data in datas[1:]:
         calibration_data.add_data(calc_freq_response(data, max_freq))
@@ -134,6 +146,8 @@ def plot_frequency(datas, lognames, max_freq):
     return fig
 
 def plot_compare_frequency(datas, lognames, max_freq, axis):
+    """    """
+
     fig, ax = matplotlib.pyplot.subplots()
     ax.set_title('Frequency responses comparison')
     ax.set_xlabel('Frequency (Hz)')
@@ -158,6 +172,8 @@ def plot_compare_frequency(datas, lognames, max_freq, axis):
 
 # Plot data in a "spectrogram colormap"
 def plot_specgram(data, logname, max_freq, axis):
+    """    """
+
     pdata, bins, t = calc_specgram(data, axis)
 
     fig, ax = matplotlib.pyplot.subplots()
@@ -175,6 +191,8 @@ def plot_specgram(data, logname, max_freq, axis):
 ######################################################################
 
 def write_frequency_response(datas, output):
+    """    """
+
     helper = shaper_calibrate.ShaperCalibrate(printer=None)
     calibration_data = helper.process_accelerometer_data(datas[0])
     for data in datas[1:]:
@@ -182,6 +200,8 @@ def write_frequency_response(datas, output):
     helper.save_calibration_data(output, calibration_data)
 
 def write_specgram(psd, freq_bins, time, output):
+    """    """
+
     M = freq_bins.shape[0]
     with open(output, "w") as csvfile:
         csvfile.write("freq\\t")
@@ -199,9 +219,13 @@ def write_specgram(psd, freq_bins, time, output):
 ######################################################################
 
 def is_csv_output(output):
+    """    """
+
     return output and os.path.splitext(output)[1].lower() == '.csv'
 
 def setup_matplotlib(output):
+    """    """
+
     global matplotlib
     if is_csv_output(output):
         # Only mlab may be necessary with CSV output
@@ -214,6 +238,8 @@ def setup_matplotlib(output):
     import matplotlib.ticker
 
 def main():
+    """    """
+
     # Parse command-line arguments
     usage = "%prog [options] <raw logs>"
     opts = optparse.OptionParser(usage)

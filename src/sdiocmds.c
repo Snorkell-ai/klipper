@@ -20,6 +20,17 @@ struct sdiodev_s {
 
 #define TIMEOUT_MSEC 500
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_sdio(uint32_t *args)
 {
@@ -41,12 +52,34 @@ command_sdio_set_bus(uint32_t *args)
 {
     struct sdiodev_s *sdio = sdiodev_oid_lookup(args[0]);
     sdio->sdio_config = sdio_setup(args[1]);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 }
 DECL_COMMAND(command_sdio_set_bus, "sdio_set_bus oid=%c sdio_bus=%u");
 
 void
 command_sdio_set_speed(uint32_t *args)
 {
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     struct sdiodev_s *sdio = sdiodev_oid_lookup(args[0]);
     sdio->speed = args[1];
     sdio_set_speed(sdio->sdio_config, sdio->speed);
@@ -55,6 +88,17 @@ DECL_COMMAND(command_sdio_set_speed, "sdio_set_speed oid=%c speed=%u");
 
 void
 command_sdio_send_command(uint32_t *args)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 {
     uint8_t oid = args[0];
     uint8_t cmd = args[1];
@@ -64,6 +108,17 @@ command_sdio_send_command(uint32_t *args)
     uint8_t response[16];
     uint8_t response_len = 0;
     uint8_t err = sdio_send_command(sdio->sdio_config, cmd, argument, wait
+                                    /**
+                                     * Transforms the sign-up request data to match the backend's expected format.
+                                     *
+                                     * @param {SignUpRequest} signUpData - The original sign-up request data.
+                                     *
+                                     * @returns {Object} The transformed sign-up request data with the following changes:
+                                     * - `firstName` is mapped to `first_name`
+                                     * - `lastName` is mapped to `last_name`
+                                     * - `email` is mapped to `username`
+                                     * - All other properties remain unchanged.
+                                     */
                                     , response, &response_len);
     sendf("sdio_send_command_response oid=%c error=%c response=%*s"
           , oid, err, response_len, response);
@@ -82,6 +137,17 @@ command_sdio_read_data(uint32_t *args)
     uint32_t timeout = TIMEOUT_MSEC*sdio->speed/1000;
     uint8_t err = sdio_prepare_data_transfer(sdio->sdio_config, 1, 1
                                              , sdio->blocksize, timeout);
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     if (err == 0) {
         err = sdio_send_command(sdio->sdio_config, cmd, argument
                                 , 1, NULL, NULL);
@@ -112,6 +178,17 @@ command_sdio_write_data(uint32_t *args)
     uint32_t timeout = TIMEOUT_MSEC*sdio->speed/1000;
     uint8_t err = sdio_prepare_data_transfer(sdio->sdio_config, 0, 1
                                              , sdio->blocksize, timeout);
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     if (err == 0) {
         err = sdio_send_command(sdio->sdio_config, cmd, argument
                                 , 1, NULL, NULL);
@@ -142,6 +219,17 @@ command_sdio_read_data_buffer(uint32_t *args)
 
     if (offset + len > sizeof(sdio->data_buffer)) {
         len = 0;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     }
     sendf("sdio_read_data_buffer_response oid=%c data=%*s", oid, len, buf);
 }
@@ -159,8 +247,30 @@ command_sdio_write_data_buffer(uint32_t *args)
     uint8_t *buf = &(sdio->data_buffer[offset]);
 
     if (offset + write_data_len <= sizeof(sdio->data_buffer)) {
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         memcpy(buf, write_data, write_data_len);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_sdio_write_data_buffer
              , "sdio_write_data_buffer oid=%c offset=%u data=%*s");

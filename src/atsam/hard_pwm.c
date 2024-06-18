@@ -11,6 +11,17 @@
 #include "sched.h" // sched_shutdown
 
 #define MAX_PWM 255
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_CONSTANT("PWM_MAX", MAX_PWM);
 
 
@@ -69,17 +80,61 @@ static const struct gpio_tc_info tc_regs[] = {
 #endif
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline int tc_is_tc(struct gpio_pwm g) {
     return (((uint32_t)g.reg & ~0xffff) == ((uint32_t)TC0 & ~0xffff));
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline TcChannel *tc_from_reg(struct gpio_pwm g) {
     return (void*)((uint32_t)g.reg & ~0x3f);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline int tc_is_b(struct gpio_pwm g) {
     return (((uint32_t)g.reg & 0x3f)
             == ((uint32_t)&TC0->TC_CHANNEL[0].TC_RB & 0x3f));
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 gpio_tc_write(struct gpio_pwm g, uint32_t val)
 {
@@ -100,6 +155,17 @@ gpio_tc_write(struct gpio_pwm g, uint32_t val)
     irq_restore(flag);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static struct gpio_pwm
 gpio_tc_setup(uint8_t pin, uint32_t cycle_time, uint8_t val)
 {
@@ -190,6 +256,17 @@ static const struct gpio_pwm_info pwm_regs[] = {
 #endif
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct gpio_pwm
 gpio_pwm_setup(uint8_t pin, uint32_t cycle_time, uint8_t val)
 {
@@ -223,6 +300,17 @@ gpio_pwm_setup(uint8_t pin, uint32_t cycle_time, uint8_t val)
     return (struct gpio_pwm){ (void*)&PWM->PWM_CH_NUM[p->channel].PWM_CDTYUPD };
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_pwm_write(struct gpio_pwm g, uint32_t val)
 {

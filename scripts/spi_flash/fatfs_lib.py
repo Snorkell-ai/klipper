@@ -58,6 +58,8 @@ fatfs_ffi_main = None
 fatfs_ffi_lib = None
 
 def check_fatfs_build(printfunc=lambda o: o):
+    """    """
+
     printfunc("Checking FatFS CFFI Build...\n")
     ffi_main, ffi_lib = chelper.get_ffi()
     srcdir = os.path.dirname(os.path.realpath(__file__))
@@ -81,6 +83,8 @@ def check_fatfs_build(printfunc=lambda o: o):
     fatfs_ffi_main = ffi_main
 
 def get_fatfs_ffi():
+    """    """
+
     global fatfs_ffi_main, fatfs_ffi_lib
     if fatfs_ffi_main is None:
         check_fatfs_build()

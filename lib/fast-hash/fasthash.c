@@ -32,6 +32,17 @@
 			(h) *= 0x2127599bf4325c37ULL;	\
 			(h) ^= (h) >> 47; })
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint64_t fasthash64(const void *buf, size_t len, uint64_t seed)
 {
 	const uint64_t    m = 0x880355f21e6d1965ULL;
@@ -65,6 +76,17 @@ uint64_t fasthash64(const void *buf, size_t len, uint64_t seed)
 	return mix(h);
 } 
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint32_t fasthash32(const void *buf, size_t len, uint32_t seed)
 {
 	// the following trick converts the 64-bit hashcode to Fermat

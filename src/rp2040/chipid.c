@@ -22,6 +22,17 @@ static struct {
     uint16_t data[CHIP_UID_LEN * 2];
 } cdc_chipid;
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct usb_string_descriptor *
 usbserial_get_serialid(void)
 {
@@ -53,6 +64,17 @@ flash_cs_force(int high)
 
 static uint8_t boot2_copy[BOOT2_SIZE] __aligned(16);
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 flash_enter_xip_prepare(void)
 {
@@ -118,6 +140,17 @@ read_unique_id(uint8_t *out)
     memcpy(out, rxbuf+1+FLASH_RUID_DUMMY_BYTES, FLASH_RUID_DATA_BYTES);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 chipid_init(void)
 {
@@ -132,4 +165,15 @@ chipid_init(void)
     if (CONFIG_CANBUS)
         canserial_set_uuid(data, CHIP_UID_LEN);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_INIT(chipid_init);

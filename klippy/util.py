@@ -13,16 +13,22 @@ import subprocess, traceback, shlex
 
 # Return the SIGINT interrupt handler back to the OS default
 def fix_sigint():
+    """    """
+
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 fix_sigint()
 
 # Set a file-descriptor as non-blocking
 def set_nonblock(fd):
+    """    """
+
     fcntl.fcntl(fd, fcntl.F_SETFL
                 , fcntl.fcntl(fd, fcntl.F_GETFL) | os.O_NONBLOCK)
 
 # Clear HUPCL flag
 def clear_hupcl(fd):
+    """    """
+
     attrs = termios.tcgetattr(fd)
     attrs[2] = attrs[2] & ~termios.HUPCL
     try:
@@ -32,6 +38,8 @@ def clear_hupcl(fd):
 
 # Support for creating a pseudo-tty for emulating a serial port
 def create_pty(ptyname):
+    """    """
+
     mfd, sfd = pty.openpty()
     try:
         os.unlink(ptyname)
@@ -52,6 +60,8 @@ def create_pty(ptyname):
 ######################################################################
 
 def dump_file_stats(build_dir, filename):
+    """    """
+
     fname = os.path.join(build_dir, filename)
     try:
         mtime = os.path.getmtime(fname)
@@ -63,6 +73,8 @@ def dump_file_stats(build_dir, filename):
 
 # Try to log information on the last mcu build
 def dump_mcu_build():
+    """    """
+
     build_dir = os.path.join(os.path.dirname(__file__), '..')
     # Try to log last mcu config
     dump_file_stats(build_dir, '.config')
@@ -95,6 +107,8 @@ def dump_mcu_build():
 ######################################################################
 
 def setup_python2_wrappers():
+    """    """
+
     if sys.version_info.major >= 3:
         return
     # Add module hacks so that common Python3 module imports work in Python2
@@ -111,6 +125,8 @@ setup_python2_wrappers()
 ######################################################################
 
 def get_cpu_info():
+    """    """
+
     try:
         f = open('/proc/cpuinfo', 'r')
         data = f.read()
@@ -126,6 +142,8 @@ def get_cpu_info():
     return "%d core %s" % (core_count, model_name)
 
 def get_version_from_file(klippy_src):
+    """    """
+
     try:
         with open(os.path.join(klippy_src, '.version')) as h:
             return h.read().rstrip()
@@ -134,6 +152,8 @@ def get_version_from_file(klippy_src):
     return "?"
 
 def _get_repo_info(gitdir):
+    """    """
+
     repo_info = {"branch": "?", "remote": "?", "url": "?"}
     prog_branch = ('git', '-C', gitdir, 'branch', '--no-color')
     try:
@@ -183,6 +203,8 @@ def _get_repo_info(gitdir):
     return repo_info
 
 def get_git_version(from_file=True):
+    """    """
+
     git_info = {
         "version": "?",
         "file_status": [],

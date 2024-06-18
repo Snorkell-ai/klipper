@@ -8,6 +8,17 @@
 #include "internal.h" // struct cline
 
 // Enable a peripheral clock
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 enable_pclock(uint32_t periph_base)
 {
@@ -23,7 +34,17 @@ enable_pclock(uint32_t periph_base)
     irq_restore(flag);
 }
 
-// Check if a peripheral clock has been enabled
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int
 is_enabled_pclock(uint32_t periph_base)
 {

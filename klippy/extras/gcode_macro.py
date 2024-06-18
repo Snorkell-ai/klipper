@@ -18,6 +18,8 @@ class GetStatusWrapper:
         self.eventtime = eventtime
         self.cache = {}
     def __getitem__(self, val):
+        """        """
+
         sval = str(val).strip()
         if sval in self.cache:
             return self.cache[sval]
@@ -29,12 +31,16 @@ class GetStatusWrapper:
         self.cache[sval] = res = copy.deepcopy(po.get_status(self.eventtime))
         return res
     def __contains__(self, val):
+        """        """
+
         try:
             self.__getitem__(val)
         except KeyError as e:
             return False
         return True
     def __iter__(self):
+        """        """
+
         for name, obj in self.printer.lookup_objects():
             if self.__contains__(name):
                 yield name
@@ -55,6 +61,8 @@ class TemplateWrapper:
             logging.exception(msg)
             raise printer.config_error(msg)
     def render(self, context=None):
+        """        """
+
         if context is None:
             context = self.create_template_context()
         try:
@@ -65,6 +73,8 @@ class TemplateWrapper:
             logging.exception(msg)
             raise self.gcode.error(msg)
     def run_gcode_from_command(self, context=None):
+        """        """
+
         self.gcode.run_script_from_command(self.render(context))
 
 # Main gcode macro template tracking
@@ -73,6 +83,8 @@ class PrinterGCodeMacro:
         self.printer = config.get_printer()
         self.env = jinja2.Environment('{%', '%}', '{', '}')
     def load_template(self, config, option, default=None):
+        """        """
+
         name = "%s:%s" % (config.get_name(), option)
         if default is None:
             script = config.get(option)
@@ -80,14 +92,22 @@ class PrinterGCodeMacro:
             script = config.get(option, default)
         return TemplateWrapper(self.printer, self.env, name, script)
     def _action_emergency_stop(self, msg="action_emergency_stop"):
+        """        """
+
         self.printer.invoke_shutdown("Shutdown due to %s" % (msg,))
         return ""
     def _action_respond_info(self, msg):
+        """        """
+
         self.printer.lookup_object('gcode').respond_info(msg)
         return ""
     def _action_raise_error(self, msg):
+        """        """
+
         raise self.printer.command_error(msg)
     def _action_call_remote_method(self, method, **kwargs):
+        """        """
+
         webhooks = self.printer.lookup_object('webhooks')
         try:
             webhooks.call_remote_method(method, **kwargs)
@@ -95,6 +115,8 @@ class PrinterGCodeMacro:
             logging.exception("Remote Call Error")
         return ""
     def create_template_context(self, eventtime=None):
+        """        """
+
         return {
             'printer': GetStatusWrapper(self.printer, eventtime),
             'action_emergency_stop': self._action_emergency_stop,
@@ -104,6 +126,8 @@ class PrinterGCodeMacro:
         }
 
 def load_config(config):
+    """    """
+
     return PrinterGCodeMacro(config)
 
 
@@ -152,6 +176,8 @@ class GCodeMacro:
                     "Option '%s' in section '%s' is not a valid literal: %s" % (
                         option, config.get_name(), e))
     def handle_connect(self):
+        """        """
+
         prev_cmd = self.gcode.register_command(self.alias, None)
         if prev_cmd is None:
             raise self.printer.config_error(
@@ -161,9 +187,13 @@ class GCodeMacro:
         self.gcode.register_command(self.rename_existing, prev_cmd, desc=pdesc)
         self.gcode.register_command(self.alias, self.cmd, desc=self.cmd_desc)
     def get_status(self, eventtime):
+        """        """
+
         return self.variables
     cmd_SET_GCODE_VARIABLE_help = "Set the value of a G-Code macro variable"
     def cmd_SET_GCODE_VARIABLE(self, gcmd):
+        """        """
+
         variable = gcmd.get('VARIABLE')
         value = gcmd.get('VALUE')
         if variable not in self.variables:
@@ -178,6 +208,8 @@ class GCodeMacro:
         v[variable] = literal
         self.variables = v
     def cmd(self, gcmd):
+        """        """
+
         if self.in_script:
             raise gcmd.error("Macro %s called recursively" % (self.alias,))
         kwparams = dict(self.variables)
@@ -191,4 +223,6 @@ class GCodeMacro:
             self.in_script = False
 
 def load_config_prefix(config):
+    """    """
+
     return GCodeMacro(config)

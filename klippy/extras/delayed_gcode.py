@@ -23,12 +23,16 @@ class DelayedGcode:
             self.cmd_UPDATE_DELAYED_GCODE,
             desc=self.cmd_UPDATE_DELAYED_GCODE_help)
     def _handle_ready(self):
+        """        """
+
         waketime = self.reactor.NEVER
         if self.duration:
             waketime = self.reactor.monotonic() + self.duration
         self.timer_handler = self.reactor.register_timer(
             self._gcode_timer_event, waketime)
     def _gcode_timer_event(self, eventtime):
+        """        """
+
         self.inside_timer = True
         try:
             self.gcode.run_script(self.timer_gcode.render())
@@ -41,6 +45,8 @@ class DelayedGcode:
         return nextwake
     cmd_UPDATE_DELAYED_GCODE_help = "Update the duration of a delayed_gcode"
     def cmd_UPDATE_DELAYED_GCODE(self, gcmd):
+        """        """
+
         self.duration = gcmd.get_float('DURATION', minval=0.)
         if self.inside_timer:
             self.repeat = (self.duration != 0.)
@@ -51,4 +57,6 @@ class DelayedGcode:
             self.reactor.update_timer(self.timer_handler, waketime)
 
 def load_config_prefix(config):
+    """    """
+
     return DelayedGcode(config)

@@ -44,8 +44,12 @@ class Fan:
                                             self._handle_request_restart)
 
     def get_mcu(self):
+        """        """
+
         return self.mcu_fan.get_mcu()
     def set_speed(self, print_time, value):
+        """        """
+
         if value < self.off_below:
             value = 0.
         value = max(0., min(self.max_power, value * self.max_power))
@@ -66,13 +70,19 @@ class Fan:
         self.last_fan_time = print_time
         self.last_fan_value = value
     def set_speed_from_command(self, value):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         toolhead.register_lookahead_callback((lambda pt:
                                               self.set_speed(pt, value)))
     def _handle_request_restart(self, print_time):
+        """        """
+
         self.set_speed(print_time, 0.)
 
     def get_status(self, eventtime):
+        """        """
+
         tachometer_status = self.tachometer.get_status(eventtime)
         return {
             'speed': self.last_fan_value,
@@ -94,6 +104,8 @@ class FanTachometer:
                 printer, pin, sample_time, poll_time)
 
     def get_status(self, eventtime):
+        """        """
+
         if self._freq_counter is not None:
             rpm = self._freq_counter.get_frequency() * 30. / self.ppr
         else:
@@ -108,14 +120,22 @@ class PrinterFan:
         gcode.register_command("M106", self.cmd_M106)
         gcode.register_command("M107", self.cmd_M107)
     def get_status(self, eventtime):
+        """        """
+
         return self.fan.get_status(eventtime)
     def cmd_M106(self, gcmd):
+        """        """
+
         # Set fan speed
         value = gcmd.get_float('S', 255., minval=0.) / 255.
         self.fan.set_speed_from_command(value)
     def cmd_M107(self, gcmd):
+        """        """
+
         # Turn fan off
         self.fan.set_speed_from_command(0.)
 
 def load_config(config):
+    """    """
+
     return PrinterFan(config)

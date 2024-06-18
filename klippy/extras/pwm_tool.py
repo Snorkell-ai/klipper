@@ -34,21 +34,33 @@ class MCU_queued_pwm:
         printer = self._mcu.get_printer()
         printer.register_event_handler("klippy:connect", self._handle_connect)
     def _handle_connect(self):
+        """        """
+
         self._toolhead = self._mcu.get_printer().lookup_object("toolhead")
     def get_mcu(self):
+        """        """
+
         return self._mcu
     def setup_max_duration(self, max_duration):
+        """        """
+
         self._max_duration = max_duration
     def setup_cycle_time(self, cycle_time, hardware_pwm=False):
+        """        """
+
         self._cycle_time = cycle_time
         self._hardware_pwm = hardware_pwm
     def setup_start_value(self, start_value, shutdown_value):
+        """        """
+
         if self._invert:
             start_value = 1. - start_value
             shutdown_value = 1. - shutdown_value
         self._start_value = max(0., min(1., start_value))
         self._shutdown_value = max(0., min(1., shutdown_value))
     def _build_config(self):
+        """        """
+
         config_error = self._mcu.get_printer().config_error
         if self._max_duration and self._start_value != self._shutdown_value:
             raise config_error("Pin with max duration must have start"
@@ -104,6 +116,8 @@ class MCU_queued_pwm:
             "queue_digital_out oid=%c clock=%u on_ticks=%u",
             cq=cmd_queue).get_command_tag()
     def _send_update(self, clock, val):
+        """        """
+
         self._last_clock = clock = max(self._last_clock, clock)
         self._last_value = val
         data = (self._set_cmd_tag, self._oid, clock & 0xffffffff, val)
@@ -119,12 +133,16 @@ class MCU_queued_pwm:
         wake_print_time = self._mcu.clock_to_print_time(wakeclock)
         self._toolhead.note_mcu_movequeue_activity(wake_print_time)
     def set_pwm(self, print_time, value):
+        """        """
+
         clock = self._mcu.print_time_to_clock(print_time)
         if self._invert:
             value = 1. - value
         v = int(max(0., min(1., value)) * self._pwm_max + 0.5)
         self._send_update(clock, v)
     def _flush_notification(self, print_time, clock):
+        """        """
+
         if self._last_value != self._default_value:
             while clock >= self._last_clock + self._duration_ticks:
                 self._send_update(self._last_clock + self._duration_ticks,
@@ -161,8 +179,12 @@ class PrinterOutputPin:
                                    self.cmd_SET_PIN,
                                    desc=self.cmd_SET_PIN_help)
     def get_status(self, eventtime):
+        """        """
+
         return {'value': self.last_value}
     def _set_pin(self, print_time, value):
+        """        """
+
         if value == self.last_value:
             return
         print_time = max(print_time, self.last_print_time)
@@ -171,6 +193,8 @@ class PrinterOutputPin:
         self.last_print_time = print_time
     cmd_SET_PIN_help = "Set the value of an output pin"
     def cmd_SET_PIN(self, gcmd):
+        """        """
+
         # Read requested value
         value = gcmd.get_float('VALUE', minval=0., maxval=self.scale)
         value /= self.scale
@@ -180,4 +204,6 @@ class PrinterOutputPin:
             lambda print_time: self._set_pin(print_time, value))
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterOutputPin(config)

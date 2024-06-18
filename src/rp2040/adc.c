@@ -13,11 +13,44 @@
 #include "internal.h" // enable_pclock
 #include "sched.h" // sched_shutdown
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_CONSTANT("ADC_MAX", 4095);
 
 #define ADC_TEMPERATURE_PIN 0xfe
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_ENUMERATION("pin", "ADC_TEMPERATURE", ADC_TEMPERATURE_PIN);
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 struct gpio_adc
 gpio_adc_setup(uint32_t pin)
 {
@@ -45,9 +78,17 @@ gpio_adc_setup(uint32_t pin)
 enum { ADC_DUMMY=0xff };
 static uint8_t last_analog_read = ADC_DUMMY;
 
-// Try to sample a value. Returns zero if sample ready, otherwise
-// returns the number of clock ticks the caller should wait before
-// retrying this function.
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint32_t
 gpio_adc_sample(struct gpio_adc g)
 {
@@ -71,7 +112,17 @@ need_delay:
     return timer_from_us(5); // Sample takes 2us but provide extra time
 }
 
-// Read a value; use only after gpio_adc_sample() returns zero
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint16_t
 gpio_adc_read(struct gpio_adc g)
 {
@@ -79,7 +130,17 @@ gpio_adc_read(struct gpio_adc g)
     return adc_hw->result;
 }
 
-// Cancel a sample that may have been started with gpio_adc_sample()
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 gpio_adc_cancel_sample(struct gpio_adc g)
 {

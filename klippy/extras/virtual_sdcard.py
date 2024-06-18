@@ -47,6 +47,8 @@ class VirtualSD:
             "SDCARD_PRINT_FILE", self.cmd_SDCARD_PRINT_FILE,
             desc=self.cmd_SDCARD_PRINT_FILE_help)
     def handle_shutdown(self):
+        """        """
+
         if self.work_timer is not None:
             self.must_pause_work = True
             try:
@@ -61,10 +63,14 @@ class VirtualSD:
                          readpos, repr(data[:readcount]),
                          self.file_position, repr(data[readcount:]))
     def stats(self, eventtime):
+        """        """
+
         if self.work_timer is None:
             return False, ""
         return True, "sd_pos=%d" % (self.file_position,)
     def get_file_list(self, check_subdirs=False):
+        """        """
+
         if check_subdirs:
             flist = []
             for root, dirs, files in os.walk(
@@ -90,6 +96,8 @@ class VirtualSD:
                 logging.exception("virtual_sdcard get_file_list")
                 raise self.gcode.error("Unable to get file list")
     def get_status(self, eventtime):
+        """        """
+
         return {
             'file_path': self.file_path(),
             'progress': self.progress(),
@@ -98,28 +106,40 @@ class VirtualSD:
             'file_size': self.file_size,
         }
     def file_path(self):
+        """        """
+
         if self.current_file:
             return self.current_file.name
         return None
     def progress(self):
+        """        """
+
         if self.file_size:
             return float(self.file_position) / self.file_size
         else:
             return 0.
     def is_active(self):
+        """        """
+
         return self.work_timer is not None
     def do_pause(self):
+        """        """
+
         if self.work_timer is not None:
             self.must_pause_work = True
             while self.work_timer is not None and not self.cmd_from_sd:
                 self.reactor.pause(self.reactor.monotonic() + .001)
     def do_resume(self):
+        """        """
+
         if self.work_timer is not None:
             raise self.gcode.error("SD busy")
         self.must_pause_work = False
         self.work_timer = self.reactor.register_timer(
             self.work_handler, self.reactor.NOW)
     def do_cancel(self):
+        """        """
+
         if self.current_file is not None:
             self.do_pause()
             self.current_file.close()
@@ -128,8 +148,12 @@ class VirtualSD:
         self.file_position = self.file_size = 0
     # G-Code commands
     def cmd_error(self, gcmd):
+        """        """
+
         raise gcmd.error("SD write not supported")
     def _reset_file(self):
+        """        """
+
         if self.current_file is not None:
             self.do_pause()
             self.current_file.close()
@@ -140,6 +164,8 @@ class VirtualSD:
     cmd_SDCARD_RESET_FILE_help = "Clears a loaded SD File. Stops the print "\
         "if necessary"
     def cmd_SDCARD_RESET_FILE(self, gcmd):
+        """        """
+
         if self.cmd_from_sd:
             raise gcmd.error(
                 "SDCARD_RESET_FILE cannot be run from the sdcard")
@@ -147,6 +173,8 @@ class VirtualSD:
     cmd_SDCARD_PRINT_FILE_help = "Loads a SD file and starts the print.  May "\
         "include files in subdirectories."
     def cmd_SDCARD_PRINT_FILE(self, gcmd):
+        """        """
+
         if self.work_timer is not None:
             raise gcmd.error("SD busy")
         self._reset_file()
@@ -156,6 +184,8 @@ class VirtualSD:
         self._load_file(gcmd, filename, check_subdirs=True)
         self.do_resume()
     def cmd_M20(self, gcmd):
+        """        """
+
         # List SD card
         files = self.get_file_list()
         gcmd.respond_raw("Begin file list")
@@ -163,9 +193,13 @@ class VirtualSD:
             gcmd.respond_raw("%s %d" % (fname, fsize))
         gcmd.respond_raw("End file list")
     def cmd_M21(self, gcmd):
+        """        """
+
         # Initialize SD card
         gcmd.respond_raw("SD card ok")
     def cmd_M23(self, gcmd):
+        """        """
+
         # Select SD file
         if self.work_timer is not None:
             raise gcmd.error("SD busy")
@@ -175,6 +209,8 @@ class VirtualSD:
             filename = filename[1:]
         self._load_file(gcmd, filename)
     def _load_file(self, gcmd, filename, check_subdirs=False):
+        """        """
+
         files = self.get_file_list(check_subdirs)
         flist = [f[0] for f in files]
         files_by_lower = { fname.lower(): fname for fname, fsize in files }
@@ -197,18 +233,26 @@ class VirtualSD:
         self.file_size = fsize
         self.print_stats.set_current_file(filename)
     def cmd_M24(self, gcmd):
+        """        """
+
         # Start/resume SD print
         self.do_resume()
     def cmd_M25(self, gcmd):
+        """        """
+
         # Pause SD print
         self.do_pause()
     def cmd_M26(self, gcmd):
+        """        """
+
         # Set SD position
         if self.work_timer is not None:
             raise gcmd.error("SD busy")
         pos = gcmd.get_int('S', minval=0)
         self.file_position = pos
     def cmd_M27(self, gcmd):
+        """        """
+
         # Report SD print status
         if self.current_file is None:
             gcmd.respond_raw("Not SD printing.")
@@ -216,13 +260,21 @@ class VirtualSD:
         gcmd.respond_raw("SD printing byte %d/%d"
                          % (self.file_position, self.file_size))
     def get_file_position(self):
+        """        """
+
         return self.next_file_position
     def set_file_position(self, pos):
+        """        """
+
         self.next_file_position = pos
     def is_cmd_from_sd(self):
+        """        """
+
         return self.cmd_from_sd
     # Background work timer
     def work_handler(self, eventtime):
+        """        """
+
         logging.info("Starting SD card print (position %d)", self.file_position)
         self.reactor.unregister_timer(self.work_timer)
         try:
@@ -305,4 +357,6 @@ class VirtualSD:
         return self.reactor.NEVER
 
 def load_config(config):
+    """    """
+
     return VirtualSD(config)

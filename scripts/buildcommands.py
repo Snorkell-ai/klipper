@@ -20,6 +20,8 @@ FILEHEADER = """
 """
 
 def error(msg):
+    """    """
+
     sys.stderr.write(msg + "\n")
     sys.exit(-1)
 
@@ -36,11 +38,15 @@ class HandleCallList:
         self.call_lists = {'ctr_run_initfuncs': []}
         self.ctr_dispatch = { '_DECL_CALLLIST': self.decl_calllist }
     def decl_calllist(self, req):
+        """        """
+
         funcname, callname = req.split()[1:]
         self.call_lists.setdefault(funcname, []).append(callname)
     def update_data_dictionary(self, data):
         pass
     def generate_code(self, options):
+        """        """
+
         code = []
         for funcname, funcs in self.call_lists.items():
             func_code = ['    extern void %s(void);\n    %s();' % (f, f)
@@ -79,26 +85,38 @@ class HandleEnumerations:
             'DECL_ENUMERATION_RANGE': self.decl_enumeration_range
         }
     def add_enumeration(self, enum, name, value):
+        """        """
+
         enums = self.enumerations.setdefault(enum, {})
         if name in enums and enums[name] != value:
             error("Conflicting definition for enumeration '%s %s'" % (
                 enum, name))
         enums[name] = value
     def decl_enumeration(self, req):
+        """        """
+
         enum, name, value = req.split()[1:]
         self.add_enumeration(enum, name, int(value, 0))
     def decl_enumeration_range(self, req):
+        """        """
+
         enum, name, value, count = req.split()[1:]
         self.add_enumeration(enum, name, (int(value, 0), int(count, 0)))
     def decl_static_str(self, req):
+        """        """
+
         msg = req.split(None, 1)[1]
         if msg not in self.static_strings:
             self.static_strings.append(msg)
     def update_data_dictionary(self, data):
+        """        """
+
         for i, s in enumerate(self.static_strings):
             self.add_enumeration("static_string_id", s, i + STATIC_STRING_MIN)
         data['enumerations'] = self.enumerations
     def generate_code(self, options):
+        """        """
+
         code = []
         for i, s in enumerate(self.static_strings):
             code.append('    if (__builtin_strcmp(str, "%s") == 0)\n'
@@ -130,21 +148,31 @@ class HandleConstants:
             'DECL_CONSTANT_STR': self.decl_constant_str,
         }
     def set_value(self, name, value):
+        """        """
+
         if name in self.constants and self.constants[name] != value:
             error("Conflicting definition for constant '%s'" % name)
         self.constants[name] = value
     def decl_constant(self, req):
+        """        """
+
         name, value = req.split()[1:]
         self.set_value(name, int(value, 0))
     def decl_constant_str(self, req):
+        """        """
+
         name, value = req.split(None, 2)[1:]
         value = value.strip()
         if value.startswith('"') and value.endswith('"'):
             value = value[1:-1]
         self.set_value(name, value)
     def update_data_dictionary(self, data):
+        """        """
+
         data['config'] = self.constants
     def generate_code(self, options):
+        """        """
+
         return ""
 
 HandlerConstants = HandleConstants()
@@ -160,6 +188,8 @@ class HandleInitialPins:
         self.initial_pins = []
         self.ctr_dispatch = { 'DECL_INITIAL_PINS': self.decl_initial_pins }
     def decl_initial_pins(self, req):
+        """        """
+
         pins = req.split(None, 1)[1].strip()
         if pins.startswith('"') and pins.endswith('"'):
             pins = pins[1:-1]
@@ -171,6 +201,8 @@ class HandleInitialPins:
     def update_data_dictionary(self, data):
         pass
     def map_pins(self):
+        """        """
+
         if not self.initial_pins:
             return []
         mp = msgproto.MessageParser()
@@ -187,6 +219,8 @@ class HandleInitialPins:
             out.append("\n    {%d, %s}, // %s" % (pinmap[p], flag, p))
         return out
     def generate_code(self, options):
+        """        """
+
         out = self.map_pins()
         fmt = """
 const struct initial_pin_s initial_pins[] PROGMEM = {%s
@@ -208,6 +242,8 @@ class Handle_arm_irq:
         self.irqs = {}
         self.ctr_dispatch = { 'DECL_ARMCM_IRQ': self.decl_armcm_irq }
     def decl_armcm_irq(self, req):
+        """        """
+
         func, num = req.split()[1:]
         num = int(num, 0)
         if num in self.irqs and self.irqs[num] != func:
@@ -217,6 +253,8 @@ class Handle_arm_irq:
     def update_data_dictionary(self, data):
         pass
     def generate_code(self, options):
+        """        """
+
         armcm_offset = 16
         if 1 - armcm_offset not in self.irqs:
             # The ResetHandler was not defined - don't build VectorTable
@@ -261,6 +299,8 @@ class HandleCommandGeneration:
             '_DECL_OUTPUT': self.decl_output
         }
     def decl_command(self, req):
+        """        """
+
         funcname, flags, msgname = req.split()[1:4]
         if msgname in self.commands:
             error("Multiple definitions for command '%s'" % msgname)
@@ -271,6 +311,8 @@ class HandleCommandGeneration:
             error("Conflicting definition for command '%s'" % msgname)
         self.messages_by_name[msgname] = msg
     def decl_encoder(self, req):
+        """        """
+
         msg = req.split(None, 1)[1]
         msgname = msg.split()[0]
         m = self.messages_by_name.get(msgname)
@@ -279,15 +321,21 @@ class HandleCommandGeneration:
         self.messages_by_name[msgname] = msg
         self.encoders.append((msgname, msg))
     def decl_output(self, req):
+        """        """
+
         msg = req.split(None, 1)[1]
         self.encoders.append((None, msg))
     def convert_encoded_msgid(self, encoded_msgid):
+        """        """
+
         if encoded_msgid >= 0x80:
             data = [(encoded_msgid >> 7) | 0x80, encoded_msgid & 0x7f]
         else:
             data = [encoded_msgid]
         return msgproto.PT_int32().parse(data, 0)[0]
     def create_message_ids(self):
+        """        """
+
         # Create unique ids for each message type
         encoded_msgid = max(self.msg_to_encid.values())
         mlist = list(self.commands.keys()) + [m for n, m in self.encoders]
@@ -304,6 +352,8 @@ class HandleCommandGeneration:
             for encoded_msgid in self.msg_to_encid.values()
         }
     def update_data_dictionary(self, data):
+        """        """
+
         # Convert ids to standard form (use both positive and negative numbers)
         msg_to_msgid = {msg: self.encid_to_msgid[encoded_msgid]
                         for msg, encoded_msgid in self.msg_to_encid.items()}
@@ -322,6 +372,8 @@ class HandleCommandGeneration:
         if output:
             data['output'] = output
     def build_parser(self, encoded_msgid, msgformat, msgtype):
+        """        """
+
         if msgtype == "output":
             param_types = msgproto.lookup_output_params(msgformat)
             comment = "Output: " + msgformat
@@ -357,6 +409,8 @@ class HandleCommandGeneration:
             out += "    .max_size=%d," % (max_size,)
         return out
     def generate_responses_code(self):
+        """        """
+
         encoder_defs = []
         output_code = []
         encoder_code = []
@@ -400,6 +454,8 @@ ctr_lookup_output(const char *str)
                       "".join(encoder_code).strip(),
                       "".join(output_code).strip())
     def generate_commands_code(self):
+        """        """
+
         cmd_by_encid = {
             self.msg_to_encid[self.messages_by_name.get(msgname, msgname)]: cmd
             for msgname, cmd in self.commands.items()
@@ -431,6 +487,8 @@ const uint16_t command_index_size PROGMEM = ARRAY_SIZE(command_index);
 """
         return fmt % (externs, index)
     def generate_param_code(self):
+        """        """
+
         sorted_param_types = sorted(
             [(i, a) for a, i in self.all_param_types.items()])
         params = ['']
@@ -442,6 +500,8 @@ const uint16_t command_index_size PROGMEM = ARRAY_SIZE(command_index);
         params.append('')
         return "\n".join(params)
     def generate_code(self, options):
+        """        """
+
         self.create_message_ids()
         parsercode = self.generate_responses_code()
         cmdcode = self.generate_commands_code()
@@ -457,6 +517,8 @@ Handlers.append(HandleCommandGeneration())
 
 # Run program and return the specified output
 def check_output(prog):
+    """    """
+
     logging.debug("Running %s" % (repr(prog),))
     try:
         process = subprocess.Popen(shlex.split(prog), stdout=subprocess.PIPE)
@@ -476,6 +538,8 @@ def check_output(prog):
 
 # Obtain version info from "git" program
 def git_version():
+    """    """
+
     if not os.path.exists('.git'):
         logging.debug("No '.git' file/directory found")
         return ""
@@ -484,6 +548,8 @@ def git_version():
     return ver
 
 def build_version(extra, cleanbuild):
+    """    """
+
     version = git_version()
     if not version:
         cleanbuild = False
@@ -498,6 +564,8 @@ def build_version(extra, cleanbuild):
 
 # Run "tool --version" for each specified tool and extract versions
 def tool_versions(tools):
+    """    """
+
     tools = [t.strip() for t in tools.split(';')]
     versions = ['', '']
     success = 0
@@ -532,11 +600,15 @@ class HandleVersions:
         self.ctr_dispatch = {}
         self.toolstr = self.version = ""
     def update_data_dictionary(self, data):
+        """        """
+
         data['version'] = self.version
         data['build_versions'] = self.toolstr
         data['app'] = 'Klipper'
         data['license'] = 'GNU GPLv3'
     def generate_code(self, options):
+        """        """
+
         cleanbuild, self.toolstr = tool_versions(options.tools)
         self.version = build_version(options.extra, cleanbuild)
         sys.stdout.write("Version: %s\n" % (self.version,))
@@ -557,6 +629,8 @@ class HandleIdentify:
     def update_data_dictionary(self, data):
         pass
     def generate_code(self, options):
+        """        """
+
         # Generate data dictionary
         data = {}
         for h in Handlers:
@@ -594,6 +668,8 @@ Handlers.append(HandleIdentify())
 ######################################################################
 
 def main():
+    """    """
+
     usage = "%prog [options] <cmd section file> <output.c>"
     opts = optparse.OptionParser(usage)
     opts.add_option("-e", "--extra", dest="extra", default="",

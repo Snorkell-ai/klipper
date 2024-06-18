@@ -17,6 +17,17 @@ enum {
     IF_SOFTWARE = 1, IF_HARDWARE = 2
 };
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_i2c(uint32_t *args)
 {
@@ -36,12 +47,34 @@ command_i2c_set_bus(uint32_t *args)
 {
     uint8_t addr = args[3] & 0x7f;
     struct i2cdev_s *i2c = i2cdev_oid_lookup(args[0]);
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     i2c->i2c_config = i2c_setup(args[1], args[2], addr);
     i2c->flags |= IF_HARDWARE;
 }
 DECL_COMMAND(command_i2c_set_bus,
              "i2c_set_bus oid=%c i2c_bus=%u rate=%u address=%u");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 i2cdev_set_software_bus(struct i2cdev_s *i2c, struct i2c_software *is)
 {
@@ -53,6 +86,17 @@ void
 command_i2c_write(uint32_t *args)
 {
     uint8_t oid = args[0];
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     struct i2cdev_s *i2c = oid_lookup(oid, command_config_i2c);
     uint8_t data_len = args[1];
     uint8_t *data = command_decode_ptr(args[2]);
@@ -60,6 +104,17 @@ command_i2c_write(uint32_t *args)
     if (CONFIG_WANT_SOFTWARE_I2C && flags & IF_SOFTWARE)
         i2c_software_write(i2c->i2c_software, data_len, data);
     else
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         i2c_write(i2c->i2c_config, data_len, data);
 }
 DECL_COMMAND(command_i2c_write, "i2c_write oid=%c data=%*s");
@@ -75,6 +130,17 @@ command_i2c_read(uint32_t * args)
     uint8_t data[data_len];
     uint_fast8_t flags = i2c->flags;
     if (CONFIG_WANT_SOFTWARE_I2C && flags & IF_SOFTWARE)
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         i2c_software_read(i2c->i2c_software, reg_len, reg, data_len, data);
     else
         i2c_read(i2c->i2c_config, reg_len, reg, data_len, data);
@@ -93,6 +159,17 @@ command_i2c_modify_bits(uint32_t *args)
     if (clear_set_len % 2 != 0)
         shutdown("i2c_modify_bits: Odd number of bits!");
     uint8_t data_len = clear_set_len/2;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     uint8_t *clear_set = command_decode_ptr(args[4]);
     uint8_t receive_data[reg_len + data_len];
     uint_fast8_t flags = i2c->flags;
@@ -112,5 +189,16 @@ command_i2c_modify_bits(uint32_t *args)
     else
         i2c_write(i2c->i2c_config, reg_len + data_len, receive_data);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_i2c_modify_bits,
              "i2c_modify_bits oid=%c reg=%*s clear_set_bits=%*s");

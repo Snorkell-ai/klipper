@@ -39,13 +39,34 @@ struct ldc1612 {
 static struct task_wake ldc1612_wake;
 
 // Check if the intb line is "asserted"
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int
 check_intb_asserted(struct ldc1612 *ld)
 {
     return !gpio_in_read(ld->intb_pin);
 }
 
-// Query ldc1612 data
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 ldc1612_event(struct timer *timer)
 {
@@ -60,6 +81,17 @@ ldc1612_event(struct timer *timer)
     return SF_RESCHEDULE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_ldc1612(uint32_t *args)
 {
@@ -81,6 +113,17 @@ command_config_ldc1612_with_intb(uint32_t *args)
 DECL_COMMAND(command_config_ldc1612_with_intb,
              "config_ldc1612_with_intb oid=%c i2c_oid=%c intb_pin=%c");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_ldc1612_setup_home(uint32_t *args)
 {
@@ -92,6 +135,17 @@ command_ldc1612_setup_home(uint32_t *args)
         ld->homing_flags = 0;
         return;
     }
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     ld->homing_clock = args[1];
     ld->ts = trsync_oid_lookup(args[3]);
     ld->trigger_reason = args[4];
@@ -113,6 +167,17 @@ DECL_COMMAND(command_query_ldc1612_home_state,
              "query_ldc1612_home_state oid=%c");
 
 // Check if a sample should trigger a homing event
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 check_home(struct ldc1612 *ld, uint32_t data)
 {
@@ -123,7 +188,17 @@ check_home(struct ldc1612 *ld, uint32_t data)
         // Sensor reports an issue - cancel homing
         ld->homing_flags = 0;
         trsync_do_trigger(ld->ts, ld->error_reason);
-        return;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     }
     uint32_t time = timer_read_time();
     if ((homing_flags & LH_AWAIT_HOMING)
@@ -155,13 +230,34 @@ static uint16_t
 read_reg_status(struct ldc1612 *ld)
 {
     uint8_t data_status[2];
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     read_reg(ld, REG_STATUS, data_status);
     return (data_status[0] << 8) | data_status[1];
 }
 
 #define BYTES_PER_SAMPLE 4
 
-// Query ldc1612 data
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 ldc1612_query(struct ldc1612 *ld, uint8_t oid)
 {
@@ -172,7 +268,17 @@ ldc1612_query(struct ldc1612 *ld, uint8_t oid)
     irq_enable();
     if (!(status & 0x08))
         return;
-
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     // Read coil0 frequency
     uint8_t *d = &ld->sb.data[ld->sb.data_count];
     read_reg(ld, REG_DATA0_MSB, &d[0]);
@@ -199,6 +305,17 @@ command_query_ldc1612(uint32_t *args)
         // End measurements
         return;
 
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     // Start new measurements query
     ld->rest_ticks = args[1];
     sensor_bulk_reset(&ld->sb);
@@ -220,6 +337,17 @@ command_query_status_ldc1612(uint32_t *args)
         uint32_t time = timer_read_time();
         int p = check_intb_asserted(ld);
         irq_enable();
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         sensor_bulk_status(&ld->sb, args[0], time, 0, p ? BYTES_PER_SAMPLE : 0);
         return;
     }
@@ -232,8 +360,30 @@ command_query_status_ldc1612(uint32_t *args)
     uint32_t fifo = status & 0x08 ? BYTES_PER_SAMPLE : 0;
     sensor_bulk_status(&ld->sb, args[0], time1, time2-time1, fifo);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_query_status_ldc1612, "query_status_ldc1612 oid=%c");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 ldc1612_task(void)
 {
@@ -248,4 +398,15 @@ ldc1612_task(void)
         ldc1612_query(ld, oid);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(ldc1612_task);

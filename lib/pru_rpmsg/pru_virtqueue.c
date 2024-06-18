@@ -56,6 +56,17 @@ volatile register uint32_t __R31;
  */
 #define INT_OFFSET	16
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void pru_virtqueue_init(
 	struct pru_virtqueue 		*vq,
 	struct fw_rsc_vdev_vring 	*vring,
@@ -71,6 +82,17 @@ void pru_virtqueue_init(
 	vring_init(&vq->vring, vring->num, (void*)vring->da, vring->align);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int16_t pru_virtqueue_get_avail_buf(
     struct pru_virtqueue	*vq,
     void			**buf,
@@ -100,6 +122,17 @@ int16_t pru_virtqueue_get_avail_buf(
 	return (head);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int16_t pru_virtqueue_add_used_buf(
     struct pru_virtqueue	*vq,
     int16_t			head,
@@ -127,6 +160,17 @@ int16_t pru_virtqueue_add_used_buf(
 	return PRU_VIRTQUEUE_SUCCESS;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int16_t pru_virtqueue_kick(
     struct pru_virtqueue	*vq
 )

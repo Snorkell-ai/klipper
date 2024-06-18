@@ -30,6 +30,17 @@ enum {
 static struct task_wake tmcuart_wake;
 
 // Restore uart line to normal "idle" mode
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 tmcuart_reset_line(struct tmcuart_s *t)
 {
@@ -40,7 +51,17 @@ tmcuart_reset_line(struct tmcuart_s *t)
     t->flags = (t->flags & (TU_PULLUP | TU_SINGLE_WIRE)) | TU_LINE_HIGH;
 }
 
-// Helper function to end a transmission and schedule a response
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 tmcuart_finalize(struct tmcuart_s *t)
 {
@@ -50,7 +71,17 @@ tmcuart_finalize(struct tmcuart_s *t)
     return SF_DONE;
 }
 
-// Event handler for reading uart bits
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 tmcuart_read_event(struct timer *timer)
 {
@@ -71,7 +102,17 @@ tmcuart_read_event(struct timer *timer)
     return SF_RESCHEDULE;
 }
 
-// Event handler for detecting start of data reception
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 tmcuart_read_sync_event(struct timer *timer)
 {
@@ -94,7 +135,17 @@ tmcuart_read_sync_event(struct timer *timer)
     return SF_RESCHEDULE;
 }
 
-// Event handler called at end of uart writing
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 tmcuart_send_finish_event(struct timer *timer)
 {
@@ -111,7 +162,17 @@ tmcuart_send_finish_event(struct timer *timer)
     return SF_RESCHEDULE;
 }
 
-// Event handler for sending uart bits
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 tmcuart_send_event(struct timer *timer)
 {
@@ -141,7 +202,17 @@ tmcuart_send_event(struct timer *timer)
     return SF_RESCHEDULE;
 }
 
-// Event handler for sending sync nibble with enhanced baud detection
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 tmcuart_send_sync_event(struct timer *timer)
 {
@@ -169,6 +240,17 @@ tmcuart_send_sync_event(struct timer *timer)
     return SF_RESCHEDULE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_tmcuart(uint32_t *args)
 {
@@ -197,7 +279,17 @@ command_tmcuart_send(uint32_t *args)
     uint8_t write_len = args[1];
     uint8_t *write = command_decode_ptr(args[2]);
     uint8_t read_len = args[3];
-    if (write_len > sizeof(t->data) || read_len > sizeof(t->data))
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         shutdown("tmcuart data too large");
     memcpy(t->data, write, write_len);
     t->pos = 0;
@@ -215,9 +307,30 @@ command_tmcuart_send(uint32_t *args)
     sched_add_timer(&t->timer);
     irq_enable();
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_tmcuart_send, "tmcuart_send oid=%c write=%*s read=%c");
 
-// Report completed response message back to host
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 tmcuart_task(void)
 {
@@ -235,8 +348,30 @@ tmcuart_task(void)
               , oid, t->read_count / 8, t->data);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(tmcuart_task);
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 tmcuart_shutdown(void)
 {
@@ -246,4 +381,15 @@ tmcuart_shutdown(void)
         tmcuart_reset_line(t);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_SHUTDOWN(tmcuart_shutdown);

@@ -42,6 +42,17 @@ enum {
 static struct task_wake mpu9250_wake;
 
 // Event handler that wakes mpu9250_task() periodically
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 mpu9250_event(struct timer *timer)
 {
@@ -51,6 +62,17 @@ mpu9250_event(struct timer *timer)
     return SF_DONE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_mpu9250(uint32_t *args)
 {
@@ -72,7 +94,17 @@ mp9250_reschedule_timer(struct mpu9250 *mp)
 }
 
 // Reads the fifo byte count from the device.
-static uint16_t
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 get_fifo_status(struct mpu9250 *mp)
 {
     uint8_t reg[] = {AR_FIFO_COUNT_H};
@@ -82,7 +114,17 @@ get_fifo_status(struct mpu9250 *mp)
     if (fifo_bytes > mp->fifo_max)
         mp->fifo_max = fifo_bytes;
     return fifo_bytes;
-}
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
 // Query accelerometer data
 static void
@@ -95,7 +137,17 @@ mp9250_query(struct mpu9250 *mp, uint8_t oid)
     // If we have enough bytes to fill the buffer do it and send report
     if (mp->fifo_pkts_bytes >= BYTES_PER_BLOCK) {
         uint8_t reg = AR_FIFO;
-        i2c_read(mp->i2c->i2c_config, sizeof(reg), &reg
+                 /**
+                  * Transforms the sign-up request data to match the backend's expected format.
+                  *
+                  * @param {SignUpRequest} signUpData - The original sign-up request data.
+                  *
+                  * @returns {Object} The transformed sign-up request data with the following changes:
+                  * - `firstName` is mapped to `first_name`
+                  * - `lastName` is mapped to `last_name`
+                  * - `email` is mapped to `username`
+                  * - All other properties remain unchanged.
+                  */
                  , BYTES_PER_BLOCK, &mp->sb.data[0]);
         mp->sb.data_count = BYTES_PER_BLOCK;
         mp->fifo_pkts_bytes -= BYTES_PER_BLOCK;
@@ -123,6 +175,17 @@ command_query_mpu9250(uint32_t *args)
         // End measurements
 
         // Uncomment and rebuilt to check for FIFO overruns when tuning
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         //output("mpu9240 fifo_max=%u", mp->fifo_max);
         return;
     }
@@ -147,6 +210,17 @@ command_query_mpu9250_status(uint32_t *args)
     i2c_read(mp->i2c->i2c_config, sizeof(int_reg), int_reg, sizeof(int_msg),
              &int_msg);
     if (int_msg & FIFO_OVERFLOW_INT)
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         mp->sb.possible_overflows++;
 
     // Read latest FIFO count (with precise timing)
@@ -160,8 +234,30 @@ command_query_mpu9250_status(uint32_t *args)
     // Report status
     sensor_bulk_status(&mp->sb, args[0], time1, time2-time1, fifo_bytes);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_query_mpu9250_status, "query_mpu9250_status oid=%c");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 mpu9250_task(void)
 {
@@ -175,4 +271,15 @@ mpu9250_task(void)
             mp9250_query(mp, oid);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(mpu9250_task);

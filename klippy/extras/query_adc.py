@@ -12,9 +12,13 @@ class QueryADC:
         gcode.register_command("QUERY_ADC", self.cmd_QUERY_ADC,
                                desc=self.cmd_QUERY_ADC_help)
     def register_adc(self, name, mcu_adc):
+        """        """
+
         self.adc[name] = mcu_adc
     cmd_QUERY_ADC_help = "Report the last value of an analog pin"
     def cmd_QUERY_ADC(self, gcmd):
+        """        """
+
         name = gcmd.get('NAME', None)
         if name not in self.adc:
             objs = ['"%s"' % (n,) for n in sorted(self.adc.keys())]
@@ -32,4 +36,6 @@ class QueryADC:
         gcmd.respond_info(msg)
 
 def load_config(config):
+    """    """
+
     return QueryADC(config)

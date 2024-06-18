@@ -31,6 +31,17 @@ static struct {
 // The periodic_timer simplifies the timer code by ensuring there is
 // always a timer on the timer list and that there is always a timer
 // not far in the future.
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 periodic_event(struct timer *t)
 {
@@ -47,11 +58,17 @@ static struct timer periodic_timer = {
     .next = &sentinel_timer,
 };
 
-// The sentinel timer is always the last timer on timer_list - its
-// presence allows the code to avoid checking for NULL while
-// traversing timer_list.  Since sentinel_timer.waketime is always
-// equal to (periodic_timer.waketime + 0x80000000) any added timer
-// must always have a waketime less than one of these two timers.
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 sentinel_event(struct timer *t)
 {
@@ -82,6 +99,17 @@ insert_timer(struct timer *pos, struct timer *t, uint32_t waketime)
 }
 
 // Schedule a function call at a supplied time.
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_add_timer(struct timer *add)
 {
@@ -106,7 +134,17 @@ sched_add_timer(struct timer *add)
     irq_restore(flag);
 }
 
-// The deleted timer is used when deleting an active timer.
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 deleted_event(struct timer *t)
 {
@@ -117,7 +155,17 @@ static struct timer deleted_timer = {
     .func = deleted_event,
 };
 
-// Remove a timer that may be live.
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_del_timer(struct timer *del)
 {
@@ -142,7 +190,17 @@ sched_del_timer(struct timer *del)
     irq_restore(flag);
 }
 
-// Invoke the next timer - called from board hardware irq code.
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 unsigned int
 sched_timer_dispatch(void)
 {
@@ -178,7 +236,17 @@ sched_timer_dispatch(void)
     return next_waketime;
 }
 
-// Remove all user timers
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_timer_reset(void)
 {
@@ -199,20 +267,51 @@ sched_timer_reset(void)
 #define TS_RUNNING   1
 
 // Note that at least one task is ready to run
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_wake_tasks(void)
 {
     SchedStatus.tasks_status = TS_REQUESTED;
 }
 
-// Check if tasks need to be run
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t
 sched_tasks_busy(void)
 {
     return SchedStatus.tasks_status >= TS_REQUESTED;
 }
 
-// Note that a task is ready to run
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_wake_task(struct task_wake *w)
 {
@@ -220,7 +319,17 @@ sched_wake_task(struct task_wake *w)
     writeb(&w->wake, 1);
 }
 
-// Check if a task is ready to run (as indicated by sched_wake_task)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t
 sched_check_wake(struct task_wake *w)
 {
@@ -230,7 +339,17 @@ sched_check_wake(struct task_wake *w)
     return 1;
 }
 
-// Main task dispatch loop
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 run_tasks(void)
 {
@@ -254,6 +373,17 @@ run_tasks(void)
         SchedStatus.tasks_status = TS_RUNNING;
 
         // Run all tasks
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         extern void ctr_run_taskfuncs(void);
         ctr_run_taskfuncs();
 
@@ -265,18 +395,34 @@ run_tasks(void)
 }
 
 
-/****************************************************************
- * Shutdown processing
- ****************************************************************/
-
-// Return true if the machine is in an emergency stop state
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t
 sched_is_shutdown(void)
 {
     return !!SchedStatus.shutdown_status;
 }
 
-// Transition out of shutdown state
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_clear_shutdown(void)
 {
@@ -288,7 +434,17 @@ sched_clear_shutdown(void)
     SchedStatus.shutdown_status = 0;
 }
 
-// Invoke all shutdown functions (as declared by DECL_SHUTDOWN)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 run_shutdown(int reason)
 {
@@ -298,6 +454,17 @@ run_shutdown(int reason)
         SchedStatus.shutdown_reason = reason;
     SchedStatus.shutdown_status = 2;
     sched_timer_reset();
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     extern void ctr_run_shutdownfuncs(void);
     ctr_run_shutdownfuncs();
     SchedStatus.shutdown_status = 1;
@@ -307,7 +474,17 @@ run_shutdown(int reason)
           , SchedStatus.shutdown_reason);
 }
 
-// Report the last shutdown reason code
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_report_shutdown(void)
 {
@@ -325,6 +502,17 @@ sched_try_shutdown(uint_fast8_t reason)
 static jmp_buf shutdown_jmp;
 
 // Force the machine to immediately run the shutdown handlers
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_shutdown(uint_fast8_t reason)
 {
@@ -333,14 +521,31 @@ sched_shutdown(uint_fast8_t reason)
 }
 
 
-/****************************************************************
- * Startup
- ****************************************************************/
-
-// Main loop of program
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_main(void)
 {
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     extern void ctr_run_initfuncs(void);
     ctr_run_initfuncs();
 

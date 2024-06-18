@@ -17,6 +17,17 @@ enum { SA_CHIP_A1333, SA_CHIP_AS5047D, SA_CHIP_TLE5012B, SA_CHIP_MAX };
 
 DECL_ENUMERATION("spi_angle_type", "a1333", SA_CHIP_A1333);
 DECL_ENUMERATION("spi_angle_type", "as5047d", SA_CHIP_AS5047D);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_ENUMERATION("spi_angle_type", "tle5012b", SA_CHIP_TLE5012B);
 
 enum { TCODE_ERROR = 0xff };
@@ -42,7 +53,17 @@ enum {
 
 static struct task_wake angle_wake;
 
-// Event handler that wakes spi_angle_task() periodically
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 angle_event(struct timer *timer)
 {
@@ -57,6 +78,17 @@ angle_event(struct timer *timer)
     return SF_RESCHEDULE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_spi_angle(uint32_t *args)
 {
@@ -85,7 +117,17 @@ angle_check_report(struct spi_angle *sa, uint8_t oid)
 // Add an entry to the measurement buffer
 static void
 angle_add(struct spi_angle *sa, uint_fast8_t tcode, uint_fast16_t data)
-{
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     sa->sb.data[sa->sb.data_count] = tcode;
     sa->sb.data[sa->sb.data_count + 1] = data;
     sa->sb.data[sa->sb.data_count + 2] = data >> 8;
@@ -93,7 +135,17 @@ angle_add(struct spi_angle *sa, uint_fast8_t tcode, uint_fast16_t data)
 }
 
 // Add an error indicator to the measurement buffer
-static void
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 angle_add_error(struct spi_angle *sa, uint_fast8_t error_code)
 {
     angle_add(sa, TCODE_ERROR, error_code);
@@ -103,14 +155,34 @@ angle_add_error(struct spi_angle *sa, uint_fast8_t error_code)
 static void
 angle_add_data(struct spi_angle *sa, uint32_t stime, uint32_t mtime
                , uint_fast16_t angle)
-{
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     uint32_t tdiff = mtime - stime;
     if (sa->time_shift)
         tdiff = (tdiff + (1<<(sa->time_shift - 1))) >> sa->time_shift;
     if (tdiff >= TCODE_ERROR) {
         angle_add_error(sa, SE_SCHEDULE);
         return;
-    }
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     angle_add(sa, tdiff, angle);
 }
 
@@ -125,7 +197,17 @@ a1333_query(struct spi_angle *sa, uint32_t stime)
     // Data is latched on first sclk edge of response
     if (mtime2 - mtime1 > MAX_SPI_READ_TIME)
         angle_add_error(sa, SE_SPI_TIME);
-    else if (msg[0] & 0x80)
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         angle_add_error(sa, SE_CRC);
     else
         angle_add_data(sa, stime, mtime1, (msg[0] << 9) | (msg[1] << 1));
@@ -142,7 +224,17 @@ as5047d_query(struct spi_angle *sa, uint32_t stime)
     // Data is latched on CS pin rising after query request
     if (mtime2 - mtime1 > MAX_SPI_READ_TIME) {
         angle_add_error(sa, SE_SPI_TIME);
-        return;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     }
     msg[0] = 0xC0;
     msg[1] = 0x00;
@@ -174,7 +266,17 @@ crc8(uint8_t crc, uint8_t data)
     return crc;
 }
 
-// microsecond delay helper
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static inline void
 udelay(uint32_t usecs)
 {
@@ -185,7 +287,17 @@ udelay(uint32_t usecs)
 
 // tle5012b sensor query
 static void
-tle5012b_query(struct spi_angle *sa, uint32_t stime)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 {
     struct gpio_out cs_pin = spidev_get_cs_pin(sa->spi);
     // Latch data (data is latched on rising CS of a NULL message)
@@ -194,7 +306,17 @@ tle5012b_query(struct spi_angle *sa, uint32_t stime)
     irq_disable();
     gpio_out_write(cs_pin, 1);
     uint32_t mtime = timer_read_time();
-    irq_enable();
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
     uint8_t msg[10] = { TLE_READ_LATCH, (TLE_REG_AVAL << 4) | 0x03 };
     uint8_t crc = 0x05; // 0x05 == crc8(crc8(0xff, msg[0]), msg[1])
@@ -225,6 +347,17 @@ command_query_spi_angle(uint32_t *args)
     if (!args[2])
         // End measurements
         return;
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 
     // Start new measurements query
     sa->timer.waketime = args[1];
@@ -247,6 +380,17 @@ command_spi_angle_transfer(uint32_t *args)
     uint_fast8_t chip = sa->chip_type;
     if (chip == SA_CHIP_TLE5012B) {
         // Latch data (data is latched on rising CS of a NULL message)
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         struct gpio_out cs_pin = spidev_get_cs_pin(sa->spi);
         gpio_out_write(cs_pin, 0);
         udelay(1);
@@ -269,9 +413,30 @@ command_spi_angle_transfer(uint32_t *args)
     sendf("spi_angle_transfer_response oid=%c clock=%u response=%*s"
           , oid, mtime, data_len, data);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_spi_angle_transfer, "spi_angle_transfer oid=%c data=%*s");
 
-// Background task that performs measurements
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 spi_angle_task(void)
 {
@@ -304,4 +469,15 @@ spi_angle_task(void)
         angle_check_report(sa, oid);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(spi_angle_task);

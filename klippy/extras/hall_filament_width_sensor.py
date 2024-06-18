@@ -76,6 +76,8 @@ class HallFilamentWidthSensor:
         self.runout_helper = filament_switch_sensor.RunoutHelper(config)
     # Initialization
     def handle_ready(self):
+        """        """
+
         # Load printer objects
         self.toolhead = self.printer.lookup_object('toolhead')
 
@@ -84,10 +86,14 @@ class HallFilamentWidthSensor:
                                   self.reactor.NOW)
 
     def adc_callback(self, read_time, read_value):
+        """        """
+
         # read sensor value
         self.lastFilamentWidthReading = round(read_value * 10000)
 
     def adc2_callback(self, read_time, read_value):
+        """        """
+
         # read sensor value
         self.lastFilamentWidthReading2 = round(read_value * 10000)
         # calculate diameter
@@ -98,6 +104,8 @@ class HallFilamentWidthSensor:
         self.diameter=(5.0 * self.diameter + diameter_new)/6
 
     def update_filament_array(self, last_epos):
+        """        """
+
         # Fill array
         if len(self.filament_array) > 0:
             # Get last reading position in array & calculate next
@@ -119,6 +127,8 @@ class HallFilamentWidthSensor:
                                                 + last_epos)
 
     def extrude_factor_update_event(self, eventtime):
+        """        """
+
         # Update extrude factor
         pos = self.toolhead.get_position()
         last_epos = pos[3]
@@ -160,6 +170,8 @@ class HallFilamentWidthSensor:
             return self.reactor.NEVER
 
     def cmd_M407(self, gcmd):
+        """        """
+
         response = ""
         if self.diameter > 0:
             response += ("Filament dia (measured mm): "
@@ -169,12 +181,16 @@ class HallFilamentWidthSensor:
         gcmd.respond_info(response)
 
     def cmd_ClearFilamentArray(self, gcmd):
+        """        """
+
         self.filament_array = []
         gcmd.respond_info("Filament width measurements cleared!")
         # Set extrude multiplier to 100%
         self.gcode.run_script_from_command("M221 S100")
 
     def cmd_M405(self, gcmd):
+        """        """
+
         response = "Filament width sensor Turned On"
         if self.is_active:
             response = "Filament width sensor is already On"
@@ -186,6 +202,8 @@ class HallFilamentWidthSensor:
         gcmd.respond_info(response)
 
     def cmd_M406(self, gcmd):
+        """        """
+
         response = "Filament width sensor Turned Off"
         if not self.is_active:
             response = "Filament width sensor is already Off"
@@ -201,6 +219,8 @@ class HallFilamentWidthSensor:
         gcmd.respond_info(response)
 
     def cmd_Get_Raw_Values(self, gcmd):
+        """        """
+
         response = "ADC1="
         response +=  (" "+str(self.lastFilamentWidthReading))
         response +=  (" ADC2="+str(self.lastFilamentWidthReading2))
@@ -209,17 +229,25 @@ class HallFilamentWidthSensor:
                       +self.lastFilamentWidthReading2))
         gcmd.respond_info(response)
     def get_status(self, eventtime):
+        """        """
+
         return {'Diameter': self.diameter,
                 'Raw':(self.lastFilamentWidthReading+
                  self.lastFilamentWidthReading2),
                 'is_active':self.is_active}
     def cmd_log_enable(self, gcmd):
+        """        """
+
         self.is_log = True
         gcmd.respond_info("Filament width logging Turned On")
 
     def cmd_log_disable(self, gcmd):
+        """        """
+
         self.is_log = False
         gcmd.respond_info("Filament width logging Turned Off")
 
 def load_config(config):
+    """    """
+
     return HallFilamentWidthSensor(config)

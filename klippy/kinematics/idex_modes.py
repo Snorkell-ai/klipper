@@ -41,13 +41,19 @@ class DualCarriages:
                    self.cmd_RESTORE_DUAL_CARRIAGE_STATE,
                    desc=self.cmd_RESTORE_DUAL_CARRIAGE_STATE_help)
     def get_rails(self):
+        """        """
+
         return self.dc
     def get_primary_rail(self):
+        """        """
+
         for rail in self.dc:
             if rail.mode == PRIMARY:
                 return rail
         return None
     def toggle_active_dc_rail(self, index):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         toolhead.flush_step_generation()
         pos = toolhead.get_position()
@@ -65,6 +71,8 @@ class DualCarriages:
             toolhead.set_position(newpos)
         kin.update_limits(self.axis, target_dc.get_rail().get_range())
     def home(self, homing_state):
+        """        """
+
         kin = self.printer.lookup_object('toolhead').get_kinematics()
         enumerated_dcs = list(enumerate(self.dc))
         if (self.get_dc_order(0, 1) > 0) != \
@@ -78,9 +86,13 @@ class DualCarriages:
         # Restore the original rails ordering
         self.toggle_active_dc_rail(0)
     def get_status(self, eventtime=None):
+        """        """
+
         return {('carriage_%d' % (i,)) : dc.mode
                 for (i, dc) in enumerate(self.dc)}
     def get_kin_range(self, toolhead, mode):
+        """        """
+
         pos = toolhead.get_position()
         axes_pos = [dc.get_axis_position(pos) for dc in self.dc]
         dc0_rail = self.dc[0].get_rail()
@@ -132,6 +144,8 @@ class DualCarriages:
             return (range_min, range_min)
         return (range_min, range_max)
     def get_dc_order(self, first, second):
+        """        """
+
         if first == second:
             return 0
         # Check the relative order of the first and second carriages and
@@ -149,6 +163,8 @@ class DualCarriages:
             return 1
         return -1
     def activate_dc_mode(self, index, mode):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         toolhead.flush_step_generation()
         kin = toolhead.get_kinematics()
@@ -161,12 +177,16 @@ class DualCarriages:
             self.dc[index].activate(mode, toolhead.get_position())
         kin.update_limits(self.axis, self.get_kin_range(toolhead, mode))
     def _handle_ready(self):
+        """        """
+
         # Apply the transform later during Klipper initialization to make sure
         # that input shaping can pick up the correct stepper kinematic flags.
         for dc in self.dc:
             dc.apply_transform()
     cmd_SET_DUAL_CARRIAGE_help = "Configure the dual carriages mode"
     def cmd_SET_DUAL_CARRIAGE(self, gcmd):
+        """        """
+
         index = gcmd.get_int('CARRIAGE', minval=0, maxval=1)
         mode = gcmd.get('MODE', PRIMARY).upper()
         if mode not in self.VALID_MODES:
@@ -186,6 +206,8 @@ class DualCarriages:
     cmd_SAVE_DUAL_CARRIAGE_STATE_help = \
             "Save dual carriages modes and positions"
     def cmd_SAVE_DUAL_CARRIAGE_STATE(self, gcmd):
+        """        """
+
         state_name = gcmd.get('NAME', 'default')
         pos = self.printer.lookup_object('toolhead').get_position()
         self.saved_states[state_name] = {
@@ -195,6 +217,8 @@ class DualCarriages:
     cmd_RESTORE_DUAL_CARRIAGE_STATE_help = \
             "Restore dual carriages modes and positions"
     def cmd_RESTORE_DUAL_CARRIAGE_STATE(self, gcmd):
+        """        """
+
         state_name = gcmd.get('NAME', 'default')
         saved_state = self.saved_states.get(state_name)
         if saved_state is None:
@@ -236,23 +260,35 @@ class DualCarriagesRail:
             self.orig_stepper_kinematics.append(orig_sk)
             s.set_stepper_kinematics(sk)
     def get_rail(self):
+        """        """
+
         return self.rail
     def is_active(self):
+        """        """
+
         return self.mode != INACTIVE
     def get_axis_position(self, position):
+        """        """
+
         return position[self.axis] * self.scale + self.offset
     def apply_transform(self):
+        """        """
+
         ffi_main, ffi_lib = chelper.get_ffi()
         for sk in self.dc_stepper_kinematics:
             ffi_lib.dual_carriage_set_transform(
                     sk, self.ENC_AXES[self.axis], self.scale, self.offset)
     def activate(self, mode, position, old_position=None):
+        """        """
+
         old_axis_position = self.get_axis_position(old_position or position)
         self.scale = -1. if mode == MIRROR else 1.
         self.offset = old_axis_position - position[self.axis] * self.scale
         self.apply_transform()
         self.mode = mode
     def inactivate(self, position):
+        """        """
+
         self.offset = self.get_axis_position(position)
         self.scale = 0.
         self.apply_transform()

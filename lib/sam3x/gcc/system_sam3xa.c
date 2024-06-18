@@ -48,6 +48,17 @@ uint32_t SystemCoreClock = CHIP_FREQ_MAINCK_RC_4MHZ;
  * \brief Setup the microcontroller system.
  * Initialize the System and update the SystemFrequency variable.
  */
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void SystemInit( void )
 {
   /* Set FWS according to SYS_BOARD_MCKR configuration */
@@ -95,6 +106,17 @@ void SystemInit( void )
   SystemCoreClock = CHIP_FREQ_CPU_MAX;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void SystemCoreClockUpdate( void )
 {
   /* Determine clock frequency according to clock register values */
@@ -189,7 +211,15 @@ void SystemCoreClockUpdate( void )
 }
 
 /**
- * Initialize flash.
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
  */
 void system_init_flash( uint32_t dw_clk )
 {

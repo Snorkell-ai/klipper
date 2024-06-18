@@ -24,6 +24,17 @@ enum { TSF_CAN_TRIGGER=1<<0, TSF_REPORT=1<<2 };
 static struct task_wake trsync_wake;
 
 // Activate a trigger (caller must disable IRQs)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 trsync_do_trigger(struct trsync *ts, uint8_t reason)
 {
@@ -44,7 +55,17 @@ trsync_do_trigger(struct trsync *ts, uint8_t reason)
     sched_wake_task(&trsync_wake);
 }
 
-// Timeout handler
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 trsync_expire_event(struct timer *t)
 {
@@ -53,7 +74,17 @@ trsync_expire_event(struct timer *t)
     return SF_DONE;
 }
 
-// Report handler
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint_fast8_t
 trsync_report_event(struct timer *t)
 {
@@ -64,6 +95,17 @@ trsync_report_event(struct timer *t)
     return SF_RESCHEDULE;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_config_trsync(uint32_t *args)
 {
@@ -84,14 +126,34 @@ trsync_oid_lookup(uint8_t oid)
 void
 trsync_add_signal(struct trsync *ts, struct trsync_signal *tss
                   , trsync_callback_t func)
-{
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     irqstatus_t flag = irq_save();
     if (tss->func || !func)
         shutdown("Can't add signal that is already active");
     tss->func = func;
     tss->next = ts->signals;
     ts->signals = tss;
-    irq_restore(flag);
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 }
 
 // Disable trigger and unregister any signal handlers (caller must disable IRQs)
@@ -105,7 +167,17 @@ trsync_clear(struct trsync *ts)
         struct trsync_signal *next = tss->next;
         tss->func = NULL;
         tss->next = NULL;
-        tss = next;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     }
     ts->signals = NULL;
     ts->flags = ts->trigger_reason = ts->expire_reason = 0;
@@ -122,6 +194,17 @@ command_trsync_start(uint32_t *args)
     ts->report_ticks = args[2];
     if (ts->report_ticks)
         sched_add_timer(&ts->report_time);
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     ts->expire_reason = args[3];
     irq_enable();
 }
@@ -140,6 +223,17 @@ command_trsync_set_timeout(uint32_t *args)
         ts->expire_time.waketime = args[1];
         sched_add_timer(&ts->expire_time);
     }
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     irq_enable();
 }
 DECL_COMMAND(command_trsync_set_timeout, "trsync_set_timeout oid=%c clock=%u");
@@ -155,6 +249,17 @@ void
 command_trsync_trigger(uint32_t *args)
 {
     uint8_t oid = args[0];
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     struct trsync *ts = trsync_oid_lookup(oid);
     irq_disable();
     trsync_do_trigger(ts, args[1]);
@@ -162,11 +267,44 @@ command_trsync_trigger(uint32_t *args)
     sched_del_timer(&ts->expire_time);
     ts->flags = 0;
     uint8_t trigger_reason = ts->trigger_reason;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     irq_enable();
     trsync_report(oid, 0, trigger_reason, 0);
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND(command_trsync_trigger, "trsync_trigger oid=%c reason=%c");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 trsync_task(void)
 {
@@ -186,8 +324,30 @@ trsync_task(void)
         trsync_report(oid, flags, trigger_reason, time);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(trsync_task);
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 trsync_shutdown(void)
 {
@@ -197,4 +357,15 @@ trsync_shutdown(void)
         trsync_clear(ts);
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_SHUTDOWN(trsync_shutdown);

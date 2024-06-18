@@ -16,6 +16,8 @@ class ZAdjustHelper:
         self.printer.register_event_handler("klippy:connect",
                                             self.handle_connect)
     def handle_connect(self):
+        """        """
+
         kin = self.printer.lookup_object('toolhead').get_kinematics()
         z_steppers = [s for s in kin.get_steppers() if s.is_active_axis('z')]
         if len(z_steppers) != self.z_count:
@@ -27,6 +29,8 @@ class ZAdjustHelper:
                 "%s requires multiple z steppers" % (self.name,))
         self.z_steppers = z_steppers
     def adjust_steppers(self, adjustments, speed):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         gcode = self.printer.lookup_object('gcode')
         curpos = toolhead.get_position()
@@ -72,14 +76,22 @@ class ZAdjustStatus:
         printer.register_event_handler("stepper_enable:motor_off",
                                         self._motor_off)
     def check_retry_result(self, retry_result):
+        """        """
+
         if retry_result == "done":
             self.applied = True
         return retry_result
     def reset(self):
+        """        """
+
         self.applied = False
     def get_status(self, eventtime):
+        """        """
+
         return {'applied': self.applied}
     def _motor_off(self, print_time):
+        """        """
+
         self.reset()
 
 class RetryHelper:
@@ -91,6 +103,8 @@ class RetryHelper:
         self.value_label = "Probed points range"
         self.error_msg_extra = error_msg_extra
     def start(self, gcmd):
+        """        """
+
         self.max_retries = gcmd.get_int('RETRIES', self.default_max_retries,
                                         minval=0, maxval=30)
         self.retry_tolerance = gcmd.get_float('RETRY_TOLERANCE',
@@ -100,6 +114,8 @@ class RetryHelper:
         self.previous = None
         self.increasing = 0
     def check_increase(self, error):
+        """        """
+
         if self.previous and error > self.previous + 0.0000001:
             self.increasing += 1
         elif self.increasing > 0:
@@ -107,6 +123,8 @@ class RetryHelper:
         self.previous = error
         return self.increasing > 1
     def check_retry(self, z_positions):
+        """        """
+
         if self.max_retries == 0:
             return
         error = round(max(z_positions) - min(z_positions),6)
@@ -140,20 +158,28 @@ class ZTilt:
                                desc=self.cmd_Z_TILT_ADJUST_help)
     cmd_Z_TILT_ADJUST_help = "Adjust the Z tilt"
     def cmd_Z_TILT_ADJUST(self, gcmd):
+        """        """
+
         self.z_status.reset()
         self.retry_helper.start(gcmd)
         self.probe_helper.start_probe(gcmd)
     def probe_finalize(self, offsets, positions):
+        """        """
+
         # Setup for coordinate descent analysis
         z_offset = offsets[2]
         logging.info("Calculating bed tilt with: %s", positions)
         params = { 'x_adjust': 0., 'y_adjust': 0., 'z_adjust': z_offset }
         # Perform coordinate descent
         def adjusted_height(pos, params):
+            """            """
+
             x, y, z = pos
             return (z - x*params['x_adjust'] - y*params['y_adjust']
                     - params['z_adjust'])
         def errorfunc(params):
+            """            """
+
             total_error = 0.
             for pos in positions:
                 total_error += adjusted_height(pos, params)**2
@@ -173,7 +199,11 @@ class ZTilt:
         return self.z_status.check_retry_result(
             self.retry_helper.check_retry([p[2] for p in positions]))
     def get_status(self, eventtime):
+            """            """
+
             return self.z_status.get_status(eventtime)
 
 def load_config(config):
+    """    """
+
     return ZTilt(config)

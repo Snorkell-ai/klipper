@@ -39,17 +39,25 @@ class ExtruderStepper:
                                    self.name, self.cmd_SYNC_EXTRUDER_MOTION,
                                    desc=self.cmd_SYNC_EXTRUDER_MOTION_help)
     def _handle_connect(self):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         toolhead.register_step_generator(self.stepper.generate_steps)
         self._set_pressure_advance(self.config_pa, self.config_smooth_time)
     def get_status(self, eventtime):
+        """        """
+
         return {'pressure_advance': self.pressure_advance,
                 'smooth_time': self.pressure_advance_smooth_time,
                 'motion_queue': self.motion_queue}
     def find_past_position(self, print_time):
+        """        """
+
         mcu_pos = self.stepper.get_past_mcu_position(print_time)
         return self.stepper.mcu_to_commanded_position(mcu_pos)
     def sync_to_extruder(self, extruder_name):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         toolhead.flush_step_generation()
         if not extruder_name:
@@ -64,6 +72,8 @@ class ExtruderStepper:
         self.stepper.set_trapq(extruder.get_trapq())
         self.motion_queue = extruder_name
     def _set_pressure_advance(self, pressure_advance, smooth_time):
+        """        """
+
         old_smooth_time = self.pressure_advance_smooth_time
         if not self.pressure_advance:
             old_smooth_time = 0.
@@ -80,6 +90,8 @@ class ExtruderStepper:
         self.pressure_advance_smooth_time = smooth_time
     cmd_SET_PRESSURE_ADVANCE_help = "Set pressure advance parameters"
     def cmd_default_SET_PRESSURE_ADVANCE(self, gcmd):
+        """        """
+
         extruder = self.printer.lookup_object('toolhead').get_extruder()
         if extruder.extruder_stepper is None:
             raise gcmd.error("Active extruder does not have a stepper")
@@ -88,6 +100,8 @@ class ExtruderStepper:
             raise gcmd.error("Unable to infer active extruder stepper")
         extruder.extruder_stepper.cmd_SET_PRESSURE_ADVANCE(gcmd)
     def cmd_SET_PRESSURE_ADVANCE(self, gcmd):
+        """        """
+
         pressure_advance = gcmd.get_float('ADVANCE', self.pressure_advance,
                                           minval=0.)
         smooth_time = gcmd.get_float('SMOOTH_TIME',
@@ -101,6 +115,8 @@ class ExtruderStepper:
         gcmd.respond_info(msg, log=False)
     cmd_SET_E_ROTATION_DISTANCE_help = "Set extruder rotation distance"
     def cmd_SET_E_ROTATION_DISTANCE(self, gcmd):
+        """        """
+
         rotation_dist = gcmd.get_float('DISTANCE', None)
         if rotation_dist is not None:
             if not rotation_dist:
@@ -123,6 +139,8 @@ class ExtruderStepper:
                           % (self.name, rotation_dist))
     cmd_SYNC_EXTRUDER_MOTION_help = "Set extruder stepper motion queue"
     def cmd_SYNC_EXTRUDER_MOTION(self, gcmd):
+        """        """
+
         ename = gcmd.get('MOTION_QUEUE')
         self.sync_to_extruder(ename)
         gcmd.respond_info("Extruder '%s' now syncing with '%s'"
@@ -183,22 +201,36 @@ class PrinterExtruder:
                                    self.name, self.cmd_ACTIVATE_EXTRUDER,
                                    desc=self.cmd_ACTIVATE_EXTRUDER_help)
     def update_move_time(self, flush_time, clear_history_time):
+        """        """
+
         self.trapq_finalize_moves(self.trapq, flush_time, clear_history_time)
     def get_status(self, eventtime):
+        """        """
+
         sts = self.heater.get_status(eventtime)
         sts['can_extrude'] = self.heater.can_extrude
         if self.extruder_stepper is not None:
             sts.update(self.extruder_stepper.get_status(eventtime))
         return sts
     def get_name(self):
+        """        """
+
         return self.name
     def get_heater(self):
+        """        """
+
         return self.heater
     def get_trapq(self):
+        """        """
+
         return self.trapq
     def stats(self, eventtime):
+        """        """
+
         return self.heater.stats(eventtime)
     def check_move(self, move):
+        """        """
+
         axis_r = move.axes_r[3]
         if not self.heater.can_extrude:
             raise self.printer.command_error(
@@ -226,11 +258,15 @@ class PrinterExtruder:
                 "See the 'max_extrude_cross_section' config option for details"
                 % (area, self.max_extrude_ratio * self.filament_area))
     def calc_junction(self, prev_move, move):
+        """        """
+
         diff_r = move.axes_r[3] - prev_move.axes_r[3]
         if diff_r:
             return (self.instant_corner_v / abs(diff_r))**2
         return move.max_cruise_v2
     def move(self, print_time, move):
+        """        """
+
         axis_r = move.axes_r[3]
         accel = move.accel * axis_r
         start_v = move.start_v * axis_r
@@ -246,10 +282,14 @@ class PrinterExtruder:
                           start_v, cruise_v, accel)
         self.last_position = move.end_pos[3]
     def find_past_position(self, print_time):
+        """        """
+
         if self.extruder_stepper is None:
             return 0.
         return self.extruder_stepper.find_past_position(print_time)
     def cmd_M104(self, gcmd, wait=False):
+        """        """
+
         # Set Extruder Temperature
         temp = gcmd.get_float('S', 0.)
         index = gcmd.get_int('T', None, minval=0)
@@ -267,10 +307,14 @@ class PrinterExtruder:
         pheaters = self.printer.lookup_object('heaters')
         pheaters.set_temperature(extruder.get_heater(), temp, wait)
     def cmd_M109(self, gcmd):
+        """        """
+
         # Set Extruder Temperature and Wait
         self.cmd_M104(gcmd, wait=True)
     cmd_ACTIVATE_EXTRUDER_help = "Change the active extruder"
     def cmd_ACTIVATE_EXTRUDER(self, gcmd):
+        """        """
+
         toolhead = self.printer.lookup_object('toolhead')
         if toolhead.get_extruder() is self:
             gcmd.respond_info("Extruder %s already active" % (self.name,))
@@ -287,19 +331,33 @@ class DummyExtruder:
     def update_move_time(self, flush_time, clear_history_time):
         pass
     def check_move(self, move):
+        """        """
+
         raise move.move_error("Extrude when no extruder present")
     def find_past_position(self, print_time):
+        """        """
+
         return 0.
     def calc_junction(self, prev_move, move):
+        """        """
+
         return move.max_cruise_v2
     def get_name(self):
+        """        """
+
         return ""
     def get_heater(self):
+        """        """
+
         raise self.printer.command_error("Extruder not configured")
     def get_trapq(self):
+        """        """
+
         raise self.printer.command_error("Extruder not configured")
 
 def add_printer_objects(config):
+    """    """
+
     printer = config.get_printer()
     for i in range(99):
         section = 'extruder'

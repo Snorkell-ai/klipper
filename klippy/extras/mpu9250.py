@@ -84,6 +84,8 @@ class MPU9250:
         self.batch_bulk.add_mux_endpoint("mpu9250/dump_mpu9250", "sensor",
                                          self.name, {'header': hdr})
     def _build_config(self):
+        """        """
+
         cmdqueue = self.i2c.get_command_queue()
         self.mcu.add_config_cmd("config_mpu9250 oid=%d i2c_oid=%d"
                            % (self.oid, self.i2c.get_oid()))
@@ -94,16 +96,24 @@ class MPU9250:
         self.ffreader.setup_query_command("query_mpu9250_status oid=%c",
                                           oid=self.oid, cq=cmdqueue)
     def read_reg(self, reg):
+        """        """
+
         params = self.i2c.i2c_read([reg], 1)
         return bytearray(params['response'])[0]
     def set_reg(self, reg, val, minclock=0):
+        """        """
+
         self.i2c.i2c_write([reg, val & 0xFF], minclock=minclock)
     def start_internal_client(self):
+        """        """
+
         aqh = adxl345.AccelQueryHelper(self.printer)
         self.batch_bulk.add_client(aqh.handle_batch)
         return aqh
     # Measurement decoding
     def _convert_samples(self, samples):
+        """        """
+
         (x_pos, x_scale), (y_pos, y_scale), (z_pos, z_scale) = self.axes_map
         count = 0
         for ptime, rx, ry, rz in samples:
@@ -115,6 +125,8 @@ class MPU9250:
             count += 1
     # Start, stop, and process message batches
     def _start_measurements(self):
+        """        """
+
         # In case of miswiring, testing MPU9250 device ID prevents treating
         # noise or wrong signal as a correctly initialized device
         dev_id = self.read_reg(REG_DEVID)
@@ -153,6 +165,8 @@ class MPU9250:
         self.ffreader.note_start()
         self.last_error_count = 0
     def _finish_measurements(self):
+        """        """
+
         # Halt bulk reading
         self.set_reg(REG_FIFO_EN, SET_DISABLE_FIFO)
         self.query_mpu9250_cmd.send_wait_ack([self.oid, 0])
@@ -161,6 +175,8 @@ class MPU9250:
         self.set_reg(REG_PWR_MGMT_1, SET_PWR_MGMT_1_SLEEP)
         self.set_reg(REG_PWR_MGMT_2, SET_PWR_MGMT_2_OFF)
     def _process_batch(self, eventtime):
+        """        """
+
         samples = self.ffreader.pull_samples()
         self._convert_samples(samples)
         if not samples:
@@ -169,7 +185,11 @@ class MPU9250:
                 'overflows': self.ffreader.get_last_overflows()}
 
 def load_config(config):
+    """    """
+
     return MPU9250(config)
 
 def load_config_prefix(config):
+    """    """
+
     return MPU9250(config)

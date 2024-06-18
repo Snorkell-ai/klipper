@@ -50,9 +50,13 @@ class AngleCalibration:
                                    cname, self.cmd_ANGLE_CALIBRATE,
                                    desc=self.cmd_ANGLE_CALIBRATE_help)
     def handle_sync_mcu_pos(self, mcu_stepper):
+        """        """
+
         if mcu_stepper.get_name() == self.stepper_name:
             self.mcu_pos_offset = None
     def calc_mcu_pos_offset(self, sample):
+        """        """
+
         # Lookup phase information
         mcu_phase_offset, phases = self.tmc_module.get_phase_offset()
         if mcu_phase_offset is None:
@@ -72,6 +76,8 @@ class AngleCalibration:
         # Store final offset
         self.mcu_pos_offset = mcu_pos - (angle_mpos - phase_diff)
     def apply_calibration(self, samples):
+        """        """
+
         calibration = self.calibration
         if not calibration:
             return None
@@ -97,6 +103,8 @@ class AngleCalibration:
                 return None
         return self.mcu_stepper.mcu_to_commanded_position(self.mcu_pos_offset)
     def load_calibration(self, angles):
+        """        """
+
         # Calculate linear intepolation calibration buckets by solving
         # linear equations
         angle_max = 1 << ANGLE_BITS
@@ -129,6 +137,8 @@ class AngleCalibration:
         isol = [int(s + .5) for s in sol]
         self.calibration = isol + [isol[0] + angle_max]
     def lookup_tmc(self):
+        """        """
+
         for driver in TRINAMIC_DRIVERS:
             driver_name = "%s %s" % (driver, self.stepper_name)
             module = self.printer.lookup_object(driver_name, None)
@@ -137,10 +147,14 @@ class AngleCalibration:
         raise self.printer.command_error("Unable to find TMC driver for %s"
                                          % (self.stepper_name,))
     def connect(self):
+        """        """
+
         self.tmc_module = self.lookup_tmc()
         fmove = self.printer.lookup_object('force_move')
         self.mcu_stepper = fmove.lookup_stepper(self.stepper_name)
     def get_microsteps(self):
+        """        """
+
         configfile = self.printer.lookup_object('configfile')
         sconfig = configfile.get_status(None)['settings']
         stconfig = sconfig.get(self.stepper_name, {})
@@ -148,6 +162,8 @@ class AngleCalibration:
         full_steps = stconfig['full_steps_per_rotation']
         return microsteps, full_steps
     def get_stepper_phase(self):
+        """        """
+
         mcu_phase_offset, phases = self.tmc_module.get_phase_offset()
         if mcu_phase_offset is None:
             raise self.printer.command_error("Driver phase not known for %s"
@@ -155,11 +171,15 @@ class AngleCalibration:
         mcu_pos = self.mcu_stepper.get_mcu_position()
         return (mcu_pos + mcu_phase_offset) % phases
     def do_calibration_moves(self):
+        """        """
+
         move = self.printer.lookup_object('force_move').manual_move
         # Start data collection
         msgs = []
         is_finished = False
         def handle_batch(msg):
+            """            """
+
             if is_finished:
                 return False
             msgs.append(msg)
@@ -214,6 +234,8 @@ class AngleCalibration:
         rcal = { full_steps-i-1: cal[i+full_steps] for i in range(full_steps) }
         return fcal, rcal
     def calc_angles(self, meas):
+        """        """
+
         total_count = total_variance = 0
         angles = {}
         for step, data in meas.items():
@@ -225,6 +247,8 @@ class AngleCalibration:
         return angles, math.sqrt(total_variance / total_count), total_count
     cmd_ANGLE_CALIBRATE_help = "Calibrate angle sensor to stepper motor"
     def cmd_ANGLE_CALIBRATE(self, gcmd):
+        """        """
+
         # Perform calibration movement and capture
         old_calibration = self.calibration
         self.calibration = []
@@ -272,8 +296,12 @@ class HelperA1333:
         self.is_tcode_absolute = False
         self.last_temperature = None
     def get_static_delay(self):
+        """        """
+
         return .000001
     def start(self):
+        """        """
+
         # Setup for angle query
         self.spi.spi_transfer([0x32, 0x00])
 
@@ -285,8 +313,12 @@ class HelperAS5047D:
         self.is_tcode_absolute = False
         self.last_temperature = None
     def get_static_delay(self):
+        """        """
+
         return .000100
     def start(self):
+        """        """
+
         # Clear any errors from device
         self.spi.spi_transfer([0xff, 0xfc]) # Read DIAAGC
         self.spi.spi_transfer([0x40, 0x01]) # Read ERRFL
@@ -315,14 +347,20 @@ class HelperTLE5012B:
                                    self.cmd_ANGLE_DEBUG_WRITE,
                                    desc=self.cmd_ANGLE_DEBUG_WRITE_help)
     def _build_config(self):
+        """        """
+
         cmdqueue = self.spi.get_command_queue()
         self.spi_angle_transfer_cmd = self.mcu.lookup_query_command(
             "spi_angle_transfer oid=%c data=%*s",
             "spi_angle_transfer_response oid=%c clock=%u response=%*s",
             oid=self.oid, cq=cmdqueue)
     def get_tcode_params(self):
+        """        """
+
         return self.last_chip_mcu_clock, self.last_chip_clock, self.chip_freq
     def _calc_crc(self, data):
+        """        """
+
         crc = 0xff
         for d in data:
             crc ^= d
@@ -333,6 +371,8 @@ class HelperTLE5012B:
                     crc <<= 1
         return (~crc) & 0xff
     def _send_spi(self, msg):
+        """        """
+
         for retry in range(5):
             if msg[0] & 0x04:
                 params = self.spi_angle_transfer_cmd.send([self.oid, msg])
@@ -344,6 +384,8 @@ class HelperTLE5012B:
                 return params
         raise self.printer.command_error("Unable to query tle5012b chip")
     def _read_reg(self, reg):
+        """        """
+
         cw = 0x8000 | ((reg & 0x3f) << 4) | 0x01
         if reg >= 0x05 and reg <= 0x11:
             cw |= 0x5000
@@ -352,6 +394,8 @@ class HelperTLE5012B:
         resp = bytearray(params['response'])
         return (resp[2] << 8) | resp[3]
     def _write_reg(self, reg, val):
+        """        """
+
         cw = ((reg & 0x3f) << 4) | 0x01
         if reg >= 0x05 and reg <= 0x11:
             cw |= 0x5000
@@ -363,9 +407,13 @@ class HelperTLE5012B:
                 return
         raise self.printer.command_error("Unable to write to tle5012b chip")
     def _mask_reg(self, reg, off, on):
+        """        """
+
         rval = self._read_reg(reg)
         self._write_reg(reg, (rval & ~off) | on)
     def _query_clock(self):
+        """        """
+
         # Read frame counter (and normalize to a 16bit counter)
         msg = [0x84, 0x42, 0, 0, 0, 0, 0, 0] # Read with latch, AREV and FSYNC
         params = self._send_spi(msg)
@@ -377,6 +425,8 @@ class HelperTLE5012B:
         self.last_temperature = (temper + 152) / 2.776
         return mcu_clock, chip_clock
     def update_clock(self):
+        """        """
+
         mcu_clock, chip_clock = self._query_clock()
         mdiff = mcu_clock - self.last_chip_mcu_clock
         chip_mclock = self.last_chip_clock + int(mdiff * self.chip_freq + .5)
@@ -387,6 +437,8 @@ class HelperTLE5012B:
         self.last_chip_clock = new_chip_clock
         self.last_chip_mcu_clock = mcu_clock
     def start(self):
+        """        """
+
         # Clear any errors from device
         self._read_reg(0x00) # Read STAT
         # Initialize chip (so different chip variants work the same way)
@@ -401,11 +453,15 @@ class HelperTLE5012B:
         self.update_clock()
     cmd_ANGLE_DEBUG_READ_help = "Query low-level angle sensor register"
     def cmd_ANGLE_DEBUG_READ(self, gcmd):
+        """        """
+
         reg = gcmd.get("REG", minval=0, maxval=0x30, parser=lambda x: int(x, 0))
         val = self._read_reg(reg)
         gcmd.respond_info("ANGLE REG[0x%02x] = 0x%04x" % (reg, val))
     cmd_ANGLE_DEBUG_WRITE_help = "Set low-level angle sensor register"
     def cmd_ANGLE_DEBUG_WRITE(self, gcmd):
+        """        """
+
         reg = gcmd.get("REG", minval=0, maxval=0x30, parser=lambda x: int(x, 0))
         val = gcmd.get("VAL", minval=0, maxval=0xffff,
                        parser=lambda x: int(x, 0))
@@ -455,6 +511,8 @@ class Angle:
         self.batch_bulk.add_mux_endpoint("angle/dump_angle",
                                          "sensor", self.name, api_resp)
     def _build_config(self):
+        """        """
+
         freq = self.mcu.seconds_to_clock(1.)
         while float(TCODE_ERROR << self.time_shift) / freq < 0.002:
             self.time_shift += 1
@@ -463,11 +521,17 @@ class Angle:
             "query_spi_angle oid=%c clock=%u rest_ticks=%u time_shift=%c",
             cq=cmdqueue)
     def get_status(self, eventtime=None):
+        """        """
+
         return {'temperature': self.sensor_helper.last_temperature}
     def add_client(self, client_cb):
+        """        """
+
         self.batch_bulk.add_client(client_cb)
     # Measurement decoding
     def _extract_samples(self, raw_samples):
+        """        """
+
         # Load variables to optimize inner loop below
         sample_ticks = self.sample_ticks
         start_clock = self.start_clock
@@ -524,8 +588,12 @@ class Angle:
         return samples, error_count
     # Start, stop, and process message batches
     def _is_measuring(self):
+        """        """
+
         return self.start_clock != 0
     def _start_measurements(self):
+        """        """
+
         logging.info("Starting angle '%s' measurements", self.name)
         self.sensor_helper.start()
         # Start bulk reading
@@ -539,12 +607,16 @@ class Angle:
         self.query_spi_angle_cmd.send([self.oid, reqclock, rest_ticks,
                                        self.time_shift], reqclock=reqclock)
     def _finish_measurements(self):
+        """        """
+
         # Halt bulk reading
         self.query_spi_angle_cmd.send_wait_ack([self.oid, 0, 0, 0])
         self.bulk_queue.clear_queue()
         self.sensor_helper.last_temperature = None
         logging.info("Stopped angle '%s' measurements", self.name)
     def _process_batch(self, eventtime):
+        """        """
+
         if self.sensor_helper.is_tcode_absolute:
             self.sensor_helper.update_clock()
         raw_samples = self.bulk_queue.pull_queue()
@@ -558,4 +630,6 @@ class Angle:
                 'position_offset': offset}
 
 def load_config_prefix(config):
+    """    """
+
     return Angle(config)

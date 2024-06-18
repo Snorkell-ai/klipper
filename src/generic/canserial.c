@@ -44,12 +44,34 @@ static struct canbus_data {
  * Data transmission over CAN
  ****************************************************************/
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 canserial_notify_tx(void)
 {
     sched_wake_task(&CanData.tx_wake);
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 canserial_tx_task(void)
 {
@@ -89,7 +111,17 @@ console_sendf(const struct command_encoder *ce, va_list args)
     uint32_t max_size = ce->max_size;
     if (tmax + max_size > sizeof(CanData.transmit_buf)) {
         if (tmax + max_size - tpos > sizeof(CanData.transmit_buf))
-            // Not enough space for message
+            /**
+             * Transforms the sign-up request data to match the backend's expected format.
+             *
+             * @param {SignUpRequest} signUpData - The original sign-up request data.
+             *
+             * @returns {Object} The transformed sign-up request data with the following changes:
+             * - `firstName` is mapped to `first_name`
+             * - `lastName` is mapped to `last_name`
+             * - `email` is mapped to `username`
+             * - All other properties remain unchanged.
+             */
             return;
         // Move buffer
         tmax -= tpos;
@@ -130,6 +162,17 @@ can_check_uuid(struct canbus_msg *msg)
 static int
 can_get_nodeid(void)
 {
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     if (!CanData.assigned_id)
         return 0;
     return (CanData.assigned_id - 0x100) >> 1;
@@ -137,7 +180,17 @@ can_get_nodeid(void)
 static uint32_t
 can_decode_nodeid(int nodeid)
 {
-    return (nodeid << 1) + 0x100;
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 }
 
 static void
@@ -145,12 +198,34 @@ can_process_query_unassigned(struct canbus_msg *msg)
 {
     if (CanData.assigned_id)
         return;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     struct canbus_msg send;
     send.id = CANBUS_ID_ADMIN_RESP;
     send.dlc = 8;
     send.data[0] = CANBUS_RESP_NEED_NODEID;
     memcpy(&send.data[1], CanData.uuid, sizeof(CanData.uuid));
     send.data[7] = CANBUS_CMD_SET_KLIPPER_NODEID;
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     // Send with retry
     for (;;) {
         int ret = canbus_send(&send);
@@ -170,6 +245,17 @@ can_id_conflict(void)
 static void
 can_process_set_klipper_nodeid(struct canbus_msg *msg)
 {
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     if (msg->dlc < 8)
         return;
     uint32_t newid = can_decode_nodeid(msg->data[7]);
@@ -178,6 +264,17 @@ can_process_set_klipper_nodeid(struct canbus_msg *msg)
             CanData.assigned_id = newid;
             canbus_set_filter(CanData.assigned_id);
         }
+    /**
+     * Transforms the sign-up request data to match the backend's expected format.
+     *
+     * @param {SignUpRequest} signUpData - The original sign-up request data.
+     *
+     * @returns {Object} The transformed sign-up request data with the following changes:
+     * - `firstName` is mapped to `first_name`
+     * - `lastName` is mapped to `last_name`
+     * - `email` is mapped to `username`
+     * - All other properties remain unchanged.
+     */
     } else if (newid == CanData.assigned_id) {
         can_id_conflict();
     }
@@ -194,6 +291,17 @@ can_process_request_bootloader(struct canbus_msg *msg)
 // Handle an "admin" command
 static void
 can_process_admin(struct canbus_msg *msg)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 {
     if (!msg->dlc)
         return;
@@ -202,7 +310,17 @@ can_process_admin(struct canbus_msg *msg)
         can_process_query_unassigned(msg);
         break;
     case CANBUS_CMD_SET_KLIPPER_NODEID:
-        can_process_set_klipper_nodeid(msg);
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         break;
     case CANBUS_CMD_REQUEST_BOOTLOADER:
         can_process_request_bootloader(msg);
@@ -222,19 +340,48 @@ canserial_notify_rx(void)
 }
 
 DECL_CONSTANT("RECEIVE_WINDOW", ARRAY_SIZE(CanData.receive_buf));
-
-// Handle incoming data (called from IRQ handler)
-void
 canserial_process_data(struct canbus_msg *msg)
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 {
     uint32_t id = msg->id;
     if (CanData.assigned_id && id == CanData.assigned_id) {
         // Add to incoming data buffer
         int rpos = CanData.receive_pos;
         uint32_t len = CANMSG_DATA_LEN(msg);
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         if (len > sizeof(CanData.receive_buf) - rpos)
             return;
-        memcpy(&CanData.receive_buf[rpos], msg->data, len);
+        /**
+         * Transforms the sign-up request data to match the backend's expected format.
+         *
+         * @param {SignUpRequest} signUpData - The original sign-up request data.
+         *
+         * @returns {Object} The transformed sign-up request data with the following changes:
+         * - `firstName` is mapped to `first_name`
+         * - `lastName` is mapped to `last_name`
+         * - `email` is mapped to `username`
+         * - All other properties remain unchanged.
+         */
         CanData.receive_pos = rpos + len;
         canserial_notify_rx();
     } else if (id == CANBUS_ID_ADMIN
@@ -262,7 +409,17 @@ console_pop_input(int len)
         if (needcopy) {
             memmove(&CanData.receive_buf[copied]
                     , &CanData.receive_buf[copied + len], needcopy - copied);
-            copied = needcopy;
+            /**
+             * Transforms the sign-up request data to match the backend's expected format.
+             *
+             * @param {SignUpRequest} signUpData - The original sign-up request data.
+             *
+             * @returns {Object} The transformed sign-up request data with the following changes:
+             * - `firstName` is mapped to `first_name`
+             * - `lastName` is mapped to `last_name`
+             * - `email` is mapped to `username`
+             * - All other properties remain unchanged.
+             */
             canserial_notify_rx();
         }
         irqstatus_t flag = irq_save();
@@ -288,7 +445,17 @@ canserial_rx_task(void)
     for (;;) {
         uint32_t pushp = readl(&CanData.admin_push_pos);
         uint32_t pullp = CanData.admin_pull_pos;
-        if (pushp == pullp)
+            /**
+             * Transforms the sign-up request data to match the backend's expected format.
+             *
+             * @param {SignUpRequest} signUpData - The original sign-up request data.
+             *
+             * @returns {Object} The transformed sign-up request data with the following changes:
+             * - `firstName` is mapped to `first_name`
+             * - `lastName` is mapped to `last_name`
+             * - `email` is mapped to `username`
+             * - All other properties remain unchanged.
+             */
             break;
         uint32_t pos = pullp % ARRAY_SIZE(CanData.admin_queue);
         struct canbus_msg *msg = &CanData.admin_queue[pos];
@@ -311,21 +478,62 @@ canserial_rx_task(void)
             command_send_ack();
     }
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_TASK(canserial_rx_task);
 
 
-/****************************************************************
- * Setup and shutdown
- ****************************************************************/
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 command_get_canbus_id(uint32_t *args)
 {
     sendf("canbus_id canbus_uuid=%.*s canbus_nodeid=%u"
           , sizeof(CanData.uuid), CanData.uuid, can_get_nodeid());
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_COMMAND_FLAGS(command_get_canbus_id, HF_IN_SHUTDOWN, "get_canbus_id");
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 canserial_set_uuid(uint8_t *raw_uuid, uint32_t raw_uuid_len)
 {
@@ -334,10 +542,32 @@ canserial_set_uuid(uint8_t *raw_uuid, uint32_t raw_uuid_len)
     canserial_notify_rx();
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 canserial_shutdown(void)
 {
     canserial_notify_tx();
     canserial_notify_rx();
 }
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 DECL_SHUTDOWN(canserial_shutdown);

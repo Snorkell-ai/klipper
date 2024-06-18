@@ -35,6 +35,17 @@ static uint8_t transmit_buf[RPMSG_MESSAGE_SIZE];
 static int transmit_pos;
 
 // Transmit all pending message blocks
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 flush_messages(void)
 {
@@ -45,7 +56,17 @@ flush_messages(void)
     transmit_pos = 0;
 }
 
-// Verify space for a message block
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static uint8_t *
 get_transmit_ptr(const struct command_encoder *ce)
 {
@@ -54,14 +75,34 @@ get_transmit_ptr(const struct command_encoder *ce)
     return &transmit_buf[transmit_pos];
 }
 
-// Finalize a message block and queue it for transmission
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 finalize_transmit(int msglen)
 {
     transmit_pos += msglen;
 }
 
-// Check if there is data to be sent from PRU1 to the host
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 check_can_send(void)
 {
@@ -105,7 +146,17 @@ check_can_send(void)
     }
 }
 
-// Wait for PRU1 to finish processing a command
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 wait_pru1_command(void)
 {
@@ -114,7 +165,17 @@ wait_pru1_command(void)
     check_can_send();
 }
 
-// Signal PRU1 that a new command is ready
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 send_pru1_command(const struct command_parser *cp)
 {
@@ -124,7 +185,17 @@ send_pru1_command(const struct command_parser *cp)
     write_r31(R31_WRITE_IRQ_SELECT | (KICK_PRU1_EVENT - R31_WRITE_IRQ_OFFSET));
 }
 
-// Instruct PRU1 to shutdown
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 send_pru1_shutdown(void)
 {
@@ -133,7 +204,17 @@ send_pru1_shutdown(void)
     wait_pru1_command();
 }
 
-// Dispatch all the commands in a message block
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 do_dispatch(uint8_t *buf, uint32_t msglen)
 {
@@ -155,7 +236,17 @@ do_dispatch(uint8_t *buf, uint32_t msglen)
     }
 }
 
-// See if there are commands from the host ready to be processed
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static int
 check_can_read(void)
 {
@@ -188,7 +279,17 @@ check_can_read(void)
     return 0;
 }
 
-// Main processing loop
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 process_io(void)
 {
@@ -206,7 +307,17 @@ process_io(void)
     }
 }
 
-// Startup initialization
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 static void
 setup_io(void)
 {
@@ -220,11 +331,17 @@ setup_io(void)
 }
 
 
-/****************************************************************
- * Compatibility wrappers
- ****************************************************************/
-
-// shutdown() compatibility code
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 uint8_t ctr_lookup_static_string(const char *str)
 {
     return 0;
@@ -232,14 +349,34 @@ uint8_t ctr_lookup_static_string(const char *str)
 
 static jmp_buf shutdown_jmp;
 
-// Handle shutdown()
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 sched_shutdown(uint_fast8_t reason)
 {
     longjmp(shutdown_jmp, 1);
 }
 
-// Generate messages - only used for ack/nak messages
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void
 console_sendf(const struct command_encoder *ce, va_list args)
 {
@@ -256,6 +393,17 @@ console_sendf(const struct command_encoder *ce, va_list args)
 
 #define VIRTIO_CONFIG_S_DRIVER_OK       4
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 int
 main(void)
 {

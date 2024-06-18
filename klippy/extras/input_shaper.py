@@ -22,6 +22,8 @@ class InputShaperParams:
                                              minval=0., maxval=1.)
         self.shaper_freq = config.getfloat('shaper_freq_' + axis, 0., minval=0.)
     def update(self, gcmd):
+        """        """
+
         axis = self.axis.upper()
         self.damping_ratio = gcmd.get_float('DAMPING_RATIO_' + axis,
                                             self.damping_ratio,
@@ -35,6 +37,8 @@ class InputShaperParams:
             raise gcmd.error('Unsupported shaper type: %s' % (shaper_type,))
         self.shaper_type = shaper_type.lower()
     def get_shaper(self):
+        """        """
+
         if not self.shaper_freq:
             A, T = shaper_defs.get_none_shaper()
         else:
@@ -42,6 +46,8 @@ class InputShaperParams:
                     self.shaper_freq, self.damping_ratio)
         return len(A), A, T
     def get_status(self):
+        """        """
+
         return collections.OrderedDict([
             ('shaper_type', self.shaper_type),
             ('shaper_freq', '%.3f' % (self.shaper_freq,)),
@@ -54,13 +60,21 @@ class AxisInputShaper:
         self.n, self.A, self.T = self.params.get_shaper()
         self.saved = None
     def get_name(self):
+        """        """
+
         return 'shaper_' + self.axis
     def get_shaper(self):
+        """        """
+
         return self.n, self.A, self.T
     def update(self, gcmd):
+        """        """
+
         self.params.update(gcmd)
         self.n, self.A, self.T = self.params.get_shaper()
     def set_shaper_kinematics(self, sk):
+        """        """
+
         ffi_main, ffi_lib = chelper.get_ffi()
         success = ffi_lib.input_shaper_set_shaper_params(
                 sk, self.axis.encode(), self.n, self.A, self.T) == 0
@@ -70,17 +84,23 @@ class AxisInputShaper:
                     sk, self.axis.encode(), self.n, self.A, self.T)
         return success
     def disable_shaping(self):
+        """        """
+
         if self.saved is None and self.n:
             self.saved = (self.n, self.A, self.T)
         A, T = shaper_defs.get_none_shaper()
         self.n, self.A, self.T = len(A), A, T
     def enable_shaping(self):
+        """        """
+
         if self.saved is None:
             # Input shaper was not disabled
             return
         self.n, self.A, self.T = self.saved
         self.saved = None
     def report(self, gcmd):
+        """        """
+
         info = ' '.join(["%s_%s:%s" % (key, self.axis, value)
                          for (key, value) in self.params.get_status().items()])
         gcmd.respond_info(info)
@@ -100,12 +120,18 @@ class InputShaper:
                                self.cmd_SET_INPUT_SHAPER,
                                desc=self.cmd_SET_INPUT_SHAPER_help)
     def get_shapers(self):
+        """        """
+
         return self.shapers
     def connect(self):
+        """        """
+
         self.toolhead = self.printer.lookup_object("toolhead")
         # Configure initial values
         self._update_input_shaping(error=self.printer.config_error)
     def _get_input_shaper_stepper_kinematics(self, stepper):
+        """        """
+
         # Lookup stepper kinematics
         sk = stepper.get_stepper_kinematics()
         if sk in self.orig_stepper_kinematics:
@@ -124,6 +150,8 @@ class InputShaper:
         self.input_shaper_stepper_kinematics.append(is_sk)
         return is_sk
     def _update_input_shaping(self, error=None):
+        """        """
+
         self.toolhead.flush_step_generation()
         ffi_main, ffi_lib = chelper.get_ffi()
         kin = self.toolhead.get_kinematics()
@@ -149,15 +177,21 @@ class InputShaper:
             raise error("Failed to configure shaper(s) %s with given parameters"
                         % (', '.join([s.get_name() for s in failed_shapers])))
     def disable_shaping(self):
+        """        """
+
         for shaper in self.shapers:
             shaper.disable_shaping()
         self._update_input_shaping()
     def enable_shaping(self):
+        """        """
+
         for shaper in self.shapers:
             shaper.enable_shaping()
         self._update_input_shaping()
     cmd_SET_INPUT_SHAPER_help = "Set cartesian parameters for input shaper"
     def cmd_SET_INPUT_SHAPER(self, gcmd):
+        """        """
+
         if gcmd.get_command_parameters():
             for shaper in self.shapers:
                 shaper.update(gcmd)
@@ -166,4 +200,6 @@ class InputShaper:
             shaper.report(gcmd)
 
 def load_config(config):
+    """    """
+
     return InputShaper(config)

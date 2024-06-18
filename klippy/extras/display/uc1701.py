@@ -26,6 +26,8 @@ class DisplayBase:
                      for c in font8x14.VGA_FONT]
         self.icons = {}
     def flush(self):
+        """        """
+
         # Find all differences in the framebuffers and send them to the chip
         for new_data, old_data, page in self.all_framebuffers:
             if new_data == old_data:
@@ -51,6 +53,8 @@ class DisplayBase:
                 self.send(new_data[col_pos:col_pos+count], is_data=True)
             old_data[:] = new_data
     def _swizzle_bits(self, data):
+        """        """
+
         # Convert from "rows of pixels" format to "columns of pixels"
         top = bot = 0
         for row in range(8):
@@ -62,6 +66,8 @@ class DisplayBase:
         bits_bot = [(bot >> s) & 0xff for s in range(0, 64, 8)]
         return (bytearray(bits_top), bytearray(bits_bot))
     def set_glyphs(self, glyphs):
+        """        """
+
         for glyph_name, glyph_data in glyphs.items():
             icon = glyph_data.get('icon16x16')
             if icon is not None:
@@ -69,6 +75,8 @@ class DisplayBase:
                 top2, bot2 = self._swizzle_bits(icon[1])
                 self.icons[glyph_name] = (top1 + top2, bot1 + bot2)
     def write_text(self, x, y, data):
+        """        """
+
         if x + len(data) > 16:
             data = data[:16 - min(x, 16)]
         pix_x = x * 8
@@ -81,6 +89,8 @@ class DisplayBase:
             page_bot[pix_x:pix_x+8] = bits_bot
             pix_x += 8
     def write_graphics(self, x, y, data):
+        """        """
+
         if x >= 16 or y >= 4 or len(data) != 16:
             return
         bits_top, bits_bot = self._swizzle_bits(data)
@@ -92,6 +102,8 @@ class DisplayBase:
             page_top[pix_x + i] ^= bits_top[i]
             page_bot[pix_x + i] ^= bits_bot[i]
     def write_glyph(self, x, y, glyph_name):
+        """        """
+
         icon = self.icons.get(glyph_name)
         if icon is not None and x < 15:
             # Draw icon in graphics mode
@@ -108,10 +120,14 @@ class DisplayBase:
             return 1
         return 0
     def clear(self):
+        """        """
+
         zeros = bytearray(self.columns)
         for page in self.vram:
             page[:] = zeros
     def get_dimensions(self):
+        """        """
+
         return (16, 4)
 
 # IO wrapper for "4 wire" spi bus (spi bus with an extra data/control line)
@@ -122,6 +138,8 @@ class SPI4wire:
         self.mcu_dc = bus.MCU_bus_digital_out(self.spi.get_mcu(), dc_pin,
                                               self.spi.get_command_queue())
     def send(self, cmds, is_data=False):
+        """        """
+
         self.mcu_dc.update_digital_out(is_data,
                                        reqclock=BACKGROUND_PRIORITY_CLOCK)
         self.spi.spi_send(cmds, reqclock=BACKGROUND_PRIORITY_CLOCK)
@@ -132,6 +150,8 @@ class I2C:
         self.i2c = bus.MCU_I2C_from_config(config, default_addr=default_addr,
                                            default_speed=400000)
     def send(self, cmds, is_data=False):
+        """        """
+
         if is_data:
             hdr = 0x40
         else:
@@ -149,6 +169,8 @@ class ResetHelper:
         self.mcu_reset = bus.MCU_bus_digital_out(io_bus.get_mcu(), pin_desc,
                                                  io_bus.get_command_queue())
     def init(self):
+        """        """
+
         if self.mcu_reset is None:
             return
         mcu = self.mcu_reset.get_mcu()
@@ -171,6 +193,8 @@ class UC1701(DisplayBase):
         self.contrast = config.getint('contrast', 40, minval=0, maxval=63)
         self.reset = ResetHelper(config.get("rst_pin", None), io.spi)
     def init(self):
+        """        """
+
         self.reset.init()
         init_cmds = [0xE2, # System reset
                      0x40, # Set display to start at line 0
@@ -210,6 +234,8 @@ class SSD1306(DisplayBase):
         self.vcomh = config.getint('vcomh', 0, minval=0, maxval=63)
         self.invert = config.getboolean('invert', False)
     def init(self):
+        """        """
+
         self.reset.init()
         init_cmds = [
             0xAE,       # Display off

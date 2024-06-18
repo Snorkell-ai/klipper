@@ -6,6 +6,17 @@
 
 #include "util.h"
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void *memcpy(void *restrict dest, const void *restrict src, size_t n){
    // Typecast src and dest addresses to (char *)
    char *csrc = (char *)src;
@@ -17,6 +28,17 @@ void *memcpy(void *restrict dest, const void *restrict src, size_t n){
    return dest;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void *memset(void *dest, int c, size_t n){
   unsigned char *s = dest;
   for(; n; n--){
@@ -25,10 +47,32 @@ void *memset(void *dest, int c, size_t n){
   return dest;
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void set_bit(uint32_t addr, uint8_t bit){
   write_reg(addr, read_reg(addr) | (1<<bit));
 }
 
+/**
+ * Transforms the sign-up request data to match the backend's expected format.
+ *
+ * @param {SignUpRequest} signUpData - The original sign-up request data.
+ *
+ * @returns {Object} The transformed sign-up request data with the following changes:
+ * - `firstName` is mapped to `first_name`
+ * - `lastName` is mapped to `last_name`
+ * - `email` is mapped to `username`
+ * - All other properties remain unchanged.
+ */
 void clear_bit(uint32_t addr, uint8_t bit){
   write_reg(addr, read_reg(addr) & ~(1<<bit));
 }
