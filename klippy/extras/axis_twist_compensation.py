@@ -43,6 +43,8 @@ class AxisTwistCompensation:
                                             self._update_z_compensation_value)
 
     def _update_z_compensation_value(self, pos):
+        """        """
+
         if not self.z_compensations:
             return
 
@@ -61,6 +63,8 @@ class AxisTwistCompensation:
         pos[2] += interpolated_z_compensation
 
     def clear_compensations(self):
+        """        """
+
         self.z_compensations = []
         self.m = None
         self.b = None
@@ -93,6 +97,8 @@ class Calibrater:
         self._register_gcode_handlers()
 
     def _handle_connect(self):
+        """        """
+
         self.probe = self.printer.lookup_object('probe', None)
         if (self.probe is None):
             config = self.printer.lookup_object('configfile')
@@ -103,6 +109,8 @@ class Calibrater:
             self.probe.get_offsets()
 
     def _register_gcode_handlers(self):
+        """        """
+
         # register gcode handlers
         self.gcode = self.printer.lookup_object('gcode')
         self.gcode.register_command(
@@ -117,6 +125,8 @@ class Calibrater:
     """
 
     def cmd_AXIS_TWIST_COMPENSATION_CALIBRATE(self, gcmd):
+        """        """
+
         self.gcmd = gcmd
         sample_count = gcmd.get_int('SAMPLE_COUNT', DEFAULT_SAMPLE_COUNT)
 
@@ -145,6 +155,8 @@ class Calibrater:
         self._calibration(probe_points, nozzle_points, interval_dist)
 
     def _calculate_nozzle_points(self, sample_count, interval_dist):
+        """        """
+
         # calculate the points to put the probe at, returned as a list of tuples
         nozzle_points = []
         for i in range(sample_count):
@@ -155,6 +167,8 @@ class Calibrater:
 
     def _calculate_probe_points(self, nozzle_points,
         probe_x_offset, probe_y_offset):
+        """        """
+
         # calculate the points to put the nozzle at
         # returned as a list of tuples
         probe_points = []
@@ -165,6 +179,8 @@ class Calibrater:
         return probe_points
 
     def _move_helper(self, target_coordinates, override_speed=None):
+        """        """
+
         # pad target coordinates
         target_coordinates = \
             (target_coordinates[0], target_coordinates[1], None) \
@@ -175,6 +191,8 @@ class Calibrater:
         toolhead.manual_move(target_coordinates, speed)
 
     def _calibration(self, probe_points, nozzle_points, interval):
+        """        """
+
         # begin the calibration process
         self.gcmd.respond_info("AXIS_TWIST_COMPENSATION_CALIBRATE: "
                                "Probing point %d of %d" % (
@@ -206,10 +224,14 @@ class Calibrater:
 
     def _manual_probe_callback_factory(self, probe_points,
         nozzle_points, interval):
+        """        """
+
         # returns a callback function for the manual probe
         is_end = self.current_point_index == len(probe_points) - 1
 
         def callback(kin_pos):
+            """            """
+
             if kin_pos is None:
                 # probe was cancelled
                 self.gcmd.respond_info(
@@ -228,6 +250,8 @@ class Calibrater:
         return callback
 
     def _finalize_calibration(self):
+        """        """
+
         # finalize the calibration process
         # calculate average of results
         avg = sum(self.results) / len(self.results)
@@ -259,4 +283,6 @@ class Calibrater:
 
 # klipper's entry point using [axis_twist_compensation] section in printer.cfg
 def load_config(config):
+    """    """
+
     return AxisTwistCompensation(config)

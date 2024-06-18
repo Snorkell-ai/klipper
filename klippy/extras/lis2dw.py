@@ -63,16 +63,22 @@ class LIS2DW:
                                          self.name, {'header': hdr})
 
     def _build_config(self):
+        """        """
+
         cmdqueue = self.spi.get_command_queue()
         self.query_lis2dw_cmd = self.mcu.lookup_command(
             "query_lis2dw oid=%c rest_ticks=%u", cq=cmdqueue)
         self.ffreader.setup_query_command("query_lis2dw_status oid=%c",
                                           oid=self.oid, cq=cmdqueue)
     def read_reg(self, reg):
+        """        """
+
         params = self.spi.spi_transfer([reg | REG_MOD_READ, 0x00])
         response = bytearray(params['response'])
         return response[1]
     def set_reg(self, reg, val, minclock=0):
+        """        """
+
         self.spi.spi_send([reg, val & 0xFF], minclock=minclock)
         stored_val = self.read_reg(reg)
         if stored_val != val:
@@ -82,11 +88,15 @@ class LIS2DW:
                     "(e.g. faulty wiring) or a faulty lis2dw chip." % (
                         reg, val, stored_val))
     def start_internal_client(self):
+        """        """
+
         aqh = adxl345.AccelQueryHelper(self.printer)
         self.batch_bulk.add_client(aqh.handle_batch)
         return aqh
     # Measurement decoding
     def _convert_samples(self, samples):
+        """        """
+
         (x_pos, x_scale), (y_pos, y_scale), (z_pos, z_scale) = self.axes_map
         count = 0
         for ptime, rx, ry, rz in samples:
@@ -98,6 +108,8 @@ class LIS2DW:
             count += 1
     # Start, stop, and process message batches
     def _start_measurements(self):
+        """        """
+
         # In case of miswiring, testing LIS2DW device ID prevents treating
         # noise or wrong signal as a correctly initialized device
         dev_id = self.read_reg(REG_LIS2DW_WHO_AM_I_ADDR)
@@ -127,6 +139,8 @@ class LIS2DW:
         self.ffreader.note_start()
         self.last_error_count = 0
     def _finish_measurements(self):
+        """        """
+
         # Halt bulk reading
         self.set_reg(REG_LIS2DW_FIFO_CTRL, 0x00)
         self.query_lis2dw_cmd.send_wait_ack([self.oid, 0])
@@ -134,6 +148,8 @@ class LIS2DW:
         logging.info("LIS2DW finished '%s' measurements", self.name)
         self.set_reg(REG_LIS2DW_FIFO_CTRL, 0x00)
     def _process_batch(self, eventtime):
+        """        """
+
         samples = self.ffreader.pull_samples()
         self._convert_samples(samples)
         if not samples:
@@ -142,7 +158,11 @@ class LIS2DW:
                 'overflows': self.ffreader.get_last_overflows()}
 
 def load_config(config):
+    """    """
+
     return LIS2DW(config)
 
 def load_config_prefix(config):
+    """    """
+
     return LIS2DW(config)

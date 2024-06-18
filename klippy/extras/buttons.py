@@ -24,6 +24,8 @@ class MCU_buttons:
         self.ack_cmd = None
         self.ack_count = 0
     def setup_buttons(self, pins, callback):
+        """        """
+
         mask = 0
         shift = len(self.pin_list)
         for pin_params in pins:
@@ -33,6 +35,8 @@ class MCU_buttons:
             self.pin_list.append((pin_params['pin'], pin_params['pullup']))
         self.callbacks.append((mask, shift, callback))
     def build_config(self):
+        """        """
+
         if not self.pin_list:
             return
         self.oid = self.mcu.create_oid()
@@ -55,6 +59,8 @@ class MCU_buttons:
         self.mcu.register_response(self.handle_buttons_state,
                                    "buttons_state", self.oid)
     def handle_buttons_state(self, params):
+        """        """
+
         # Expand the message ack_count from 8-bit
         ack_count = self.ack_count
         ack_diff = (params['ack_count'] - ack_count) & 0xff
@@ -110,11 +116,15 @@ class MCU_ADC_buttons:
         query_adc.register_adc('adc_button:' + pin.strip(), self.mcu_adc)
 
     def setup_button(self, min_value, max_value, callback):
+        """        """
+
         self.min_value = min(self.min_value, min_value)
         self.max_value = max(self.max_value, max_value)
         self.buttons.append((min_value, max_value, callback))
 
     def adc_callback(self, read_time, read_value):
+        """        """
+
         adc = max(.00001, min(.99999, read_value))
         value = self.pullup * adc / (1.0 - adc)
 
@@ -145,6 +155,8 @@ class MCU_ADC_buttons:
         self.last_button = btn
 
     def call_button(self, button, state):
+        """        """
+
         minval, maxval, callback = self.buttons[button]
         self.reactor.register_async_callback(
             (lambda e, cb=callback, s=state: cb(e, s)))
@@ -168,6 +180,8 @@ class BaseRotaryEncoder:
         self.ccw_callback = ccw_callback
         self.encoder_state = self.R_START
     def encoder_callback(self, eventtime, state):
+        """        """
+
         es = self.ENCODER_STATES[self.encoder_state & 0xf][state & 0x3]
         self.encoder_state = es
         if es & self.R_DIR_MSK == self.R_DIR_CW:
@@ -256,17 +270,25 @@ class PrinterButtons:
         self.mcu_buttons = {}
         self.adc_buttons = {}
     def register_adc_button(self, pin, min_val, max_val, pullup, callback):
+        """        """
+
         adc_buttons = self.adc_buttons.get(pin)
         if adc_buttons is None:
             self.adc_buttons[pin] = adc_buttons = MCU_ADC_buttons(
                 self.printer, pin, pullup)
         adc_buttons.setup_button(min_val, max_val, callback)
     def register_adc_button_push(self, pin, min_val, max_val, pullup, callback):
+        """        """
+
         def helper(eventtime, state, callback=callback):
+            """            """
+
             if state:
                 callback(eventtime)
         self.register_adc_button(pin, min_val, max_val, pullup, helper)
     def register_buttons(self, pins, callback):
+        """        """
+
         # Parse pins
         ppins = self.printer.lookup_object('pins')
         mcu = mcu_name = None
@@ -287,6 +309,8 @@ class PrinterButtons:
         mcu_buttons.setup_buttons(pin_params_list, callback)
     def register_rotary_encoder(self, pin1, pin2, cw_callback, ccw_callback,
                                 steps_per_detent):
+        """        """
+
         if steps_per_detent == 2:
             re = HalfStepRotaryEncoder(cw_callback, ccw_callback)
         elif steps_per_detent == 4:
@@ -296,10 +320,16 @@ class PrinterButtons:
                 "%d steps per detent not supported" % steps_per_detent)
         self.register_buttons([pin1, pin2], re.encoder_callback)
     def register_button_push(self, pin, callback):
+        """        """
+
         def helper(eventtime, state, callback=callback):
+            """            """
+
             if state:
                 callback(eventtime)
         self.register_buttons([pin], helper)
 
 def load_config(config):
+    """    """
+
     return PrinterButtons(config)

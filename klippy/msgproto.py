@@ -27,6 +27,8 @@ class error(Exception):
     pass
 
 def crc16_ccitt(buf):
+    """    """
+
     crc = 0xffff
     for data in buf:
         data ^= crc & 0xff
@@ -40,12 +42,16 @@ class PT_uint32:
     max_length = 5
     signed = False
     def encode(self, out, v):
+        """        """
+
         if v >= 0xc000000 or v < -0x4000000: out.append((v>>28) & 0x7f | 0x80)
         if v >= 0x180000 or v < -0x80000:    out.append((v>>21) & 0x7f | 0x80)
         if v >= 0x3000 or v < -0x1000:       out.append((v>>14) & 0x7f | 0x80)
         if v >= 0x60 or v < -0x20:           out.append((v>>7)  & 0x7f | 0x80)
         out.append(v & 0x7f)
     def parse(self, s, pos):
+        """        """
+
         c = s[pos]
         pos += 1
         v = c & 0x7f
@@ -74,9 +80,13 @@ class PT_string:
     is_dynamic_string = True
     max_length = 64
     def encode(self, out, v):
+        """        """
+
         out.append(len(v))
         out.extend(bytearray(v))
     def parse(self, s, pos):
+        """        """
+
         l = s[pos]
         return bytes(bytearray(s[pos+1:pos+l+1])), pos+l+1
 class PT_progmem_buffer(PT_string):
@@ -91,6 +101,8 @@ class enumeration_error(error):
         error.__init__(self, "Unknown value '%s' in enumeration '%s'"
                        % (value, enum_name))
     def get_enum_params(self):
+        """        """
+
         return self.enum_name, self.value
 
 class Enumeration:
@@ -103,11 +115,15 @@ class Enumeration:
         self.enums = enums
         self.reverse_enums = {v: k for k, v in enums.items()}
     def encode(self, out, v):
+        """        """
+
         tv = self.enums.get(v)
         if tv is None:
             raise enumeration_error(self.enum_name, v)
         self.pt.encode(out, tv)
     def parse(self, s, pos):
+        """        """
+
         v, pos = self.pt.parse(s, pos)
         tv = self.reverse_enums.get(v)
         if tv is None:
@@ -123,6 +139,8 @@ MessageTypes = {
 
 # Lookup the message types for a format string
 def lookup_params(msgformat, enumerations={}):
+    """    """
+
     out = []
     argparts = [arg.split('=') for arg in msgformat.split()[1:]]
     for name, fmt in argparts:
@@ -136,6 +154,8 @@ def lookup_params(msgformat, enumerations={}):
 
 # Lookup the message types for a debugging "output()" format string
 def lookup_output_params(msgformat):
+    """    """
+
     param_types = []
     args = msgformat
     while 1:
@@ -155,6 +175,8 @@ def lookup_output_params(msgformat):
 
 # Update the message format to be compatible with python's % operator
 def convert_msg_format(msgformat):
+    """    """
+
     for c in ['%u', '%i', '%hu', '%hi', '%c', '%.*s', '%*s']:
         msgformat = msgformat.replace(c, '%s')
     return msgformat
@@ -169,16 +191,22 @@ class MessageFormat:
         self.param_types = [t for name, t in self.param_names]
         self.name_to_type = dict(self.param_names)
     def encode(self, params):
+        """        """
+
         out = list(self.msgid_bytes)
         for i, t in enumerate(self.param_types):
             t.encode(out, params[i])
         return out
     def encode_by_name(self, **params):
+        """        """
+
         out = list(self.msgid_bytes)
         for name, t in self.param_names:
             t.encode(out, params[name])
         return out
     def parse(self, s, pos):
+        """        """
+
         pos += len(self.msgid_bytes)
         out = {}
         for name, t in self.param_names:
@@ -186,6 +214,8 @@ class MessageFormat:
             out[name] = v
         return out, pos
     def format_params(self, params):
+        """        """
+
         out = []
         for name, t in self.param_names:
             v = params[name]
@@ -202,6 +232,8 @@ class OutputFormat:
         self.debugformat = convert_msg_format(msgformat)
         self.param_types = lookup_output_params(msgformat)
     def parse(self, s, pos):
+        """        """
+
         pos += len(self.msgid_bytes)
         out = []
         for t in self.param_types:
@@ -212,15 +244,21 @@ class OutputFormat:
         outmsg = self.debugformat % tuple(out)
         return {'#msg': outmsg}, pos
     def format_params(self, params):
+        """        """
+
         return "#output %s" % (params['#msg'],)
 
 class UnknownFormat:
     name = '#unknown'
     def parse(self, s, pos):
+        """        """
+
         msgid, param_pos = PT_int32().parse(s, pos)
         msg = bytes(bytearray(s))
         return {'#msgid': msgid, '#msg': msg}, len(s)-MESSAGE_TRAILER_SIZE
     def format_params(self, params):
+        """        """
+
         return "#unknown %s" % (repr(params['#msg']),)
 
 class MessageParser:
@@ -239,8 +277,12 @@ class MessageParser:
         self.raw_identify_data = ""
         self._init_messages(DefaultMessages)
     def _error(self, msg, *params):
+        """        """
+
         raise error(self.warn_prefix + (msg % params))
     def check_packet(self, s):
+        """        """
+
         if len(s) < MESSAGE_MIN:
             return 0
         msglen = s[MESSAGE_POS_LEN]
@@ -261,6 +303,8 @@ class MessageParser:
             return -1
         return msglen
     def dump(self, s):
+        """        """
+
         msgseq = s[MESSAGE_POS_SEQ]
         out = ["seq: %02x" % (msgseq,)]
         pos = MESSAGE_HEADER_SIZE
@@ -273,6 +317,8 @@ class MessageParser:
                 break
         return out
     def format_params(self, params):
+        """        """
+
         name = params.get('#name')
         mid = self.messages_by_name.get(name)
         if mid is not None:
@@ -282,6 +328,8 @@ class MessageParser:
             return "%s %s" % (name, msg)
         return str(params)
     def parse(self, s):
+        """        """
+
         msgid, param_pos = self.msgid_parser.parse(s, MESSAGE_HEADER_SIZE)
         mid = self.messages_by_id.get(msgid, self.unknown)
         params, pos = mid.parse(s, MESSAGE_HEADER_SIZE)
@@ -290,6 +338,8 @@ class MessageParser:
         params['#name'] = mid.name
         return params
     def encode_msgblock(self, seq, cmd):
+        """        """
+
         msglen = MESSAGE_MIN + len(cmd)
         seq = (seq & MESSAGE_SEQ_MASK) | MESSAGE_DEST
         out = [msglen, seq] + cmd
@@ -297,6 +347,8 @@ class MessageParser:
         out.append(MESSAGE_SYNC)
         return out
     def _parse_buffer(self, value):
+        """        """
+
         if not value:
             return []
         tval = int(value, 16)
@@ -307,6 +359,8 @@ class MessageParser:
         out.reverse()
         return out
     def lookup_command(self, msgformat):
+        """        """
+
         parts = msgformat.strip().split()
         msgname = parts[0]
         mp = self.messages_by_name.get(msgname)
@@ -317,11 +371,15 @@ class MessageParser:
                         msgformat, mp.msgformat)
         return mp
     def lookup_msgid(self, msgformat):
+        """        """
+
         msgid = self.msgid_by_format.get(msgformat)
         if msgid is None:
             self._error("Unknown command: %s", msgformat)
         return msgid
     def create_command(self, msg):
+        """        """
+
         parts = msg.strip().split()
         if not parts:
             return ""
@@ -354,6 +412,8 @@ class MessageParser:
             self._error("Unable to encode: %s", msgname)
         return cmd
     def fill_enumerations(self, enumerations):
+        """        """
+
         for add_name, add_enums in enumerations.items():
             enums = self.enumerations.setdefault(add_name, {})
             for enum, value in add_enums.items():
@@ -372,6 +432,8 @@ class MessageParser:
                 for i in range(count):
                     enums[enum_root + str(start_enum + i)] = start_value + i
     def _init_messages(self, messages, command_ids=[], output_ids=[]):
+        """        """
+
         for msgformat, msgid in messages.items():
             msgtype = 'response'
             if msgid in command_ids:
@@ -390,6 +452,8 @@ class MessageParser:
                 self.messages_by_id[msgid] = msg
                 self.messages_by_name[msg.name] = msg
     def process_identify(self, data, decompress=True):
+        """        """
+
         try:
             if decompress:
                 data = zlib.decompress(data)
@@ -413,17 +477,29 @@ class MessageParser:
             logging.exception("process_identify error")
             self._error("Error during identify: %s", str(e))
     def get_raw_data_dictionary(self):
+        """        """
+
         return self.raw_identify_data
     def get_version_info(self):
+        """        """
+
         return self.version, self.build_versions
     def get_messages(self):
+        """        """
+
         return list(self.messages)
     def get_enumerations(self):
+        """        """
+
         return dict(self.enumerations)
     def get_constants(self):
+        """        """
+
         return dict(self.config)
     class sentinel: pass
     def get_constant(self, name, default=sentinel, parser=str):
+        """        """
+
         if name not in self.config:
             if default is not self.sentinel:
                 return default
@@ -435,6 +511,10 @@ class MessageParser:
                         name, self.config[name])
         return value
     def get_constant_float(self, name, default=sentinel):
+        """        """
+
         return self.get_constant(name, default, parser=float)
     def get_constant_int(self, name, default=sentinel):
+        """        """
+
         return self.get_constant(name, default, parser=int)

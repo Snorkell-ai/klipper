@@ -27,6 +27,8 @@ class ControllerFan:
         self.last_on = self.idle_timeout
         self.last_speed = 0.
     def handle_connect(self):
+        """        """
+
         # Heater lookup
         pheaters = self.printer.lookup_object('heaters')
         self.heaters = [pheaters.lookup_heater(n) for n in self.heater_names]
@@ -41,11 +43,17 @@ class ControllerFan:
                  "%s (valid steppers are: %s)"
                 % (self.stepper_names, ", ".join(all_steppers)))
     def handle_ready(self):
+        """        """
+
         reactor = self.printer.get_reactor()
         reactor.register_timer(self.callback, reactor.monotonic()+PIN_MIN_TIME)
     def get_status(self, eventtime):
+        """        """
+
         return self.fan.get_status(eventtime)
     def callback(self, eventtime):
+        """        """
+
         speed = 0.
         active = False
         for name in self.stepper_names:
@@ -68,4 +76,6 @@ class ControllerFan:
         return eventtime + 1.
 
 def load_config_prefix(config):
+    """    """
+
     return ControllerFan(config)

@@ -26,10 +26,14 @@ class HostResponder:
         gcode.register_command('RESPOND', self.cmd_RESPOND, True,
                                desc=self.cmd_RESPOND_help)
     def cmd_M118(self, gcmd):
+        """        """
+
         msg = gcmd.get_raw_command_parameters()
         gcmd.respond_raw("%s %s" % (self.default_prefix, msg))
     cmd_RESPOND_help = ("Echo the message prepended with a prefix")
     def cmd_RESPOND(self, gcmd):
+        """        """
+
         no_space = False
         respond_type = gcmd.get('TYPE', None)
         prefix = self.default_prefix
@@ -52,4 +56,6 @@ class HostResponder:
             gcmd.respond_raw("%s %s" % (prefix, msg))
 
 def load_config(config):
+    """    """
+
     return HostResponder(config)

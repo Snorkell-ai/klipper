@@ -22,6 +22,8 @@ class PCA9533:
         self.i2c.i2c_write([PCA9533_PWM1, 170])
         self.update_leds(self.led_helper.get_status()['color_data'], None)
     def update_leds(self, led_state, print_time):
+        """        """
+
         rmap = [0, 2, 3, 1, 1]
         red, green, blue, white = [rmap[int(v * 4.)] for v in led_state[0]]
         ls0 = (white<<6) | (blue<<4) | (green<<2) | red
@@ -31,7 +33,11 @@ class PCA9533:
         self.i2c.i2c_write([PCA9533_PLS0, ls0], minclock=minclock,
                            reqclock=BACKGROUND_PRIORITY_CLOCK)
     def get_status(self, eventtime):
+        """        """
+
         return self.led_helper.get_status(eventtime)
 
 def load_config_prefix(config):
+    """    """
+
     return PCA9533(config)

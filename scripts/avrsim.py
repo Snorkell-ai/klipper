@@ -21,12 +21,16 @@ class SerialRxPin(pysimulavr.PySimulationMember, pysimulavr.Pin):
         self.current = 0
         self.pos = -1
     def SetInState(self, pin):
+        """        """
+
         pysimulavr.Pin.SetInState(self, pin)
         self.state = pin.outState
         if self.pos < 0 and pin.outState == pin.LOW:
             self.pos = 0
             self.sc.Add(self)
     def DoStep(self, trueHwStep):
+        """        """
+
         ishigh = self.state == self.HIGH
         self.current |= ishigh << self.pos
         self.pos += 1
@@ -54,6 +58,8 @@ class SerialTxPin(pysimulavr.PySimulationMember, pysimulavr.Pin):
         self.queue = bytearray()
         self.sc.Add(self)
     def DoStep(self, trueHwStep):
+        """        """
+
         if not self.pos:
             if not self.queue:
                 data = self.terminal.read()
@@ -81,11 +87,15 @@ class Tracing:
         self.dman = pysimulavr.DumpManager.Instance()
         self.dman.SetSingleDeviceApp()
     def show_help(self):
+        """        """
+
         ostr = pysimulavr.ostringstream()
         self.dman.save(ostr)
         sys.stdout.write(ostr.str())
         sys.exit(1)
     def load_options(self):
+        """        """
+
         if self.dman is None:
             return
         if self.signals.strip() == '?':
@@ -93,9 +103,13 @@ class Tracing:
         sigs = "\n".join(["+ " + s for s in self.signals.split(',')])
         self.dman.addDumpVCD(self.filename, sigs, "ns", False, False)
     def start(self):
+        """        """
+
         if self.dman is not None:
             self.dman.start()
     def finish(self):
+        """        """
+
         if self.dman is not None:
             self.dman.stopApplication()
 
@@ -111,6 +125,8 @@ class Pacing(pysimulavr.PySimulationMember):
         self.delay = SIMULAVR_FREQ // 10000
         self.sc.Add(self)
     def DoStep(self, trueHwStep):
+        """        """
+
         curtime = time.time()
         clock = self.sc.GetCurrentTime()
         offset = clock * self.pacing_rate - (curtime - self.rel_time)
@@ -128,10 +144,16 @@ class TerminalIO:
     def __init__(self):
         self.fd = -1
     def run(self, fd):
+        """        """
+
         self.fd = fd
     def write(self, data):
+        """        """
+
         os.write(self.fd, data)
     def read(self):
+        """        """
+
         try:
             return os.read(self.fd, 64)
         except os.error as e:
@@ -141,6 +163,8 @@ class TerminalIO:
 
 # Support for creating a pseudo-tty for emulating a serial port
 def create_pty(ptyname):
+    """    """
+
     mfd, sfd = pty.openpty()
     try:
         os.unlink(ptyname)
@@ -165,6 +189,8 @@ def create_pty(ptyname):
     return mfd
 
 def main():
+    """    """
+
     usage = "%prog [options] <program.elf>"
     opts = optparse.OptionParser(usage)
     opts.add_option("-m", "--machine", type="string", dest="machine",

@@ -21,6 +21,8 @@ class SaveVariables:
         gcode.register_command('SAVE_VARIABLE', self.cmd_SAVE_VARIABLE,
                                desc=self.cmd_SAVE_VARIABLE_help)
     def loadVariables(self):
+        """        """
+
         allvars = {}
         varfile = configparser.ConfigParser()
         try:
@@ -35,6 +37,8 @@ class SaveVariables:
         self.allVariables = allvars
     cmd_SAVE_VARIABLE_help = "Save arbitrary variables to disk"
     def cmd_SAVE_VARIABLE(self, gcmd):
+        """        """
+
         varname = gcmd.get('VARIABLE')
         value = gcmd.get('VALUE')
         try:
@@ -58,7 +62,11 @@ class SaveVariables:
             raise gcmd.error(msg)
         self.loadVariables()
     def get_status(self, eventtime):
+        """        """
+
         return {'variables': self.allVariables}
 
 def load_config(config):
+    """    """
+
     return SaveVariables(config)

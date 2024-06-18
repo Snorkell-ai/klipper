@@ -52,8 +52,12 @@ class HybridCoreXZKinematics:
             'max_z_accel', max_accel, above=0., maxval=max_accel)
         self.limits = [(1.0, -1.0)] * 3
     def get_steppers(self):
+        """        """
+
         return [s for rail in self.rails for s in rail.get_steppers()]
     def calc_position(self, stepper_positions):
+        """        """
+
         pos = [stepper_positions[rail.get_name()] for rail in self.rails]
         if (self.dc_module is not None and 'PRIMARY' == \
                     self.dc_module.get_status()['carriage_1']):
@@ -61,12 +65,16 @@ class HybridCoreXZKinematics:
         else:
             return [pos[0] + pos[2], pos[1], pos[2]]
     def update_limits(self, i, range):
+        """        """
+
         l, h = self.limits[i]
         # Only update limits if this axis was already homed,
         # otherwise leave in un-homed state.
         if l <= h:
             self.limits[i] = range
     def set_position(self, newpos, homing_axes):
+        """        """
+
         for i, rail in enumerate(self.rails):
             rail.set_position(newpos)
         for axis in homing_axes:
@@ -76,9 +84,13 @@ class HybridCoreXZKinematics:
                 rail = self.rails[axis]
             self.limits[axis] = rail.get_range()
     def note_z_not_homed(self):
+        """        """
+
         # Helper for Safe Z Home
         self.limits[2] = (1.0, -1.0)
     def home_axis(self, homing_state, axis, rail):
+        """        """
+
         position_min, position_max = rail.get_range()
         hi = rail.get_homing_info()
         homepos = [None, None, None, None]
@@ -91,14 +103,20 @@ class HybridCoreXZKinematics:
         # Perform homing
         homing_state.home_rails([rail], forcepos, homepos)
     def home(self, homing_state):
+        """        """
+
         for axis in homing_state.get_axes():
             if self.dc_module is not None and axis == 0:
                 self.dc_module.home(homing_state)
             else:
                 self.home_axis(homing_state, axis, self.rails[axis])
     def _motor_off(self, print_time):
+        """        """
+
         self.limits = [(1.0, -1.0)] * 3
     def _check_endstops(self, move):
+        """        """
+
         end_pos = move.end_pos
         for i in (0, 1, 2):
             if (move.axes_d[i]
@@ -108,6 +126,8 @@ class HybridCoreXZKinematics:
                     raise move.move_error("Must home axis first")
                 raise move.move_error()
     def check_move(self, move):
+        """        """
+
         limits = self.limits
         xpos, ypos = move.end_pos[:2]
         if (xpos < limits[0][0] or xpos > limits[0][1]
@@ -122,6 +142,8 @@ class HybridCoreXZKinematics:
         move.limit_speed(
             self.max_z_velocity * z_ratio, self.max_z_accel * z_ratio)
     def get_status(self, eventtime):
+        """        """
+
         axes = [a for a, (l, h) in zip("xyz", self.limits) if l <= h]
         return {
             'homed_axes': "".join(axes),
@@ -130,4 +152,6 @@ class HybridCoreXZKinematics:
         }
 
 def load_kinematics(toolhead, config):
+    """    """
+
     return HybridCoreXZKinematics(toolhead, config)

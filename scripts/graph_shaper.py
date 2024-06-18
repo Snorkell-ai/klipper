@@ -31,6 +31,8 @@ PLOT_FREQ_STEP = .01
 ######################################################################
 
 def get_zv_shaper():
+    """    """
+
     df = math.sqrt(1. - SHAPER_DAMPING_RATIO**2)
     K = math.exp(-SHAPER_DAMPING_RATIO * math.pi / df)
     t_d = 1. / (SHAPER_FREQ * df)
@@ -39,6 +41,8 @@ def get_zv_shaper():
     return (A, T, "ZV")
 
 def get_zvd_shaper():
+    """    """
+
     df = math.sqrt(1. - SHAPER_DAMPING_RATIO**2)
     K = math.exp(-SHAPER_DAMPING_RATIO * math.pi / df)
     t_d = 1. / (SHAPER_FREQ * df)
@@ -47,6 +51,8 @@ def get_zvd_shaper():
     return (A, T, "ZVD")
 
 def get_mzv_shaper():
+    """    """
+
     df = math.sqrt(1. - SHAPER_DAMPING_RATIO**2)
     K = math.exp(-.75 * SHAPER_DAMPING_RATIO * math.pi / df)
     t_d = 1. / (SHAPER_FREQ * df)
@@ -60,6 +66,8 @@ def get_mzv_shaper():
     return (A, T, "MZV")
 
 def get_ei_shaper():
+    """    """
+
     v_tol = 0.05 # vibration tolerance
     df = math.sqrt(1. - SHAPER_DAMPING_RATIO**2)
     K = math.exp(-SHAPER_DAMPING_RATIO * math.pi / df)
@@ -74,6 +82,8 @@ def get_ei_shaper():
     return (A, T, "EI")
 
 def get_2hump_ei_shaper():
+    """    """
+
     v_tol = 0.05 # vibration tolerance
     df = math.sqrt(1. - SHAPER_DAMPING_RATIO**2)
     K = math.exp(-SHAPER_DAMPING_RATIO * math.pi / df)
@@ -91,6 +101,8 @@ def get_2hump_ei_shaper():
     return (A, T, "2-hump EI")
 
 def get_3hump_ei_shaper():
+    """    """
+
     v_tol = 0.05 # vibration tolerance
     df = math.sqrt(1. - SHAPER_DAMPING_RATIO**2)
     K = math.exp(-SHAPER_DAMPING_RATIO * math.pi / df)
@@ -109,6 +121,8 @@ def get_3hump_ei_shaper():
 
 
 def estimate_shaper(shaper, freq, damping_ratio):
+    """    """
+
     A, T, _ = shaper
     n = len(T)
     inv_D = 1. / sum(A)
@@ -123,6 +137,8 @@ def estimate_shaper(shaper, freq, damping_ratio):
     return math.sqrt(S*S + C*C) * inv_D
 
 def shift_pulses(shaper):
+    """    """
+
     A, T, name = shaper
     n = len(T)
     ts = sum([A[i] * T[i] for i in range(n)]) / sum(A)
@@ -138,6 +154,8 @@ get_shaper = get_ei_shaper
 ######################################################################
 
 def bisect(func, left, right):
+    """    """
+
     lhs_sign = math.copysign(1., func(left))
     while right-left > 1e-8:
         mid = .5 * (left + right)
@@ -149,7 +167,11 @@ def bisect(func, left, right):
     return .5 * (left + right)
 
 def find_shaper_plot_range(shaper, vib_tol):
+    """    """
+
     def eval_shaper(freq):
+        """        """
+
         return estimate_shaper(shaper, freq, DAMPING_RATIOS[0]) - vib_tol
     if not PLOT_FREQ_RANGE:
         left = bisect(eval_shaper, 0., SHAPER_FREQ)
@@ -159,6 +181,8 @@ def find_shaper_plot_range(shaper, vib_tol):
     return (left, right)
 
 def gen_shaper_response(shaper):
+    """    """
+
     # Calculate shaper vibration responce on a range of requencies
     response = []
     freqs = []
@@ -174,6 +198,8 @@ def gen_shaper_response(shaper):
     return freqs, response, legend
 
 def gen_shaped_step_function(shaper):
+    """    """
+
     # Calculate shaping of a step function
     A, T, _ = shaper
     inv_D = 1. / sum(A)
@@ -191,6 +217,8 @@ def gen_shaped_step_function(shaper):
     t = t_start
 
     def step_response(t):
+        """        """
+
         if t < 0.:
             return 0.
         return 1. - math.exp(-damping * t) * math.sin(omega_d * t
@@ -220,6 +248,8 @@ def gen_shaped_step_function(shaper):
 
 
 def plot_shaper(shaper):
+    """    """
+
     shift_pulses(shaper)
     freqs, response, response_legend = gen_shaper_response(shaper)
     time, step_vals, step_legend = gen_shaped_step_function(shaper)
@@ -252,6 +282,8 @@ def plot_shaper(shaper):
     return fig
 
 def setup_matplotlib(output_to_file):
+    """    """
+
     global matplotlib
     if output_to_file:
         matplotlib.use('Agg')
@@ -259,6 +291,8 @@ def setup_matplotlib(output_to_file):
     import matplotlib.ticker
 
 def main():
+    """    """
+
     # Parse command-line arguments
     usage = "%prog [options]"
     opts = optparse.OptionParser(usage)

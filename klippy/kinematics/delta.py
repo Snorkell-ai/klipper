@@ -76,6 +76,8 @@ class DeltaKinematics:
                                   for r in self.rails]) * .5
         min_arm_length = min(arm_lengths)
         def ratio_to_xy(ratio):
+            """            """
+
             return (ratio * math.sqrt(min_arm_length**2 / (ratio**2 + 1.)
                                       - half_min_step_dist**2)
                     + half_min_step_dist - radius)
@@ -92,29 +94,43 @@ class DeltaKinematics:
         self.axes_max = toolhead.Coord(max_xy, max_xy, self.max_z, 0.)
         self.set_position([0., 0., 0.], ())
     def get_steppers(self):
+        """        """
+
         return [s for rail in self.rails for s in rail.get_steppers()]
     def _actuator_to_cartesian(self, spos):
+        """        """
+
         sphere_coords = [(t[0], t[1], sp) for t, sp in zip(self.towers, spos)]
         return mathutil.trilateration(sphere_coords, self.arm2)
     def calc_position(self, stepper_positions):
+        """        """
+
         spos = [stepper_positions[rail.get_name()] for rail in self.rails]
         return self._actuator_to_cartesian(spos)
     def set_position(self, newpos, homing_axes):
+        """        """
+
         for rail in self.rails:
             rail.set_position(newpos)
         self.limit_xy2 = -1.
         if tuple(homing_axes) == (0, 1, 2):
             self.need_home = False
     def home(self, homing_state):
+        """        """
+
         # All axes are homed simultaneously
         homing_state.set_axes([0, 1, 2])
         forcepos = list(self.home_position)
         forcepos[2] = -1.5 * math.sqrt(max(self.arm2)-self.max_xy2)
         homing_state.home_rails(self.rails, forcepos, self.home_position)
     def _motor_off(self, print_time):
+        """        """
+
         self.limit_xy2 = -1.
         self.need_home = True
     def check_move(self, move):
+        """        """
+
         end_pos = move.end_pos
         end_xy2 = end_pos[0]**2 + end_pos[1]**2
         if end_xy2 <= self.limit_xy2 and not move.axes_d[2]:
@@ -152,6 +168,8 @@ class DeltaKinematics:
             limit_xy2 = -1.
         self.limit_xy2 = min(limit_xy2, self.slow_xy2)
     def get_status(self, eventtime):
+        """        """
+
         return {
             'homed_axes': '' if self.need_home else 'xyz',
             'axis_minimum': self.axes_min,
@@ -159,6 +177,8 @@ class DeltaKinematics:
             'cone_start_z': self.limit_z,
         }
     def get_calibration(self):
+        """        """
+
         endstops = [rail.get_homing_info().position_endstop
                     for rail in self.rails]
         stepdists = [rail.get_steppers()[0].get_step_dist()
@@ -183,6 +203,8 @@ class DeltaCalibration:
         self.abs_endstops = [e + math.sqrt(a**2 - radius2)
                              for e, a in zip(endstops, arms)]
     def coordinate_descent_params(self, is_extended):
+        """        """
+
         # Determine adjustment parameters (for use with coordinate_descent)
         adj_params = ('radius', 'angle_a', 'angle_b',
                       'endstop_a', 'endstop_b', 'endstop_c')
@@ -196,6 +218,8 @@ class DeltaCalibration:
             params['stepdist_'+axis] = self.stepdists[i]
         return adj_params, params
     def new_calibration(self, params):
+        """        """
+
         # Create a new calibration object from coordinate_descent params
         radius = params['radius']
         angles = [params['angle_'+a] for a in 'abc']
@@ -204,6 +228,8 @@ class DeltaCalibration:
         stepdists = [params['stepdist_'+a] for a in 'abc']
         return DeltaCalibration(radius, angles, arms, endstops, stepdists)
     def get_position_from_stable(self, stable_position):
+        """        """
+
         # Return cartesian coordinates for the given stable_position
         sphere_coords = [
             (t[0], t[1], es - sp * sd)
@@ -211,6 +237,8 @@ class DeltaCalibration:
                                      self.abs_endstops, stable_position) ]
         return mathutil.trilateration(sphere_coords, [a**2 for a in self.arms])
     def calc_stable_position(self, coord):
+        """        """
+
         # Return a stable_position from a cartesian coordinate
         steppos = [
             math.sqrt(a**2 - (t[0]-coord[0])**2 - (t[1]-coord[1])**2) + coord[2]
@@ -219,6 +247,8 @@ class DeltaCalibration:
                 for sd, ep, sp in zip(self.stepdists,
                                       self.abs_endstops, steppos)]
     def save_state(self, configfile):
+        """        """
+
         # Save the current parameters (for use with SAVE_CONFIG)
         configfile.set('printer', 'delta_radius', "%.6f" % (self.radius,))
         for i, axis in enumerate('abc'):
@@ -239,4 +269,6 @@ class DeltaCalibration:
                self.radius))
 
 def load_kinematics(toolhead, config):
+    """    """
+
     return DeltaKinematics(toolhead, config)

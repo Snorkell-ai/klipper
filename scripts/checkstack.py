@@ -39,10 +39,14 @@ class function:
         self.subfuncs = {}
     # Update function info with a found "yield" point.
     def noteYield(self, stackusage):
+        """        """
+
         if self.yield_usage < stackusage:
             self.yield_usage = stackusage
     # Update function info with a found "call" point.
     def noteCall(self, insnaddr, calladdr, stackusage):
+        """        """
+
         if (calladdr, stackusage) in self.subfuncs:
             # Already noted a nearly identical call - ignore this one.
             return
@@ -51,6 +55,8 @@ class function:
 
 # Find out maximum stack usage for a function
 def calcmaxstack(info, funcs):
+    """    """
+
     if info.max_stack_usage is not None:
         return
     info.max_stack_usage = max_stack_usage = info.basic_stack_usage
@@ -87,6 +93,8 @@ def calcmaxstack(info, funcs):
 # Try to arrange output so that functions that call each other are
 # near each other.
 def orderfuncs(funcaddrs, availfuncs):
+    """    """
+
     l = [(availfuncs[funcaddr].total_calls
           , availfuncs[funcaddr].funcname, funcaddr)
          for funcaddr in funcaddrs if funcaddr in availfuncs]
@@ -112,6 +120,8 @@ re_asm = re.compile(
     + r') <(?P<ref>.*)>)?$')
 
 def main():
+    """    """
+
     unknownfunc = function(None, "<unknown>")
     indirectfunc = function(-1, '<indirect>')
     unknownfunc.max_stack_usage = indirectfunc.max_stack_usage = 0

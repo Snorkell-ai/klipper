@@ -12,9 +12,13 @@ InputShaperCfg = collections.namedtuple(
         'InputShaperCfg', ('name', 'init_func', 'min_freq'))
 
 def get_none_shaper():
+    """    """
+
     return ([], [])
 
 def get_zv_shaper(shaper_freq, damping_ratio):
+    """    """
+
     df = math.sqrt(1. - damping_ratio**2)
     K = math.exp(-damping_ratio * math.pi / df)
     t_d = 1. / (shaper_freq * df)
@@ -23,6 +27,8 @@ def get_zv_shaper(shaper_freq, damping_ratio):
     return (A, T)
 
 def get_zvd_shaper(shaper_freq, damping_ratio):
+    """    """
+
     df = math.sqrt(1. - damping_ratio**2)
     K = math.exp(-damping_ratio * math.pi / df)
     t_d = 1. / (shaper_freq * df)
@@ -31,6 +37,8 @@ def get_zvd_shaper(shaper_freq, damping_ratio):
     return (A, T)
 
 def get_mzv_shaper(shaper_freq, damping_ratio):
+    """    """
+
     df = math.sqrt(1. - damping_ratio**2)
     K = math.exp(-.75 * damping_ratio * math.pi / df)
     t_d = 1. / (shaper_freq * df)
@@ -44,6 +52,8 @@ def get_mzv_shaper(shaper_freq, damping_ratio):
     return (A, T)
 
 def get_ei_shaper(shaper_freq, damping_ratio):
+    """    """
+
     v_tol = 1. / SHAPER_VIBRATION_REDUCTION # vibration tolerance
     df = math.sqrt(1. - damping_ratio**2)
     K = math.exp(-damping_ratio * math.pi / df)
@@ -58,6 +68,8 @@ def get_ei_shaper(shaper_freq, damping_ratio):
     return (A, T)
 
 def get_2hump_ei_shaper(shaper_freq, damping_ratio):
+    """    """
+
     v_tol = 1. / SHAPER_VIBRATION_REDUCTION # vibration tolerance
     df = math.sqrt(1. - damping_ratio**2)
     K = math.exp(-damping_ratio * math.pi / df)
@@ -75,6 +87,8 @@ def get_2hump_ei_shaper(shaper_freq, damping_ratio):
     return (A, T)
 
 def get_3hump_ei_shaper(shaper_freq, damping_ratio):
+    """    """
+
     v_tol = 1. / SHAPER_VIBRATION_REDUCTION # vibration tolerance
     df = math.sqrt(1. - damping_ratio**2)
     K = math.exp(-damping_ratio * math.pi / df)

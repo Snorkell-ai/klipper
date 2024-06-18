@@ -61,7 +61,8 @@ class ZThermalAdjuster:
                                     desc=self.cmd_SET_Z_THERMAL_ADJUST_help)
 
     def handle_connect(self):
-        'Called after all printer objects are instantiated'
+        """
+        """
         self.toolhead = self.printer.lookup_object('toolhead')
         gcode_move = self.printer.lookup_object('gcode_move')
 
@@ -75,6 +76,8 @@ class ZThermalAdjuster:
         self.z_step_dist = z_stepper.get_step_dist()
 
     def get_status(self, eventtime):
+        """        """
+
         return {
             'temperature': self.smoothed_temp,
             'measured_min_temp': round(self.measured_min, 2),
@@ -85,14 +88,16 @@ class ZThermalAdjuster:
         }
 
     def handle_homing_move_end(self, homing_state, rails):
-        'Set reference temperature after Z homing.'
+        """
+        """
         if 2 in homing_state.get_axes():
             self.ref_temperature = self.smoothed_temp
             self.ref_temp_override = False
             self.z_adjust_mm = 0.
 
     def calc_adjust(self, pos):
-        'Z adjustment calculation'
+        """
+        """
         if pos[2] < self.off_above_z:
             delta_t = self.smoothed_temp - self.ref_temperature
 
@@ -113,16 +118,21 @@ class ZThermalAdjuster:
         return [pos[0], pos[1], new_z, pos[3]]
 
     def calc_unadjust(self, pos):
-        'Remove Z adjustment'
+        """
+        """
         unadjusted_z = pos[2] - self.z_adjust_mm
         return [pos[0], pos[1], unadjusted_z, pos[3]]
 
     def get_position(self):
+        """        """
+
         position = self.calc_unadjust(self.next_transform.get_position())
         self.last_position = self.calc_adjust(position)
         return position
 
     def move(self, newpos, speed):
+        """        """
+
         # don't apply to extrude only moves or when disabled
         if (newpos[0:2] == self.last_position[0:2]) or not self.adjust_enable:
             z = newpos[2] + self.last_z_adjust_mm
@@ -134,7 +144,8 @@ class ZThermalAdjuster:
         self.last_position[:] = newpos
 
     def temperature_callback(self, read_time, temp):
-        'Called everytime the Z adjust thermistor is read'
+        """
+        """
         with self.lock:
             time_diff = read_time - self.last_temp_time
             self.last_temp = temp
@@ -146,12 +157,18 @@ class ZThermalAdjuster:
             self.measured_max = max(self.measured_max, self.smoothed_temp)
 
     def get_temp(self, eventtime):
+        """        """
+
         return self.smoothed_temp, 0.
 
     def stats(self, eventtime):
+        """        """
+
         return False, '%s: temp=%.1f' % ("z_thermal_adjust", self.smoothed_temp)
 
     def cmd_SET_Z_THERMAL_ADJUST(self, gcmd):
+        """        """
+
         enable = gcmd.get_int('ENABLE', None, minval=0, maxval=1)
         coeff = gcmd.get_float('TEMP_COEFF', None, minval=-1, maxval=1)
         ref_temp = gcmd.get_float('REF_TEMP', None, minval=KELVIN_TO_CELSIUS)
@@ -186,4 +203,6 @@ class ZThermalAdjuster:
     cmd_SET_Z_THERMAL_ADJUST_help = 'Set/query Z Thermal Adjust parameters.'
 
 def load_config(config):
+    """    """
+
     return ZThermalAdjuster(config)

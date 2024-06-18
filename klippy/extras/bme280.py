@@ -99,29 +99,41 @@ BMP3_CHIP_ID_REG = 0x00
 
 
 def get_twos_complement(val, bit_size):
+    """    """
+
     if val & (1 << (bit_size - 1)):
         val -= (1 << bit_size)
     return val
 
 
 def get_unsigned_short(bits):
+    """    """
+
     return bits[1] << 8 | bits[0]
 
 
 def get_signed_short(bits):
+    """    """
+
     val = get_unsigned_short(bits)
     return get_twos_complement(val, 16)
 
 
 def get_signed_byte(bits):
+    """    """
+
     return get_twos_complement(bits, 8)
 
 
 def get_unsigned_short_msb(bits):
+    """    """
+
     return bits[0] << 8 | bits[1]
 
 
 def get_signed_short_msb(bits):
+    """    """
+
     val = get_unsigned_short_msb(bits)
     return get_twos_complement(val, 16)
 
@@ -157,21 +169,33 @@ class BME280:
                                             self.handle_connect)
 
     def handle_connect(self):
+        """        """
+
         self._init_bmxx80()
         self.reactor.update_timer(self.sample_timer, self.reactor.NOW)
 
     def setup_minmax(self, min_temp, max_temp):
+        """        """
+
         self.min_temp = min_temp
         self.max_temp = max_temp
 
     def setup_callback(self, cb):
+        """        """
+
         self._callback = cb
 
     def get_report_time_delta(self):
+        """        """
+
         return REPORT_TIME
 
     def _init_bmxx80(self):
+        """        """
+
         def read_calibration_data_bmp280(calib_data_1):
+            """            """
+
             dig = {}
             dig['T1'] = get_unsigned_short(calib_data_1[0:2])
             dig['T2'] = get_signed_short(calib_data_1[2:4])
@@ -189,6 +213,8 @@ class BME280:
             return dig
 
         def read_calibration_data_bmp388(calib_data_1):
+            """            """
+
             dig = {}
             dig["T1"] = get_unsigned_short(calib_data_1[0:2]) / 0.00390625
             dig["T2"] = get_unsigned_short(calib_data_1[2:4]) / 1073741824.0
@@ -212,6 +238,8 @@ class BME280:
             return dig
 
         def read_calibration_data_bme280(calib_data_1, calib_data_2):
+            """            """
+
             dig = read_calibration_data_bmp280(calib_data_1)
             dig['H1'] = calib_data_1[25] & 0xFF
             dig['H2'] = get_signed_short(calib_data_2[0:2])
@@ -224,6 +252,8 @@ class BME280:
             return dig
 
         def read_calibration_data_bme680(calib_data_1, calib_data_2):
+            """            """
+
             dig = {}
             dig['T1'] = get_unsigned_short(calib_data_2[8:10])
             dig['T2'] = get_signed_short(calib_data_1[2:4])
@@ -256,6 +286,8 @@ class BME280:
             return dig
 
         def read_calibration_data_bmp180(calib_data_1):
+            """            """
+
             dig = {}
             dig['AC1'] = get_signed_short_msb(calib_data_1[0:2])
             dig['AC2'] = get_signed_short_msb(calib_data_1[2:4])
@@ -348,6 +380,8 @@ class BME280:
             self.dig = read_calibration_data_bmp388(cal_1)
 
     def _sample_bme280(self, eventtime):
+        """        """
+
         # Enter forced mode
         if self.chip_type == 'BME280':
             self.write_register('CTRL_HUM', self.os_hum)
@@ -389,6 +423,8 @@ class BME280:
         return measured_time + REPORT_TIME
 
     def _sample_bmp388(self, eventtime):
+        """        """
+
         status = self.read_register("STATUS", 1)
         if status[0] & 0b100000:
             self.temp = self._sample_bmp388_temp()
@@ -406,6 +442,8 @@ class BME280:
         return measured_time + REPORT_TIME
 
     def _sample_bmp388_temp(self):
+        """        """
+
         xlsb = self.read_register("TEMP_XLSB", 1)
         lsb = self.read_register("TEMP_LSB", 1)
         msb = self.read_register("TEMP_MSB", 1)
@@ -426,6 +464,8 @@ class BME280:
         return self.t_fine
 
     def _sample_bmp388_press(self):
+        """        """
+
         xlsb = self.read_register("PRESS_XLSB", 1)
         lsb = self.read_register("PRESS_LSB", 1)
         msb = self.read_register("PRESS_MSB", 1)
@@ -462,6 +502,8 @@ class BME280:
         return comp_press
 
     def _sample_bme680(self, eventtime):
+        """        """
+
         self.write_register('CTRL_HUM', self.os_hum & 0x07)
         meas = self.os_temp << 5 | self.os_pres << 2
         self.write_register('CTRL_MEAS', [meas])
@@ -474,6 +516,8 @@ class BME280:
         self.write_register('CTRL_GAS_1', [gas_config])
 
         def data_ready(stat):
+            """            """
+
             new_data = (stat & EAS_NEW_DATA)
             gas_done = not (stat & GAS_DONE)
             meas_done = not (stat & MEASURE_DONE)
@@ -525,6 +569,8 @@ class BME280:
         return measured_time + REPORT_TIME
 
     def _sample_bmp180(self, eventtime):
+        """        """
+
         meas = self.chip_registers['CRV_TEMP']
         self.write_register('CTRL_MEAS', meas)
 
@@ -562,6 +608,8 @@ class BME280:
 
 
     def _compensate_temp(self, raw_temp):
+        """        """
+
         dig = self.dig
         var1 = ((raw_temp / 16384. - (dig['T1'] / 1024.)) * dig['T2'])
         var2 = (
@@ -571,6 +619,8 @@ class BME280:
         return self.t_fine / 5120.0
 
     def _compensate_pressure_bme280(self, raw_pressure):
+        """        """
+
         dig = self.dig
         t_fine = self.t_fine
         var1 = t_fine / 2. - 64000.
@@ -589,6 +639,8 @@ class BME280:
             return pressure + (var1 + var2 + dig['P7']) / 16.
 
     def _compensate_pressure_bme680(self, raw_pressure):
+        """        """
+
         dig = self.dig
         t_fine = self.t_fine
         var1 = t_fine / 2. - 64000.
@@ -609,6 +661,8 @@ class BME280:
             return pressure + (var1 + var2 + var3 + (dig['P7'] * 128.)) / 16.
 
     def _compensate_humidity_bme280(self, raw_humidity):
+        """        """
+
         dig = self.dig
         t_fine = self.t_fine
         humidity = t_fine - 76800.
@@ -622,6 +676,8 @@ class BME280:
         return min(100., max(0., humidity))
 
     def _compensate_humidity_bme680(self, raw_humidity):
+        """        """
+
         dig = self.dig
         temp_comp = self.temp
 
@@ -636,6 +692,8 @@ class BME280:
         return min(100., max(0., humidity))
 
     def _compensate_gas(self, gas_raw, gas_range):
+        """        """
+
         gas_switching_error = self.read_register('RANGE_SWITCHING_ERROR', 1)[0]
         var1 = (1340. + 5. * gas_switching_error) * \
                BME680_GAS_CONSTANTS[gas_range][0]
@@ -644,6 +702,8 @@ class BME280:
         return gas
 
     def _calculate_gas_heater_resistance(self, target_temp):
+        """        """
+
         amb_temp = self.temp
         heater_data = self.read_register('RES_HEAT_VAL', 3)
         res_heat_val = get_signed_byte(heater_data[0])
@@ -659,6 +719,8 @@ class BME280:
         return int(res_heat)
 
     def _calculate_gas_heater_duration(self, duration_ms):
+        """        """
+
         if duration_ms >= 4032:
             duration_reg = 0xff
         else:
@@ -671,6 +733,8 @@ class BME280:
         return duration_reg
 
     def _compensate_temp_bmp180(self, raw_temp):
+        """        """
+
         dig = self.dig
         x1 = (raw_temp - dig['AC6']) * dig['AC5'] / 32768.
         x2 = dig['MC'] * 2048 / (x1 + dig['MD'])
@@ -679,6 +743,8 @@ class BME280:
         return (b5 + 8)/16./10.
 
     def _compensate_pressure_bmp180(self, raw_pressure):
+        """        """
+
         dig = self.dig
         b5 = self.t_fine
         b6 = b5 - 4000
@@ -702,24 +768,32 @@ class BME280:
         return p
 
     def read_id(self):
+        """        """
+
         # read chip id register
         regs = [BME_CHIP_ID_REG]
         params = self.i2c.i2c_read(regs, 1)
         return bytearray(params['response'])[0]
 
     def read_bmp3_id(self):
+        """        """
+
         # read chip id register
         regs = [BMP3_CHIP_ID_REG]
         params = self.i2c.i2c_read(regs, 1)
         return bytearray(params['response'])[0]
 
     def read_register(self, reg_name, read_len):
+        """        """
+
         # read a single register
         regs = [self.chip_registers[reg_name]]
         params = self.i2c.i2c_read(regs, read_len)
         return bytearray(params['response'])
 
     def write_register(self, reg_name, data):
+        """        """
+
         if type(data) is not list:
             data = [data]
         reg = self.chip_registers[reg_name]
@@ -727,6 +801,8 @@ class BME280:
         self.i2c.i2c_write(data)
 
     def get_status(self, eventtime):
+        """        """
+
         data = {
             'temperature': round(self.temp, 2),
             'pressure': self.pressure
@@ -739,6 +815,8 @@ class BME280:
 
 
 def load_config(config):
+    """    """
+
     # Register sensor
     pheaters = config.get_printer().load_object(config, "heaters")
     pheaters.add_sensor_factory("BME280", BME280)

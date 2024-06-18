@@ -8,10 +8,14 @@ import sys, os, optparse, socket, fcntl, select, json, errno, time
 
 # Set a file-descriptor as non-blocking
 def set_nonblock(fd):
+    """    """
+
     fcntl.fcntl(fd, fcntl.F_SETFL
                 , fcntl.fcntl(fd, fcntl.F_GETFL) | os.O_NONBLOCK)
 
 def webhook_socket_create(uds_filename):
+    """    """
+
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     sock.setblocking(0)
     sys.stderr.write("Waiting for connect to %s\n" % (uds_filename,))
@@ -40,6 +44,8 @@ class KeyboardReader:
         self.poll.register(self.webhook_socket, select.POLLIN | select.POLLHUP)
         self.kbd_data = self.socket_data = ""
     def process_socket(self):
+        """        """
+
         data = self.webhook_socket.recv(4096)
         if not data:
             sys.stderr.write("Socket closed\n")
@@ -50,6 +56,8 @@ class KeyboardReader:
         for line in parts:
             sys.stdout.write("GOT: %s\n" % (line,))
     def process_kbd(self):
+        """        """
+
         data = os.read(self.kbd_fd, 4096)
         parts = data.split('\n')
         parts[0] = self.kbd_data + parts[0]
@@ -67,6 +75,8 @@ class KeyboardReader:
             sys.stdout.write("SEND: %s\n" % (cm,))
             self.webhook_socket.send("%s\x03" % (cm,))
     def run(self):
+        """        """
+
         while 1:
             res = self.poll.poll(1000.)
             for fd, event in res:
@@ -76,6 +86,8 @@ class KeyboardReader:
                     self.process_socket()
 
 def main():
+    """    """
+
     usage = "%prog [options] <socket filename>"
     opts = optparse.OptionParser(usage)
     options, args = opts.parse_args()

@@ -21,6 +21,8 @@ class HomingHeaters:
         self.target_save = {}
 
     def handle_connect(self):
+        """        """
+
         # heaters to disable
         all_heaters = self.pheaters.get_all_heaters()
         if self.disable_heaters is None:
@@ -40,6 +42,8 @@ class HomingHeaters:
                 "One or more of these steppers are unknown: %s"
                 % (self.flaky_steppers,))
     def check_eligible(self, endstops):
+        """        """
+
         if self.flaky_steppers is None:
             return True
         steppers_being_homed = [s.get_name()
@@ -47,6 +51,8 @@ class HomingHeaters:
                                 for s in es.get_steppers()]
         return any(x in self.flaky_steppers for x in steppers_being_homed)
     def handle_homing_move_begin(self, hmove):
+        """        """
+
         if not self.check_eligible(hmove.get_mcu_endstops()):
             return
         for heater_name in self.disable_heaters:
@@ -54,6 +60,8 @@ class HomingHeaters:
             self.target_save[heater_name] = heater.get_temp(0)[1]
             heater.set_temp(0.)
     def handle_homing_move_end(self, hmove):
+        """        """
+
         if not self.check_eligible(hmove.get_mcu_endstops()):
             return
         for heater_name in self.disable_heaters:
@@ -61,4 +69,6 @@ class HomingHeaters:
             heater.set_temp(self.target_save[heater_name])
 
 def load_config(config):
+    """    """
+
     return HomingHeaters(config)

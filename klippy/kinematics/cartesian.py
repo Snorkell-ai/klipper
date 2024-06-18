@@ -50,8 +50,12 @@ class CartKinematics:
                                            above=0., maxval=max_accel)
         self.limits = [(1.0, -1.0)] * 3
     def get_steppers(self):
+        """        """
+
         return [s for rail in self.rails for s in rail.get_steppers()]
     def calc_position(self, stepper_positions):
+        """        """
+
         rails = self.rails
         if self.dc_module:
             primary_rail = self.dc_module.get_primary_rail().get_rail()
@@ -59,12 +63,16 @@ class CartKinematics:
                      [primary_rail] + rails[self.dc_module.axis+1:])
         return [stepper_positions[rail.get_name()] for rail in rails]
     def update_limits(self, i, range):
+        """        """
+
         l, h = self.limits[i]
         # Only update limits if this axis was already homed,
         # otherwise leave in un-homed state.
         if l <= h:
             self.limits[i] = range
     def set_position(self, newpos, homing_axes):
+        """        """
+
         for i, rail in enumerate(self.rails):
             rail.set_position(newpos)
         for axis in homing_axes:
@@ -74,9 +82,13 @@ class CartKinematics:
                 rail = self.rails[axis]
             self.limits[axis] = rail.get_range()
     def note_z_not_homed(self):
+        """        """
+
         # Helper for Safe Z Home
         self.limits[2] = (1.0, -1.0)
     def home_axis(self, homing_state, axis, rail):
+        """        """
+
         # Determine movement
         position_min, position_max = rail.get_range()
         hi = rail.get_homing_info()
@@ -90,6 +102,8 @@ class CartKinematics:
         # Perform homing
         homing_state.home_rails([rail], forcepos, homepos)
     def home(self, homing_state):
+        """        """
+
         # Each axis is homed independently and in order
         for axis in homing_state.get_axes():
             if self.dc_module is not None and axis == self.dual_carriage_axis:
@@ -97,8 +111,12 @@ class CartKinematics:
             else:
                 self.home_axis(homing_state, axis, self.rails[axis])
     def _motor_off(self, print_time):
+        """        """
+
         self.limits = [(1.0, -1.0)] * 3
     def _check_endstops(self, move):
+        """        """
+
         end_pos = move.end_pos
         for i in (0, 1, 2):
             if (move.axes_d[i]
@@ -108,6 +126,8 @@ class CartKinematics:
                     raise move.move_error("Must home axis first")
                 raise move.move_error()
     def check_move(self, move):
+        """        """
+
         limits = self.limits
         xpos, ypos = move.end_pos[:2]
         if (xpos < limits[0][0] or xpos > limits[0][1]
@@ -122,6 +142,8 @@ class CartKinematics:
         move.limit_speed(
             self.max_z_velocity * z_ratio, self.max_z_accel * z_ratio)
     def get_status(self, eventtime):
+        """        """
+
         axes = [a for a, (l, h) in zip("xyz", self.limits) if l <= h]
         return {
             'homed_axes': "".join(axes),
@@ -130,4 +152,6 @@ class CartKinematics:
         }
 
 def load_kinematics(toolhead, config):
+    """    """
+
     return CartKinematics(toolhead, config)

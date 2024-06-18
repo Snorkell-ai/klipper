@@ -9,6 +9,8 @@ import sys, os.path, unicodedata
 HaveError = False
 
 def report_error(filename, lineno, msg):
+    """    """
+
     global HaveError
     if not HaveError:
         sys.stderr.write("\n\nERROR:\nERROR: White space errors\nERROR:\n")
@@ -16,6 +18,8 @@ def report_error(filename, lineno, msg):
     sys.stderr.write("%s:%d: %s\n" % (filename, lineno + 1, msg))
 
 def check_file(filename):
+    """    """
+
     # Open and read file
     try:
         f = open(filename, 'rb')
@@ -59,6 +63,8 @@ def check_file(filename):
         report_error(filename, lineno, "Extra newlines at end of file")
 
 def main():
+    """    """
+
     files = sys.argv[1:]
     for filename in files:
         check_file(filename)

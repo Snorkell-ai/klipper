@@ -17,6 +17,8 @@ REQUEST_LOG_SIZE = 20
 json_loads_byteify = None
 if sys.version_info.major < 3:
     def json_loads_byteify(data, ignore_dicts=False):
+        """        """
+
         if isinstance(data, unicode):
             return data.encode('utf-8')
         if isinstance(data, list):
@@ -31,6 +33,8 @@ class WebRequestError(gcode.CommandError):
         Exception.__init__(self, message)
 
     def to_dict(self):
+        """        """
+
         return {
             'error': 'WebRequestError',
             'message': str(self)}
@@ -54,9 +58,13 @@ class WebRequest:
         self.is_error = False
 
     def get_client_connection(self):
+        """        """
+
         return self.client_conn
 
     def get(self, item, default=Sentinel, types=None):
+        """        """
+
         value = self.params.get(item, default)
         if value is Sentinel:
             raise WebRequestError("Missing Argument [%s]" % (item,))
@@ -66,30 +74,46 @@ class WebRequest:
         return value
 
     def get_str(self, item, default=Sentinel):
+        """        """
+
         return self.get(item, default, types=(str,))
 
     def get_int(self, item, default=Sentinel):
+        """        """
+
         return self.get(item, default, types=(int,))
 
     def get_float(self, item, default=Sentinel):
+        """        """
+
         return float(self.get(item, default, types=(int, float)))
 
     def get_dict(self, item, default=Sentinel):
+        """        """
+
         return self.get(item, default, types=(dict,))
 
     def get_method(self):
+        """        """
+
         return self.method
 
     def set_error(self, error):
+        """        """
+
         self.is_error = True
         self.response = error.to_dict()
 
     def send(self, data):
+        """        """
+
         if self.response is not None:
             raise WebRequestError("Multiple calls to send not allowed")
         self.response = data
 
     def finish(self):
+        """        """
+
         if self.id is None:
             return None
         rtype = "result"
@@ -127,6 +151,8 @@ class ServerSocket:
             "klippy:shutdown", self._handle_shutdown)
 
     def _handle_accept(self, eventtime):
+        """        """
+
         try:
             sock, addr = self.sock.accept()
         except socket.error:
@@ -136,6 +162,8 @@ class ServerSocket:
         self.clients[client.uid] = client
 
     def _handle_disconnect(self):
+        """        """
+
         for client in list(self.clients.values()):
             client.close()
         if self.sock is not None:
@@ -146,10 +174,14 @@ class ServerSocket:
                 pass
 
     def _handle_shutdown(self):
+        """        """
+
         for client in self.clients.values():
             client.dump_request_log()
 
     def _remove_socket_file(self, file_path):
+        """        """
+
         try:
             os.remove(file_path)
         except OSError:
@@ -160,9 +192,13 @@ class ServerSocket:
                 raise
 
     def pop_client(self, client_id):
+        """        """
+
         self.clients.pop(client_id, None)
 
     def stats(self, eventtime):
+        """        """
+
         # Called once per second - check for idle clients
         for client in list(self.clients.values()):
             if client.is_blocking:
@@ -189,6 +225,8 @@ class ClientConnection:
         self.request_log = collections.deque([], REQUEST_LOG_SIZE)
 
     def dump_request_log(self):
+        """        """
+
         out = []
         out.append("Dumping %d requests for client %d"
                    % (len(self.request_log), self.uid,))
@@ -197,6 +235,8 @@ class ClientConnection:
         logging.info("\n".join(out))
 
     def set_client_info(self, client_info, state_msg=None):
+        """        """
+
         if state_msg is None:
             state_msg = "Client info %s" % (repr(client_info),)
         logging.info("webhooks client %s: %s", self.uid, state_msg)
@@ -208,6 +248,8 @@ class ClientConnection:
         self.printer.set_rollover_info(log_id, rollover_msg, log=False)
 
     def close(self):
+        """        """
+
         if self.fd_handle is None:
             return
         self.set_client_info(None, "Disconnected")
@@ -220,9 +262,13 @@ class ClientConnection:
         self.server.pop_client(self.uid)
 
     def is_closed(self):
+        """        """
+
         return self.fd_handle is None
 
     def process_received(self, eventtime):
+        """        """
+
         try:
             data = self.sock.recv(4096)
         except socket.error as e:
@@ -251,6 +297,8 @@ class ClientConnection:
                 lambda e, s=self, wr=web_request: s._process_request(wr))
 
     def _process_request(self, web_request):
+        """        """
+
         try:
             func = self.webhooks.get_callback(web_request.get_method())
             func(web_request)
@@ -268,6 +316,8 @@ class ClientConnection:
         self.send(result)
 
     def send(self, data):
+        """        """
+
         try:
             jmsg = json.dumps(data, separators=(',', ':'))
             self.send_buffer += jmsg.encode() + b"\x03"
@@ -280,6 +330,8 @@ class ClientConnection:
             self._do_send()
 
     def _do_send(self, eventtime=None):
+        """        """
+
         if self.fd_handle is None:
             return
         try:
@@ -313,11 +365,15 @@ class WebHooks:
         self.sconn = ServerSocket(self, printer)
 
     def register_endpoint(self, path, callback):
+        """        """
+
         if path in self._endpoints:
             raise WebRequestError("Path already registered to an endpoint")
         self._endpoints[path] = callback
 
     def register_mux_endpoint(self, path, key, value, callback):
+        """        """
+
         prev = self._mux_endpoints.get(path)
         if prev is None:
             self.register_endpoint(path, self._handle_mux)
@@ -334,6 +390,8 @@ class WebHooks:
         prev_values[value] = callback
 
     def _handle_mux(self, web_request):
+        """        """
+
         key, values = self._mux_endpoints[web_request.get_method()]
         if None in values:
             key_param = web_request.get(key, None)
@@ -345,9 +403,13 @@ class WebHooks:
         values[key_param](web_request)
 
     def _handle_list_endpoints(self, web_request):
+        """        """
+
         web_request.send({'endpoints': list(self._endpoints.keys())})
 
     def _handle_info_request(self, web_request):
+        """        """
+
         client_info = web_request.get_dict('client_info', None)
         if client_info is not None:
             web_request.get_client_connection().set_client_info(client_info)
@@ -368,9 +430,13 @@ class WebHooks:
         web_request.send(response)
 
     def _handle_estop_request(self, web_request):
+        """        """
+
         self.printer.invoke_shutdown("Shutdown due to webhooks request")
 
     def _handle_rpc_registration(self, web_request):
+        """        """
+
         template = web_request.get_dict('response_template')
         method = web_request.get_str('remote_method')
         new_conn = web_request.get_client_connection()
@@ -379,9 +445,13 @@ class WebHooks:
         self._remote_methods.setdefault(method, {})[new_conn] = template
 
     def get_connection(self):
+        """        """
+
         return self.sconn
 
     def get_callback(self, path):
+        """        """
+
         cb = self._endpoints.get(path, None)
         if cb is None:
             msg = "webhooks: No registered callback for path '%s'" % (path)
@@ -390,13 +460,19 @@ class WebHooks:
         return cb
 
     def get_status(self, eventtime):
+        """        """
+
         state_message, state = self.printer.get_state_message()
         return {'state': state, 'state_message': state_message}
 
     def stats(self, eventtime):
+        """        """
+
         return self.sconn.stats(eventtime)
 
     def call_remote_method(self, method, **kwargs):
+        """        """
+
         if method not in self._remote_methods:
             raise self.printer.command_error(
                 "Remote method '%s' not registered" % (method))
@@ -431,14 +507,24 @@ class GCodeHelper:
         wh.register_endpoint("gcode/subscribe_output",
                              self._handle_subscribe_output)
     def _handle_help(self, web_request):
+        """        """
+
         web_request.send(self.gcode.get_command_help())
     def _handle_script(self, web_request):
+        """        """
+
         self.gcode.run_script(web_request.get_str('script'))
     def _handle_restart(self, web_request):
+        """        """
+
         self.gcode.run_script('restart')
     def _handle_firmware_restart(self, web_request):
+        """        """
+
         self.gcode.run_script('firmware_restart')
     def _output_callback(self, msg):
+        """        """
+
         for cconn, template in list(self.clients.items()):
             if cconn.is_closed():
                 del self.clients[cconn]
@@ -447,6 +533,8 @@ class GCodeHelper:
             tmp['params'] = {'response': msg}
             cconn.send(tmp)
     def _handle_subscribe_output(self, web_request):
+        """        """
+
         cconn = web_request.get_client_connection()
         template = web_request.get_dict('response_template', {})
         self.clients[cconn] = template
@@ -469,10 +557,14 @@ class QueryStatusHelper:
         webhooks.register_endpoint("objects/query", self._handle_query)
         webhooks.register_endpoint("objects/subscribe", self._handle_subscribe)
     def _handle_list(self, web_request):
+        """        """
+
         objects = [n for n, o in self.printer.lookup_objects()
                    if hasattr(o, 'get_status')]
         web_request.send({'objects': objects})
     def _do_query(self, eventtime):
+        """        """
+
         last_query = self.last_query
         query = self.last_query = {}
         msglist = self.pending_queries
@@ -519,6 +611,8 @@ class QueryStatusHelper:
             return reactor.NEVER
         return eventtime + SUBSCRIPTION_REFRESH_TIME
     def _handle_query(self, web_request, is_subscribe=False):
+        """        """
+
         objects = web_request.get_dict('objects')
         # Validate subscription format
         for k, v in objects.items():
@@ -546,9 +640,13 @@ class QueryStatusHelper:
         if is_subscribe:
             self.clients[cconn] = (cconn, objects, cconn.send, template)
     def _handle_subscribe(self, web_request):
+        """        """
+
         self._handle_query(web_request, is_subscribe=True)
 
 def add_early_printer_objects(printer):
+    """    """
+
     printer.add_object('webhooks', WebHooks(printer))
     GCodeHelper(printer)
     QueryStatusHelper(printer)

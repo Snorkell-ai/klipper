@@ -11,6 +11,8 @@ class QueueHandler(logging.Handler):
         logging.Handler.__init__(self)
         self.queue = queue
     def emit(self, record):
+        """        """
+
         try:
             self.format(record)
             record.msg = record.message
@@ -30,22 +32,32 @@ class QueueListener(logging.handlers.TimedRotatingFileHandler):
         self.bg_thread.start()
         self.rollover_info = {}
     def _bg_thread(self):
+        """        """
+
         while 1:
             record = self.bg_queue.get(True)
             if record is None:
                 break
             self.handle(record)
     def stop(self):
+        """        """
+
         self.bg_queue.put_nowait(None)
         self.bg_thread.join()
     def set_rollover_info(self, name, info):
+        """        """
+
         if info is None:
             self.rollover_info.pop(name, None)
             return
         self.rollover_info[name] = info
     def clear_rollover_info(self):
+        """        """
+
         self.rollover_info.clear()
     def doRollover(self):
+        """        """
+
         logging.handlers.TimedRotatingFileHandler.doRollover(self)
         lines = [self.rollover_info[name]
                  for name in sorted(self.rollover_info)]
@@ -58,6 +70,8 @@ class QueueListener(logging.handlers.TimedRotatingFileHandler):
 MainQueueHandler = None
 
 def setup_bg_logging(filename, debuglevel):
+    """    """
+
     global MainQueueHandler
     ql = QueueListener(filename)
     MainQueueHandler = QueueHandler(ql.bg_queue)
@@ -67,6 +81,8 @@ def setup_bg_logging(filename, debuglevel):
     return ql
 
 def clear_bg_logging():
+    """    """
+
     global MainQueueHandler
     if MainQueueHandler is not None:
         root = logging.getLogger()

@@ -16,7 +16,11 @@ class ad5206:
             if val is not None:
                 self.set_register(i, int(val * 256. / scale + .5))
     def set_register(self, reg, value):
+        """        """
+
         self.spi.spi_send([reg, value])
 
 def load_config_prefix(config):
+    """    """
+
     return ad5206(config)

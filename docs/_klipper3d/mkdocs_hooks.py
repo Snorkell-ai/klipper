@@ -15,6 +15,8 @@ import logging
 logger = logging.getLogger('mkdocs.mkdocs_hooks.transform')
 
 def transform(markdown: str, page, config, files):
+    """    """
+
     in_code_block = 0
     in_list = False
     lines = markdown.splitlines()

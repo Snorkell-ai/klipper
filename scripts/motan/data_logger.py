@@ -10,6 +10,8 @@ INDEX_UPDATE_TIME = 5.0
 ClientInfo = {'program': 'motan_data_logger', 'version': 'v0.1'}
 
 def webhook_socket_create(uds_filename):
+    """    """
+
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     sock.setblocking(0)
     sys.stderr.write("Waiting for connect to %s\n" % (uds_filename,))
@@ -35,11 +37,15 @@ class LogWriter:
                                      zlib.DEFLATED, 31)
         self.raw_pos = self.file_pos = 0
     def add_data(self, data):
+        """        """
+
         d = self.comp.compress(data + b"\x03")
         self.file.write(d)
         self.file_pos += len(d)
         self.raw_pos += len(data) + 1
     def flush(self, flag=zlib.Z_FULL_FLUSH):
+        """        """
+
         if not self.raw_pos:
             return self.file_pos
         d = self.comp.flush(flag)
@@ -47,6 +53,8 @@ class LogWriter:
         self.file_pos += len(d)
         return self.file_pos
     def close(self):
+        """        """
+
         self.flush(zlib.Z_FINISH)
         self.file.close()
         self.file = None
@@ -72,19 +80,27 @@ class DataLogger:
         self.send_query("info", "info", {"client_info": ClientInfo},
                         self.handle_info)
     def error(self, msg):
+        """        """
+
         sys.stderr.write(msg + "\n")
     def finish(self, msg):
+        """        """
+
         self.error(msg)
         self.logger.close()
         self.index.close()
         sys.exit(0)
     # Unix Domain Socket IO
     def send_query(self, msg_id, method, params, cb):
+        """        """
+
         self.query_handlers[msg_id] = cb
         msg = {"id": msg_id, "method": method, "params": params}
         cm = json.dumps(msg, separators=(',', ':')).encode()
         self.webhook_socket.send(cm + b"\x03")
     def process_socket(self):
+        """        """
+
         data = self.webhook_socket.recv(4096)
         if not data:
             self.finish("Socket closed")
@@ -114,6 +130,8 @@ class DataLogger:
                 continue
             self.error("ERROR: Message with unknown id")
     def run(self):
+        """        """
+
         try:
             while 1:
                 res = self.poll.poll(1000.)
@@ -124,6 +142,8 @@ class DataLogger:
             self.finish("Keyboard Interrupt")
     # Query response handlers
     def send_subscribe(self, msg_id, method, params, cb=None, async_cb=None):
+        """        """
+
         if cb is None:
             cb = self.handle_dump
         if async_cb is not None:
@@ -131,14 +151,20 @@ class DataLogger:
         params["response_template"] = {"q": msg_id}
         self.send_query(msg_id, method, params, cb)
     def handle_info(self, msg, raw_msg):
+        """        """
+
         if msg["result"]["state"] != "ready":
             self.finish("Klipper not in ready state")
         self.send_query("list", "objects/list", {}, self.handle_list)
     def handle_list(self, msg, raw_msg):
+        """        """
+
         subreq = {o: None for o in msg["result"]["objects"]}
         self.send_subscribe("status", "objects/subscribe", {"objects": subreq},
                             self.handle_subscribe, self.handle_async_db)
     def handle_subscribe(self, msg, raw_msg):
+        """        """
+
         result = msg["result"]
         self.next_index_time = result["eventtime"] + INDEX_UPDATE_TIME
         self.db["status"] = status = result["status"]
@@ -163,6 +189,8 @@ class DataLogger:
                     qcmd = "%s/dump_%s" % (st, st)
                     self.send_subscribe(lname, qcmd, {"sensor": aname})
     def handle_dump(self, msg, raw_msg):
+        """        """
+
         msg_id = msg["id"]
         if "result" not in msg:
             self.error("Unable to subscribe to '%s': %s"
@@ -170,10 +198,14 @@ class DataLogger:
             return
         self.db.setdefault("subscriptions", {})[msg_id] = msg["result"]
     def flush_index(self):
+        """        """
+
         self.db['file_position'] = self.logger.flush()
         self.index.add_data(json.dumps(self.db, separators=(',', ':')).encode())
         self.db = {"status": {}}
     def handle_async_db(self, msg, raw_msg):
+        """        """
+
         params = msg["params"]
         db_status = self.db['status']
         for k, v in params.get("status", {}).items():
@@ -184,6 +216,8 @@ class DataLogger:
             self.flush_index()
 
 def nice():
+    """    """
+
     try:
         # Try to re-nice writing process
         os.nice(10)
@@ -191,6 +225,8 @@ def nice():
         pass
 
 def main():
+    """    """
+
     usage = "%prog [options] <socket filename> <log name>"
     opts = optparse.OptionParser(usage)
     options, args = opts.parse_args()

@@ -99,20 +99,30 @@ class HTU21D:
                                             self.handle_connect)
 
     def handle_connect(self):
+        """        """
+
         self._init_htu21d()
         self.reactor.update_timer(self.sample_timer, self.reactor.NOW)
 
     def setup_minmax(self, min_temp, max_temp):
+        """        """
+
         self.min_temp = min_temp
         self.max_temp = max_temp
 
     def setup_callback(self, cb):
+        """        """
+
         self._callback = cb
 
     def get_report_time_delta(self):
+        """        """
+
         return self.report_time
 
     def _init_htu21d(self):
+        """        """
+
         # Device Soft Reset
         self.i2c.i2c_write([HTU21D_COMMANDS['RESET']])
         # Wait 15ms after reset
@@ -151,6 +161,8 @@ class HTU21D:
         logging.info("htu21d: Setting resolution to %s " % self.resolution)
 
     def _sample_htu21d(self, eventtime):
+        """        """
+
         try:
             # Read Temeprature
             if self.hold_master_mode:
@@ -228,6 +240,8 @@ class HTU21D:
         return measured_time + self.report_time
 
     def _chekCRC8(self,data):
+        """        """
+
         for bit in range(0,16):
             if (data & 0x8000):
                 data = (data << 1) ^ HTU21D_CRC8_POLYNOMINAL;
@@ -237,6 +251,8 @@ class HTU21D:
         return data
 
     def get_status(self, eventtime):
+        """        """
+
         return {
             'temperature': round(self.temp, 2),
             'humidity': self.humidity,
@@ -244,6 +260,8 @@ class HTU21D:
 
 
 def load_config(config):
+    """    """
+
     # Register sensor
     pheater = config.get_printer().lookup_object("heaters")
     for stype in HTU21D_DEVICES:

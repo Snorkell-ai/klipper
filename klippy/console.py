@@ -55,6 +55,8 @@ class KeyboardReader:
         }
         self.eval_globals = {}
     def connect(self, eventtime):
+        """        """
+
         self.output(help_txt)
         self.output("="*20 + " attempting to connect " + "="*20)
         if self.canbus_iface is not None:
@@ -78,21 +80,31 @@ class KeyboardReader:
         self.output("="*20 + "       connected       " + "="*20)
         return self.reactor.NEVER
     def output(self, msg):
+        """        """
+
         sys.stdout.write("%s\n" % (msg,))
         sys.stdout.flush()
     def handle_default(self, params):
+        """        """
+
         tdiff = params['#receive_time'] - self.start_time
         msg = self.ser.get_msgparser().format_params(params)
         self.output("%07.3f: %s" % (tdiff, msg))
     def handle_output(self, params):
+        """        """
+
         tdiff = params['#receive_time'] - self.start_time
         self.output("%07.3f: %s: %s" % (tdiff, params['#name'], params['#msg']))
     def handle_suppress(self, params):
         pass
     def update_evals(self, eventtime):
+        """        """
+
         self.eval_globals['freq'] = self.mcu_freq
         self.eval_globals['clock'] = self.clocksync.get_clock(eventtime)
     def command_SET(self, parts):
+        """        """
+
         val = parts[2]
         try:
             val = float(val)
@@ -100,6 +112,8 @@ class KeyboardReader:
             pass
         self.eval_globals[parts[1]] = val
     def command_DUMP(self, parts, filename=None):
+        """        """
+
         # Extract command args
         try:
             addr = int(parts[1], 0)
@@ -147,8 +161,12 @@ class KeyboardReader:
             o = "%08x  %-47s  |%s|" % (paddr, hexbytes, pb)
             self.output("%s %s" % (o[:34], o[34:]))
     def command_FILEDUMP(self, parts):
+        """        """
+
         self.command_DUMP(parts[1:], filename=parts[1])
     def command_DELAY(self, parts):
+        """        """
+
         try:
             val = int(parts[1])
         except ValueError as e:
@@ -160,6 +178,8 @@ class KeyboardReader:
             self.output("Error: %s" % (str(e),))
             return
     def command_FLOOD(self, parts):
+        """        """
+
         try:
             count = int(parts[1])
             delay = float(parts[2])
@@ -179,6 +199,8 @@ class KeyboardReader:
             self.output("Error: %s" % (str(e),))
             return
     def command_SUPPRESS(self, parts):
+        """        """
+
         oid = None
         try:
             name = parts[1]
@@ -189,10 +211,14 @@ class KeyboardReader:
             return
         self.ser.register_response(self.handle_suppress, name, oid)
     def command_STATS(self, parts):
+        """        """
+
         curtime = self.reactor.monotonic()
         self.output(' '.join([self.ser.stats(curtime),
                               self.clocksync.stats(curtime)]))
     def command_LIST(self, parts):
+        """        """
+
         self.update_evals(self.reactor.monotonic())
         mp = self.ser.get_msgparser()
         cmds = [msgformat for msgtag, msgtype, msgformat in mp.get_messages()
@@ -206,8 +232,12 @@ class KeyboardReader:
         out += "\n  ".join([""] + ["%s: %s" % (k, v) for k, v in lvars])
         self.output(out)
     def command_HELP(self, parts):
+        """        """
+
         self.output(help_txt)
     def translate(self, line, eventtime):
+        """        """
+
         evalparts = re_eval.split(line)
         if len(evalparts) > 1:
             self.update_evals(eventtime)
@@ -230,6 +260,8 @@ class KeyboardReader:
                 return None
         return line
     def process_kbd(self, eventtime):
+        """        """
+
         self.data += str(os.read(self.fd, 4096).decode())
 
         kbdlines = self.data.split('\n')
@@ -250,6 +282,8 @@ class KeyboardReader:
         self.data = kbdlines[-1]
 
 def main():
+    """    """
+
     usage = "%prog [options] <serialdevice>"
     opts = optparse.OptionParser(usage)
     opts.add_option("-v", action="store_true", dest="verbose",

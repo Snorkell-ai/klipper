@@ -62,13 +62,16 @@ class MenuElement(object):
         pass
 
     def _render_name(self):
+        """        """
+
         if self._name_tpl is not None:
             context = self.get_context()
             return self.manager.asflat(self._name_tpl.render(context))
         return self.manager.asflat(self._name)
 
     def _load_script(self, config, name, option=None):
-        """Load script template from config or callback from dict"""
+        """
+        """
         if name in self._scripts:
             logging.info(
                 "Declaration of '%s' hides "
@@ -82,14 +85,20 @@ class MenuElement(object):
 
     # override
     def is_editing(self):
+        """        """
+
         return False
 
     # override
     def is_scrollable(self):
+        """        """
+
         return True
 
     # override
     def is_enabled(self):
+        """        """
+
         context = self.get_context()
         return self.eval_enable(context)
 
@@ -103,6 +112,8 @@ class MenuElement(object):
 
     # override
     def get_context(self, cxt=None):
+        """        """
+
         # get default menu context
         context = self.manager.get_context(cxt)
         context['menu'].update({
@@ -111,15 +122,21 @@ class MenuElement(object):
         return context
 
     def eval_enable(self, context):
+        """        """
+
         if self._enable_tpl is not None:
             return bool(ast.literal_eval(self._enable_tpl.render(context)))
         return bool(self._enable)
 
     # Called when a item is selected
     def select(self):
+        """        """
+
         self.__reset_scroller()
 
     def heartbeat(self, eventtime):
+        """        """
+
         self._last_heartbeat = eventtime
         if eventtime >= self.__scroll_next:
             self.__scroll_next = eventtime + 0.5
@@ -127,6 +144,8 @@ class MenuElement(object):
                 self.__update_scroller()
 
     def __update_scroller(self):
+        """        """
+
         if self.__scroll_pos is None and self.__scroll_request_pending is True:
             self.__scroll_pos = 0
         elif self.__scroll_request_pending is True:
@@ -138,20 +157,19 @@ class MenuElement(object):
             self.__reset_scroller()
 
     def __reset_scroller(self):
+        """        """
+
         self.__scroll_pos = None
         self.__scroll_request_pending = False
 
     def need_scroller(self, value):
         """
-        Allows to control the scroller
-        Parameters:
-            value (bool, None): True  - inc. scroll pos. on next update
-                                False - hold scroll pos.
-                                None  - reset the scroller
         """
         self.__scroll_request_pending = value
 
     def __slice_name(self, name, index):
+        """        """
+
         chunks = []
         for i, text in enumerate(re.split(r'(\~.*?\~)', name)):
             if i & 1 == 0:  # text
@@ -161,6 +179,8 @@ class MenuElement(object):
         return "".join(chunks[index:])
 
     def render_name(self, selected=False):
+        """        """
+
         name = str(self._render_name())
         if selected and self.__scroll_pos is not None:
             name = self.__slice_name(name, self.__scroll_pos)
@@ -169,6 +189,8 @@ class MenuElement(object):
         return name
 
     def get_ns(self, name='.'):
+        """        """
+
         name = str(name).strip()
         if name.startswith('..'):
             name = ' '.join(
@@ -178,15 +200,21 @@ class MenuElement(object):
         return name.strip()
 
     def send_event(self, event, *args):
+        """        """
+
         return self.manager.send_event(
             "%s:%s" % (self.get_ns(), str(event)), *args)
 
     def get_script(self, name):
+        """        """
+
         if name in self._scripts:
             return self._scripts[name]
         return None
 
     def _run_script(self, name, context):
+        """        """
+
         _render = getattr(self._scripts[name], 'render', None)
         # check template
         if _render is not None and callable(_render):
@@ -199,6 +227,8 @@ class MenuElement(object):
             return self._scripts[name]
 
     def run_script(self, name, **kwargs):
+        """        """
+
         event = kwargs.get('event', None)
         context = kwargs.get('context', None)
         render_only = kwargs.get('render_only', False)
@@ -221,14 +251,20 @@ class MenuElement(object):
 
     @property
     def cursor(self):
+        """        """
+
         return str(self._cursor)[:1]
 
     @property
     def manager(self):
+        """        """
+
         return self._manager
 
     @property
     def index(self):
+        """        """
+
         return self._index
 
 
@@ -247,27 +283,39 @@ class MenuContainer(MenuElement):
         self._items = []
 
     def init(self):
+        """        """
+
         super(MenuContainer, self).init()
         # recursive guard
         self._parents = []
 
     # overload
     def _names_aslist(self):
+        """        """
+
         return []
 
     # overload
     def is_accepted(self, item):
+        """        """
+
         return isinstance(item, MenuElement)
 
     def is_editing(self):
+        """        """
+
         return any([item.is_editing() for item in self._items])
 
     def stop_editing(self):
+        """        """
+
         for item in self._items:
             if item.is_editing():
                 item.stop_editing()
 
     def lookup_item(self, item):
+        """        """
+
         if isinstance(item, str):
             name = item.strip()
             ns = self.get_ns(name)
@@ -278,9 +326,13 @@ class MenuContainer(MenuElement):
 
     # overload
     def _lookup_item(self, item):
+        """        """
+
         return self.lookup_item(item)
 
     def _index_of(self, item):
+        """        """
+
         try:
             index = None
             if isinstance(item, str):
@@ -293,6 +345,8 @@ class MenuContainer(MenuElement):
             return None
 
     def index_of(self, item, look_inside=False):
+        """        """
+
         index = self._index_of(item)
         if index is None and look_inside is True:
             for con in self:
@@ -301,19 +355,27 @@ class MenuContainer(MenuElement):
         return index
 
     def add_parents(self, parents):
+        """        """
+
         if isinstance(parents, list):
             self._parents.extend(parents)
         else:
             self._parents.append(parents)
 
     def assert_recursive_relation(self, parents=None):
+        """        """
+
         assert self not in (parents or self._parents), \
             "Recursive relation of '%s' container" % (self.get_ns(),)
 
     def insert_item(self, s, index=None):
+        """        """
+
         self._insert_item(s, index)
 
     def _insert_item(self, s, index=None):
+        """        """
+
         item, name = self._lookup_item(s)
         if item is not None:
             if not self.is_accepted(item):
@@ -334,6 +396,8 @@ class MenuContainer(MenuElement):
         pass
 
     def populate(self):
+        """        """
+
         self._allitems = []  # empty list
         for name in self._names_aslist():
             self._insert_item(name)
@@ -346,15 +410,21 @@ class MenuContainer(MenuElement):
         self.send_event('populate', self)
 
     def update_items(self):
+        """        """
+
         _a = [(item, name) for item, name in self._allitems
               if item.is_enabled()]
         self._items, self._names = zip(*_a) or ([], [])
 
     # select methods
     def init_selection(self):
+        """        """
+
         self.select_at(0)
 
     def select_at(self, index):
+        """        """
+
         self.__selected = index
         # select element
         item = self.selected_item()
@@ -363,6 +433,8 @@ class MenuContainer(MenuElement):
         return item
 
     def select_item(self, needle):
+        """        """
+
         if isinstance(needle, MenuElement):
             if self.selected_item() is not needle:
                 index = self.index_of(needle)
@@ -373,12 +445,16 @@ class MenuContainer(MenuElement):
         return self.selected
 
     def selected_item(self):
+        """        """
+
         if isinstance(self.selected, int) and 0 <= self.selected < len(self):
             return self[self.selected]
         else:
             return None
 
     def select_next(self):
+        """        """
+
         if not isinstance(self.selected, int):
             index = 0 if len(self) else None
         elif 0 <= self.selected < len(self) - 1:
@@ -388,6 +464,8 @@ class MenuContainer(MenuElement):
         return self.select_at(index)
 
     def select_prev(self):
+        """        """
+
         if not isinstance(self.selected, int):
             index = 0 if len(self) else None
         elif 0 < self.selected < len(self):
@@ -401,16 +479,24 @@ class MenuContainer(MenuElement):
         pass
 
     def __iter__(self):
+        """        """
+
         return iter(self._items)
 
     def __len__(self):
+        """        """
+
         return len(self._items)
 
     def __getitem__(self, key):
+        """        """
+
         return self._items[key]
 
     @property
     def selected(self):
+        """        """
+
         return self.__selected
 
 
@@ -419,6 +505,8 @@ class MenuDisabled(MenuElement):
         super(MenuDisabled, self).__init__(manager, config, name='')
 
     def is_enabled(self):
+        """        """
+
         return False
 
 
@@ -451,28 +539,40 @@ class MenuInput(MenuCommand):
                 'input_step', self._input_step, above=0.)
 
     def init(self):
+        """        """
+
         super(MenuInput, self).init()
         self._is_dirty = False
         self.__last_change = None
         self._input_value = None
 
     def is_scrollable(self):
+        """        """
+
         return False
 
     def is_editing(self):
+        """        """
+
         return self._input_value is not None
 
     def stop_editing(self):
+        """        """
+
         if not self.is_editing():
             return
         self._reset_value()
 
     def start_editing(self):
+        """        """
+
         if self.is_editing():
             return
         self._init_value()
 
     def heartbeat(self, eventtime):
+        """        """
+
         super(MenuInput, self).heartbeat(eventtime)
         if (self._is_dirty is True
                 and self.__last_change is not None
@@ -484,6 +584,8 @@ class MenuInput(MenuCommand):
             self._is_dirty = False
 
     def get_context(self, cxt=None):
+        """        """
+
         context = super(MenuInput, self).get_context(cxt)
         value = (self._eval_value(context) if self._input_value is None
                  else self._input_value)
@@ -493,10 +595,14 @@ class MenuInput(MenuCommand):
         return context
 
     def is_enabled(self):
+        """        """
+
         context = super(MenuInput, self).get_context()
         return self.eval_enable(context)
 
     def _eval_min(self, context):
+        """        """
+
         try:
             if self._input_min_tpl is not None:
                 return float(ast.literal_eval(
@@ -506,6 +612,8 @@ class MenuInput(MenuCommand):
             logging.exception("Input min value evaluation error")
 
     def _eval_max(self, context):
+        """        """
+
         try:
             if self._input_max_tpl is not None:
                 return float(ast.literal_eval(
@@ -515,6 +623,8 @@ class MenuInput(MenuCommand):
             logging.exception("Input max value evaluation error")
 
     def _eval_value(self, context):
+        """        """
+
         try:
             if self._input_tpl is not None:
                 return float(ast.literal_eval(
@@ -524,10 +634,14 @@ class MenuInput(MenuCommand):
             logging.exception("Input value evaluation error")
 
     def _value_changed(self):
+        """        """
+
         self.__last_change = self._last_heartbeat
         self._is_dirty = True
 
     def _init_value(self):
+        """        """
+
         context = super(MenuInput, self).get_context()
         self._input_value = None
         self._input_min = self._eval_min(context)
@@ -537,14 +651,20 @@ class MenuInput(MenuCommand):
         self._value_changed()
 
     def _reset_value(self):
+        """        """
+
         self._input_value = None
 
     def _get_input_step(self, fast_rate=False):
+        """        """
+
         return ((10.0 * self._input_step) if fast_rate and (
                 (self._input_max - self._input_min) / self._input_step > 100.0)
                 else self._input_step)
 
     def inc_value(self, fast_rate=False):
+        """        """
+
         last_value = self._input_value
         if self._input_value is None:
             return
@@ -558,6 +678,8 @@ class MenuInput(MenuCommand):
             self._value_changed()
 
     def dec_value(self, fast_rate=False):
+        """        """
+
         last_value = self._input_value
         if self._input_value is None:
             return
@@ -572,6 +694,8 @@ class MenuInput(MenuCommand):
 
     # default behaviour on click
     def handle_script_click(self):
+        """        """
+
         if not self.is_editing():
             self.start_editing()
         elif self.is_editing():
@@ -584,21 +708,29 @@ class MenuList(MenuContainer):
         self._viewport_top = 0
 
         def _cb(el, context):
+            """            """
+
             el.manager.back()
         # create back item
         self._itemBack = self.manager.menuitem_from(
             'command', name='..', gcode=_cb)
 
     def _names_aslist(self):
+        """        """
+
         return self.manager.lookup_children(self.get_ns())
 
     def _populate(self):
+        """        """
+
         super(MenuList, self)._populate()
         self._viewport_top = 0
         #  add back as first item
         self.insert_item(self._itemBack, 0)
 
     def draw_container(self, nrows, eventtime):
+        """        """
+
         display = self.manager.display
         selected_row = self.selected
         # adjust viewport
@@ -664,6 +796,8 @@ class MenuVSDList(MenuList):
         super(MenuVSDList, self).__init__(manager, config, **kwargs)
 
     def _populate(self):
+        """        """
+
         super(MenuVSDList, self)._populate()
         sdcard = self.manager.printer.lookup_object('virtual_sdcard', None)
         if sdcard is not None:
@@ -722,15 +856,21 @@ class MenuManager:
         self.send_event('init', self)
 
     def handle_ready(self):
+        """        """
+
         # start timer
         reactor = self.printer.get_reactor()
         reactor.register_timer(self.timer_event, reactor.NOW)
 
     def timer_event(self, eventtime):
+        """        """
+
         self.timeout_check(eventtime)
         return eventtime + TIMER_DELAY
 
     def timeout_check(self, eventtime):
+        """        """
+
         if (self.is_running() and self.timeout > 0
                 and isinstance(self.root, MenuContainer)):
             if self.timer >= self.timeout:
@@ -741,12 +881,18 @@ class MenuManager:
             self.timer = 0
 
     def send_event(self, event, *args):
+        """        """
+
         return self.printer.send_event("menu:" + str(event), *args)
 
     def is_running(self):
+        """        """
+
         return self.running
 
     def begin(self, eventtime):
+        """        """
+
         self.menustack = []
         self.timer = 0
         if isinstance(self.root, MenuContainer):
@@ -763,6 +909,8 @@ class MenuManager:
         self.running = False
 
     def get_status(self, eventtime):
+        """        """
+
         return {
             'timeout': self.timeout,
             'running': self.running,
@@ -771,20 +919,28 @@ class MenuManager:
         }
 
     def _action_back(self, force=False, update=True):
+        """        """
+
         self.back(force, update)
         return ""
 
     def _action_exit(self, force=False):
+        """        """
+
         self.exit(force)
         return ""
 
     def get_context(self, cxt=None):
+        """        """
+
         context = dict(self.context)
         if isinstance(cxt, dict):
             context.update(cxt)
         return context
 
     def update_context(self, eventtime):
+        """        """
+
         # menu default jinja2 context
         self.context = self.gcode_macro.create_template_context(eventtime)
         self.context['menu'] = {
@@ -794,6 +950,8 @@ class MenuManager:
         }
 
     def stack_push(self, container):
+        """        """
+
         if not isinstance(container, MenuContainer):
             raise error("Wrong type, expected MenuContainer")
         container.populate()
@@ -809,6 +967,8 @@ class MenuManager:
         self.menustack.append(container)
 
     def stack_pop(self, update=True):
+        """        """
+
         container = None
         if self.stack_size() > 0:
             container = self.menustack.pop()
@@ -831,15 +991,21 @@ class MenuManager:
         return container
 
     def stack_size(self):
+        """        """
+
         return len(self.menustack)
 
     def stack_peek(self, lvl=0):
+        """        """
+
         container = None
         if self.stack_size() > lvl:
             container = self.menustack[self.stack_size() - lvl - 1]
         return container
 
     def screen_update_event(self, eventtime):
+        """        """
+
         # screen update
         if not self.is_running():
             return False
@@ -852,6 +1018,8 @@ class MenuManager:
         return True
 
     def up(self, fast_rate=False):
+        """        """
+
         container = self.stack_peek()
         if self.running and isinstance(container, MenuContainer):
             self.timer = 0
@@ -865,6 +1033,8 @@ class MenuManager:
                     container.select_prev()  # normal
 
     def down(self, fast_rate=False):
+        """        """
+
         container = self.stack_peek()
         if self.running and isinstance(container, MenuContainer):
             self.timer = 0
@@ -878,6 +1048,8 @@ class MenuManager:
                     container.select_next()  # normal
 
     def back(self, force=False, update=True):
+        """        """
+
         container = self.stack_peek()
         if self.running and isinstance(container, MenuContainer):
             self.timer = 0
@@ -901,6 +1073,8 @@ class MenuManager:
                 self.running = False
 
     def exit(self, force=False):
+        """        """
+
         container = self.stack_peek()
         if self.running and isinstance(container, MenuContainer):
             self.timer = 0
@@ -914,6 +1088,8 @@ class MenuManager:
             self.running = False
 
     def push_container(self, menu):
+        """        """
+
         container = self.stack_peek()
         if self.running and isinstance(container, MenuContainer):
             if (isinstance(menu, MenuContainer)
@@ -924,6 +1100,8 @@ class MenuManager:
         return False
 
     def press(self, event='click'):
+        """        """
+
         container = self.stack_peek()
         if self.running and isinstance(container, MenuContainer):
             self.timer = 0
@@ -942,6 +1120,8 @@ class MenuManager:
                 container.run_script(event)
 
     def queue_gcode(self, script):
+        """        """
+
         if not script:
             return
         if not self.gcode_queue:
@@ -950,6 +1130,8 @@ class MenuManager:
         self.gcode_queue.append(script)
 
     def dispatch_gcode(self, eventtime):
+        """        """
+
         while self.gcode_queue:
             script = self.gcode_queue[0]
             try:
@@ -959,12 +1141,16 @@ class MenuManager:
             self.gcode_queue.pop(0)
 
     def menuitem_from(self, type, **kwargs):
+        """        """
+
         if type not in menu_items:
             raise error("Choice '%s' for option '%s'"
                         " is not a valid choice" % (type, menu_items))
         return menu_items[type](self, None, **kwargs)
 
     def add_menuitem(self, name, item):
+        """        """
+
         existing_item = False
         if name in self.menuitems:
             existing_item = True
@@ -983,6 +1169,8 @@ class MenuManager:
                         item.get_ns())
 
     def lookup_menuitem(self, name, default=sentinel):
+        """        """
+
         if name is None:
             return None
         if name in self.menuitems:
@@ -993,11 +1181,15 @@ class MenuManager:
         return default
 
     def lookup_children(self, ns):
+        """        """
+
         if ns in self.children:
             return list(self.children[ns])
         return list()
 
     def load_config(self, *args):
+        """        """
+
         cfg = None
         filename = os.path.join(*args)
         try:
@@ -1010,6 +1202,8 @@ class MenuManager:
         return cfg
 
     def load_menuitems(self, config):
+        """        """
+
         for cfg in config.get_prefix_sections('menu '):
             type = cfg.get('type')
             if type not in menu_items:
@@ -1019,6 +1213,8 @@ class MenuManager:
             self.add_menuitem(item.get_ns(), item)
 
     def _click_callback(self, eventtime, event):
+        """        """
+
         if self.is_running():
             self.press(event)
         else:
@@ -1026,6 +1222,8 @@ class MenuManager:
             self.begin(eventtime)
 
     def key_event(self, key, eventtime):
+        """        """
+
         if key == 'click':
             self._click_callback(eventtime, key)
         elif key == 'long_click':
@@ -1046,7 +1244,8 @@ class MenuManager:
 
     @classmethod
     def stripliterals(cls, s):
-        """Literals are beginning or ending by the double or single quotes"""
+        """
+        """
         s = str(s)
         if (s.startswith('"') and s.endswith('"')) or \
                 (s.startswith("'") and s.endswith("'")):
@@ -1055,6 +1254,8 @@ class MenuManager:
 
     @classmethod
     def aslatin(cls, s):
+        """        """
+
         if isinstance(s, str):
             return s
         elif isinstance(s, unicode):
@@ -1064,4 +1265,6 @@ class MenuManager:
 
     @classmethod
     def asflat(cls, s):
+        """        """
+
         return cls.stripliterals(''.join(cls.aslatin(s).splitlines()))

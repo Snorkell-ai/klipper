@@ -16,4 +16,6 @@ class PrinterStaticDigitalOut:
                                % (pin_params['pin'], not pin_params['invert']))
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterStaticDigitalOut(config)

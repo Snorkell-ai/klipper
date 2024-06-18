@@ -279,6 +279,8 @@ class TMC5160CurrentHelper:
         self.fields.set_field("ihold", ihold)
         self.fields.set_field("irun", irun)
     def _calc_globalscaler(self, current):
+        """        """
+
         globalscaler = int((current * 256. * math.sqrt(2.)
                             * self.sense_resistor / VREF) + .5)
         globalscaler = max(32, globalscaler)
@@ -286,6 +288,8 @@ class TMC5160CurrentHelper:
             globalscaler = 0
         return globalscaler
     def _calc_current_bits(self, current, globalscaler):
+        """        """
+
         if not globalscaler:
             globalscaler = 256
         cs = int((current * 256. * 32. * math.sqrt(2.) * self.sense_resistor)
@@ -293,11 +297,15 @@ class TMC5160CurrentHelper:
                  - 1. + .5)
         return max(0, min(31, cs))
     def _calc_current(self, run_current, hold_current):
+        """        """
+
         gscaler = self._calc_globalscaler(run_current)
         irun = self._calc_current_bits(run_current, gscaler)
         ihold = self._calc_current_bits(min(hold_current, run_current), gscaler)
         return gscaler, irun, ihold
     def _calc_current_from_field(self, field_name):
+        """        """
+
         globalscaler = self.fields.get_field("globalscaler")
         if not globalscaler:
             globalscaler = 256
@@ -305,10 +313,14 @@ class TMC5160CurrentHelper:
         return (globalscaler * (bits + 1) * VREF
                 / (256. * 32. * math.sqrt(2.) * self.sense_resistor))
     def get_current(self):
+        """        """
+
         run_current = self._calc_current_from_field("irun")
         hold_current = self._calc_current_from_field("ihold")
         return run_current, hold_current, self.req_hold_current, MAX_CURRENT
     def set_current(self, run_current, hold_current, print_time):
+        """        """
+
         self.req_hold_current = hold_current
         gscaler, irun, ihold = self._calc_current(run_current, hold_current)
         val = self.fields.set_field("globalscaler", gscaler)
@@ -386,4 +398,6 @@ class TMC5160:
         set_config_field(config, "tpowerdown", 10)
 
 def load_config_prefix(config):
+    """    """
+
     return TMC5160(config)

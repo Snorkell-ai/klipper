@@ -24,7 +24,11 @@ class mcp4451:
                 val = int(val * 255. / scale + .5)
                 self.set_register(WiperRegisters[i], val)
     def set_register(self, reg, value):
+        """        """
+
         self.i2c.i2c_write([(reg << 4) | ((value >> 8) & 0x03), value])
 
 def load_config_prefix(config):
+    """    """
+
     return mcp4451(config)

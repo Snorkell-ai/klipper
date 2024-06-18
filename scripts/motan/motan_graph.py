@@ -18,6 +18,8 @@ except:
 ######################################################################
 
 def plot_motion(amanager, graphs, log_prefix):
+    """    """
+
     # Generate data
     for graph in graphs:
         for dataset, plot_params in graph:
@@ -69,6 +71,8 @@ def plot_motion(amanager, graphs, log_prefix):
 ######################################################################
 
 def setup_matplotlib(output_to_file):
+    """    """
+
     global matplotlib
     if output_to_file:
         matplotlib.use('Agg')
@@ -76,6 +80,8 @@ def setup_matplotlib(output_to_file):
     import matplotlib.ticker
 
 def parse_graph_description(desc):
+    """    """
+
     if '?' not in desc:
         return (desc, {})
     dataset, params = desc.split('?', 1)
@@ -86,6 +92,8 @@ def parse_graph_description(desc):
     return (dataset, params)
 
 def list_datasets():
+    """    """
+
     datasets = readlog.list_datasets() + analyzers.list_datasets()
     out = ["\nAvailable datasets:\n"]
     for dataset, desc in datasets:
@@ -95,6 +103,8 @@ def list_datasets():
     sys.exit(0)
 
 def main():
+    """    """
+
     # Parse command-line arguments
     usage = "%prog [options] <logname>"
     opts = optparse.OptionParser(usage)

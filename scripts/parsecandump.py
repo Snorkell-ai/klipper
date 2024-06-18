@@ -7,6 +7,8 @@
 import sys, os, optparse
 
 def import_msgproto():
+    """    """
+
     global msgproto
     # Load msgproto.py module
     kdir = os.path.join(os.path.dirname(__file__), '..', 'klippy')
@@ -14,12 +16,16 @@ def import_msgproto():
     import msgproto
 
 def read_dictionary(filename):
+    """    """
+
     dfile = open(filename, 'rb')
     dictionary = dfile.read()
     dfile.close()
     return dictionary
 
 def report(msg, line_info, name="", is_err=False):
+    """    """
+
     line_number, line_time = line_info
     warn = ""
     if is_err:
@@ -34,6 +40,8 @@ class canscan:
         self.data = bytearray()
         self.need_scan = False
     def handle_data(self, line_info, line, newdata):
+        """        """
+
         data = self.data
         data += bytearray(newdata)
         while 1:
@@ -65,6 +73,8 @@ class canscan:
             data[:l] = []
 
 def read_candump(canfile, canid, dictionary):
+    """    """
+
     mp = msgproto.MessageParser()
     mp.process_identify(dictionary, decompress=False)
     rxid = "%03X" % (canid | 1,)
@@ -106,6 +116,8 @@ def read_candump(canfile, canid, dictionary):
             hdlr.handle_data(line_info, line, newdata)
 
 def main():
+    """    """
+
     usage = "%prog <candump.log> <canid> <mcu.dict>"
     opts = optparse.OptionParser(usage)
     options, args = opts.parse_args()

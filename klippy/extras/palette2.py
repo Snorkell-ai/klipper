@@ -113,6 +113,8 @@ class Palette2:
         self.smart_load_timer = None
 
     def _reset(self):
+        """        """
+
         self.files = []
         self.is_setup_complete = False
         self.is_splicing = False
@@ -131,6 +133,8 @@ class Palette2:
         self.omega_drivers = []
 
     def _check_P2(self, gcmd=None):
+        """        """
+
         if self.serial:
             return True
         if gcmd:
@@ -140,6 +144,8 @@ class Palette2:
     cmd_Connect_Help = ("Connect to the Palette 2")
 
     def cmd_Connect(self, gcmd):
+        """        """
+
         if self.serial:
             gcmd.respond_info(
                 "Palette 2 serial port is already active, disconnect first")
@@ -175,6 +181,8 @@ class Palette2:
     cmd_Disconnect_Help = ("Disconnect from the Palette 2")
 
     def cmd_Disconnect(self, gcmd=None):
+        """        """
+
         self.gcode.respond_info("Disconnecting from Palette 2")
         if self.serial:
             self.serial.close()
@@ -191,6 +199,8 @@ class Palette2:
     cmd_Clear_Help = ("Clear the input and output of the Palette 2")
 
     def cmd_Clear(self, gcmd):
+        """        """
+
         logging.info("Clearing Palette 2 input and output")
         if self._check_P2(gcmd):
             for l in COMMAND_CLEAR:
@@ -199,6 +209,8 @@ class Palette2:
     cmd_Cut_Help = ("Cut the outgoing filament")
 
     def cmd_Cut(self, gcmd):
+        """        """
+
         logging.info("Cutting outgoing filament in Palette 2")
         if self._check_P2(gcmd):
             self.write_queue.put(COMMAND_CUT)
@@ -206,6 +218,8 @@ class Palette2:
     cmd_Smart_Load_Help = ("Automatically load filament through the extruder")
 
     def cmd_Smart_Load(self, gcmd):
+        """        """
+
         if self._check_P2(gcmd):
             if not self.is_loading:
                 gcmd.respond_info(
@@ -214,11 +228,15 @@ class Palette2:
             self.p2cmd_O102(params=None)
 
     def cmd_OmegaDefault(self, gcmd):
+        """        """
+
         logging.debug("Omega Code: %s" % (gcmd.get_command()))
         if self._check_P2(gcmd):
             self.write_queue.put(gcmd.get_commandline())
 
     def _wait_for_heartbeat(self):
+        """        """
+
         startTs = self.reactor.monotonic()
         currTs = startTs
         while self.heartbeat is None or (self.heartbeat < (
@@ -235,6 +253,8 @@ class Palette2:
         "Initialize the print, and check connection with the Palette 2")
 
     def cmd_O1(self, gcmd):
+        """        """
+
         logging.info("Initializing print with Pallete 2")
         if not self._check_P2(gcmd):
             raise self.printer.command_error(
@@ -250,30 +270,42 @@ class Palette2:
     cmd_O9_help = ("Reset print information")
 
     def cmd_O9(self, gcmd):
+        """        """
+
         logging.info("Print finished, resetting Palette 2 state")
         if self._check_P2(gcmd):
             self.write_queue.put(gcmd.get_commandline())
         self.is_printing = False
 
     def cmd_O21(self, gcmd):
+        """        """
+
         logging.debug("Omega version: %s" % (gcmd.get_commandline()))
         self._reset()
         self.omega_header[0] = gcmd.get_commandline()
         self.is_printing = True
 
     def cmd_O22(self, gcmd):
+        """        """
+
         logging.debug("Omega printer profile: %s" % (gcmd.get_commandline()))
         self.omega_header[1] = gcmd.get_commandline()
 
     def cmd_O23(self, gcmd):
+        """        """
+
         logging.debug("Omega slicer profile: %s" % (gcmd.get_commandline()))
         self.omega_header[2] = gcmd.get_commandline()
 
     def cmd_O24(self, gcmd):
+        """        """
+
         logging.debug("Omega PPM: %s" % (gcmd.get_commandline()))
         self.omega_header[3] = gcmd.get_commandline()
 
     def cmd_O25(self, gcmd):
+        """        """
+
         logging.debug("Omega inputs: %s" % (gcmd.get_commandline()))
         self.omega_header[4] = gcmd.get_commandline()
         drives = self.omega_header[4][4:].split()
@@ -285,22 +317,32 @@ class Palette2:
         logging.info("Omega drives: %s" % self.omega_drives)
 
     def cmd_O26(self, gcmd):
+        """        """
+
         logging.debug("Omega splices %s" % (gcmd.get_commandline()))
         self.omega_header[5] = gcmd.get_commandline()
 
     def cmd_O27(self, gcmd):
+        """        """
+
         logging.debug("Omega pings: %s" % (gcmd.get_commandline()))
         self.omega_header[6] = gcmd.get_commandline()
 
     def cmd_O28(self, gcmd):
+        """        """
+
         logging.debug("Omega MSF NA: %s" % (gcmd.get_commandline()))
         self.omega_header[7] = gcmd.get_commandline()
 
     def cmd_O29(self, gcmd):
+        """        """
+
         logging.debug("Omega MSF NH: %s" % (gcmd.get_commandline()))
         self.omega_header[8] = gcmd.get_commandline()
 
     def cmd_O30(self, gcmd):
+        """        """
+
         try:
             param_drive = gcmd.get_commandline()[5:6]
             param_distance = gcmd.get_commandline()[8:]
@@ -315,6 +357,8 @@ class Palette2:
                       (param_drive, param_distance))
 
     def cmd_O31(self, gcmd):
+        """        """
+
         if self._check_P2(gcmd):
             self.omega_current_ping = gcmd.get_commandline()
             logging.debug("Omega ping command: %s" %
@@ -324,10 +368,14 @@ class Palette2:
             self.gcode.create_gcode_command("G4", "G4", {"P": "10"})
 
     def cmd_O32(self, gcmd):
+        """        """
+
         logging.debug("Omega algorithm: %s" % (gcmd.get_commandline()))
         self.omega_algorithms.append(gcmd.get_commandline())
 
     def p2cmd_O20(self, params):
+        """        """
+
         if not self.is_printing:
             return
 
@@ -366,10 +414,14 @@ class Palette2:
             self.write_queue.put(self.omega_last_command)
 
     def p2cmd_O34(self, params):
+        """        """
+
         if not self.is_printing:
             return
 
         def check_ping_variation(last_ping):
+            """            """
+
             if self.auto_cancel_variation is not None:
                 ping_max = 100. + (self.auto_cancel_variation * 100.)
                 ping_min = 100. - (self.auto_cancel_variation * 100.)
@@ -393,10 +445,14 @@ class Palette2:
                 self.omega_pongs.append(d)
 
     def p2cmd_O40(self, params):
+        """        """
+
         logging.info("Resume request from Palette 2")
         self.pause_resume.send_resume_command()
 
     def p2cmd_O50(self, params):
+        """        """
+
         if len(params) > 1:
             try:
                 fw = params[0][1:]
@@ -420,6 +476,8 @@ class Palette2:
             self.write_queue.put(COMMAND_FILENAMES_DONE)
 
     def p2cmd_O53(self, params):
+        """        """
+
         if len(params) > 1 and params[0] == "D1":
             try:
                 idx = int(params[1][1:], 16)
@@ -429,6 +487,8 @@ class Palette2:
                 logging.error("O53 has invalid command parameters")
 
     def p2cmd_O88(self, params):
+        """        """
+
         logging.error("Palette 2 error detected")
         try:
             error = int(params[0][1:], 16)
@@ -437,20 +497,30 @@ class Palette2:
             logging.error("Unable to parse Palette 2 error")
 
     def p2cmd_O97(self, params):
+        """        """
+
         def printCancelling(params):
+            """            """
+
             logging.info("Print Cancelling")
             self.gcode.run_script("CLEAR_PAUSE")
             self.gcode.run_script("CANCEL_PRINT")
 
         def printCancelled(params):
+            """            """
+
             logging.info("Print Cancelled")
             self._reset()
 
         def loadingOffsetStart(params):
+            """            """
+
             logging.info("Waiting for user to load filament into printer")
             self.is_loading = True
 
         def loadingOffset(params):
+            """            """
+
             self.remaining_load_length = int(params[1][1:])
             logging.debug("Loading filamant remaining %d" %
                           self.remaining_load_length)
@@ -461,12 +531,16 @@ class Palette2:
                 self.is_loading = False
 
         def feedrateStart(params):
+            """            """
+
             logging.info("Setting feedrate to %f for splice" %
                          self.feedrate_splice)
             self.is_splicing = True
             self.gcode.run_script("M220 S%d" % (self.feedrate_splice * 100))
 
         def feedrateEnd(params):
+            """            """
+
             logging.info("Setting feedrate to %f splice done" %
                          self.feedrate_normal)
             self.is_splicing = False
@@ -486,11 +560,15 @@ class Palette2:
         self._param_Matcher(matchers, params)
 
     def p2cmd_O100(self, params):
+        """        """
+
         logging.info("Pause request from Palette 2")
         self.is_setup_complete = True
         self.pause_resume.send_pause_command()
 
     def p2cmd_O102(self, params):
+        """        """
+
         toolhead = self.printer.lookup_object("toolhead")
         if not toolhead.get_extruder().get_heater().can_extrude:
             self.write_queue.put(COMMAND_SMART_LOAD_STOP)
@@ -504,6 +582,8 @@ class Palette2:
                 self._run_Smart_Load, self.reactor.NOW)
 
     def p2cmd(self, line):
+        """        """
+
         t = line.split()
         ocode = t[0]
         params = t[1:]
@@ -519,6 +599,8 @@ class Palette2:
             func(params)
 
     def _param_Matcher(self, matchers, params):
+        """        """
+
         # Match the command with the handling table
         for matcher in matchers:
             if len(params) >= matcher[1]:
@@ -531,6 +613,8 @@ class Palette2:
         return False
 
     def _run_Read(self, eventtime):
+        """        """
+
         if self.signal_disconnect:
             self.cmd_Disconnect()
             return self.reactor.NEVER
@@ -580,6 +664,8 @@ class Palette2:
         return eventtime + SERIAL_TIMER
 
     def _run_Heartbeat(self, eventtime):
+        """        """
+
         self.write_queue.put(COMMAND_HEARTBEAT)
         eventtime = self.reactor.pause(eventtime + 5)
         if self.heartbeat and self.heartbeat < (
@@ -592,6 +678,8 @@ class Palette2:
         return eventtime + HEARTBEAT_SEND
 
     def _run_Write(self, eventtime):
+        """        """
+
         while not self.write_queue.empty():
             try:
                 text_line = self.write_queue.get_nowait()
@@ -616,6 +704,8 @@ class Palette2:
         return eventtime + SERIAL_TIMER
 
     def _run_Smart_Load(self, eventtime):
+        """        """
+
         if not self.is_splicing and self.remaining_load_length < 0:
             # Make sure toolhead class isn't busy
             toolhead = self.printer.lookup_object("toolhead")
@@ -640,6 +730,8 @@ class Palette2:
         return eventtime + AUTOLOAD_TIMER
 
     def get_status(self, eventtime=None):
+        """        """
+
         status = {
             "ping": None,
             "remaining_load_length": self.remaining_load_length,
@@ -651,4 +743,6 @@ class Palette2:
 
 
 def load_config(config):
+    """    """
+
     return Palette2(config)

@@ -22,6 +22,8 @@ class TuningTower:
                                     desc=self.cmd_TUNING_TOWER_help)
     cmd_TUNING_TOWER_help = "Tool to adjust a parameter at each Z height"
     def cmd_TUNING_TOWER(self, gcmd):
+        """        """
+
         if self.normal_transform is not None:
             self.end_test()
         # Get parameters
@@ -62,10 +64,14 @@ class TuningTower:
         gcmd.respond_info(
             "Starting tuning test (" + " ".join(message_parts) + ")")
     def get_position(self):
+        """        """
+
         pos = self.normal_transform.get_position()
         self.last_position = list(pos)
         return pos
     def calc_value(self, z):
+        """        """
+
         if self.skip:
             z = max(0., z - self.skip)
         if self.step_height:
@@ -75,6 +81,8 @@ class TuningTower:
             z = (math.floor(z / self.band) + .5) * self.band
         return self.start + z * self.factor
     def move(self, newpos, speed):
+        """        """
+
         normal_transform = self.normal_transform
         if (newpos[3] > self.last_position[3] and newpos[2] != self.last_z
             and newpos[:3] != self.last_position[:3]):
@@ -96,11 +104,17 @@ class TuningTower:
         self.last_position[:] = newpos
         normal_transform.move(newpos, speed)
     def end_test(self):
+        """        """
+
         self.gcode.respond_info("Ending tuning test mode")
         self.gcode_move.set_move_transform(self.normal_transform, force=True)
         self.normal_transform = None
     def is_active(self):
+        """        """
+
         return self.normal_transform is not None
 
 def load_config(config):
+    """    """
+
     return TuningTower(config)

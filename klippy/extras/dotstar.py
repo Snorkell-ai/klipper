@@ -29,8 +29,12 @@ class PrinterDotstar:
         # Register commands
         printer.register_event_handler("klippy:connect", self.handle_connect)
     def handle_connect(self):
+        """        """
+
         self.update_leds(self.led_helper.get_status()['color_data'], None)
     def update_leds(self, led_state, print_time):
+        """        """
+
         if led_state == self.prev_data:
             return
         self.prev_data = led_state
@@ -51,7 +55,11 @@ class PrinterDotstar:
             self.spi.spi_send(d, minclock=minclock,
                               reqclock=BACKGROUND_PRIORITY_CLOCK)
     def get_status(self, eventtime):
+        """        """
+
         return self.led_helper.get_status(eventtime)
 
 def load_config_prefix(config):
+    """    """
+
     return PrinterDotstar(config)
